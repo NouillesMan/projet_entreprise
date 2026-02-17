@@ -92,7 +92,7 @@ Vous devriez voir deux services en cours d'exécution :
 ```bash
 docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_custom_fields.sql
 docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_options.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_users.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_user.sql
 ```
 
 #### Étape 6 : Accéder à l'application
@@ -204,7 +204,7 @@ EXIT;
 mysql -u root -p inventaire_pc < schema.sql
 mysql -u root -p inventaire_pc < schema_custom_fields.sql
 mysql -u root -p inventaire_pc < schema_options.sql
-mysql -u root -p inventaire_pc < schema_users.sql
+mysql -u root -p inventaire_pc < schema_user.sql
 ```
 
 #### Étape 4 : (Optionnel) Importer les données de démonstration
@@ -300,7 +300,7 @@ projet_entreprise/
 ├── schema.sql                 # Schéma principal de la base de données
 ├── schema_custom_fields.sql   # Schéma pour les champs personnalisés
 ├── schema_options.sql         # Schéma et données des options déroulantes
-├── schema_users.sql           # Schéma de la table users + compte admin par défaut
+├── schema_user.sql           # Schéma de la table users + compte admin par défaut
 ├── inventaire_pc.sql          # Données de démonstration
 ├── Dockerfile                 # Configuration Docker
 ├── docker-compose.yml         # Orchestration Docker

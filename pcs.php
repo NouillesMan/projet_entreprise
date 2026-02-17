@@ -199,6 +199,7 @@ require __DIR__ . "/partials/header.php";
                     <li>
                       <form method="post" action="pc_delete.php" class="d-inline"
                             onsubmit="return confirm('Supprimer ce PC ?');">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id" value="<?= (int)$pc["id"] ?>">
                         <button class="dropdown-item text-danger" type="submit">
                           <i class="bi bi-trash"></i> Supprimer

@@ -21,6 +21,7 @@ $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 $errors = [];
 // Si formulaire envoyé
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  csrf_check();
   $hostname = trim($_POST["hostname"] ?? "");
   $serial = trim($_POST["serial"] ?? "");
   $marque = trim($_POST["marque"] ?? "");
@@ -106,6 +107,7 @@ require __DIR__ . "/partials/header.php";
   <div class="card shadow-sm">
     <div class="card-body">
       <form method="post" class="row g-3">
+        <?= csrf_field() ?>
         <div class="col-md-6">
           <label class="form-label">Hostname <span class="text-danger">*</span></label>
           <input class="form-control" name="hostname" value="<?= e($_POST["hostname"] ?? "") ?>" required>

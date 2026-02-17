@@ -7,6 +7,7 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    csrf_check();
     $action = $_POST["action"] ?? "";
 
     // Create user
@@ -187,26 +188,26 @@ require __DIR__ . "/partials/header.php";
                   <?php endif; ?>
                 </td>
 
-                <!-- Permissions checkboxes (auto-submit on change) -->
                 <?php
                 $perms = ["is_admin","can_view","can_add","can_edit","can_delete"];
+                foreach ($perms as $p):
                 ?>
-                <form method="post" id="perm-form-<?= $u["id"] ?>">
-                  <input type="hidden" name="action"  value="update_perms">
-                  <input type="hidden" name="user_id" value="<?= (int)$u["id"] ?>">
-
-                  <?php foreach ($perms as $p): ?>
-                    <td class="text-center">
-                      <input type="checkbox" class="form-check-input perm-cb"
-                             name="<?= $p ?>" value="1"
-                             <?= $u[$p] ? "checked" : "" ?>
-                             data-form="perm-form-<?= $u["id"] ?>"
-                             <?= ($p === "is_admin" && $u["id"] == $_SESSION["user_id"]) ? "disabled" : "" ?>>
-                    </td>
-                  <?php endforeach; ?>
-                </form>
+                  <td class="text-center">
+                    <input type="checkbox" class="form-check-input perm-cb"
+                           name="<?= $p ?>" value="1"
+                           <?= $u[$p] ? "checked" : "" ?>
+                           form="perm-form-<?= $u["id"] ?>"
+                           <?= ($p === "is_admin" && $u["id"] == $_SESSION["user_id"]) ? "disabled" : "" ?>>
+                  </td>
+                <?php endforeach; ?>
 
                 <td>
+                  <form method="post" id="perm-form-<?= $u["id"] ?>" class="d-none">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action"  value="update_perms">
+                    <input type="hidden" name="user_id" value="<?= (int)$u["id"] ?>">
+                  </form>
+
                   <div class="d-flex gap-1 flex-wrap">
                     <!-- Save permissions -->
                     <button class="btn btn-sm btn-outline-primary"
@@ -227,6 +228,7 @@ require __DIR__ . "/partials/header.php";
                     <?php if ($u["id"] != $_SESSION["user_id"]): ?>
                       <form method="post" class="d-inline"
                             onsubmit="return confirm('Supprimer <?= e($u["username"]) ?> ?');">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="action"  value="delete">
                         <input type="hidden" name="user_id" value="<?= (int)$u["id"] ?>">
                         <button class="btn btn-sm btn-outline-danger" type="submit">
@@ -251,6 +253,7 @@ require __DIR__ . "/partials/header.php";
     </div>
     <div class="card-body">
       <form method="post" class="row g-3">
+        <?= csrf_field() ?>
         <input type="hidden" name="action" value="create">
 
         <div class="col-md-4">
@@ -305,6 +308,7 @@ require __DIR__ . "/partials/header.php";
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <form method="post">
+        <?= csrf_field() ?>
         <input type="hidden" name="action"   value="reset_password">
         <input type="hidden" name="user_id"  id="modalPwdUid">
         <div class="modal-header">

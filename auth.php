@@ -12,6 +12,40 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 /**
+ * Generate or return the current CSRF token (stored in session).
+ */
+function csrf_token(): string
+{
+    if (empty($_SESSION['_csrf_token'])) {
+        $_SESSION['_csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['_csrf_token'];
+}
+
+/**
+ * Return a hidden input field containing the CSRF token.
+ */
+function csrf_field(): string
+{
+    return '<input type="hidden" name="_csrf_token" value="' . csrf_token() . '">';
+}
+
+/**
+ * Validate the CSRF token from the current POST request.
+ * Aborts with 403 if the token is missing or invalid.
+ */
+function csrf_check(): void
+{
+    if (
+        empty($_POST['_csrf_token']) ||
+        !hash_equals($_SESSION['_csrf_token'] ?? '', $_POST['_csrf_token'])
+    ) {
+        http_response_code(403);
+        die("Jeton CSRF invalide. Veuillez rafraîchir la page et réessayer.");
+    }
+}
+
+/**
  * Abort with a 403 page if the logged-in user lacks the given permission.
  * $perm can be: 'can_view', 'can_add', 'can_edit', 'can_delete', 'is_admin'
  */

@@ -7,6 +7,7 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    csrf_check();
     $action = $_POST["action"] ?? "";
 
     if ($action === "add") {
@@ -161,6 +162,7 @@ require __DIR__ . "/partials/header.php";
                     <span><?= e($item['option_value']) ?></span>
                     <form method="post" class="d-inline"
                           onsubmit="return confirm('Supprimer cette option ?');">
+                      <?= csrf_field() ?>
                       <input type="hidden" name="action"     value="delete">
                       <input type="hidden" name="id"         value="<?= (int)$item['id'] ?>">
                       <input type="hidden" name="field_name" value="<?= e($tab) ?>">
@@ -187,6 +189,7 @@ require __DIR__ . "/partials/header.php";
         </div>
         <div class="card-body">
           <form method="post">
+            <?= csrf_field() ?>
             <input type="hidden" name="action"     value="add">
             <input type="hidden" name="field_name" value="<?= e($tab) ?>">
 

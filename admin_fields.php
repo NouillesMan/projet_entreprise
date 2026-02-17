@@ -5,6 +5,7 @@ require __DIR__ . "/db.php";
 
 // Traitement des actions
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  csrf_check();
   $action = $_POST["action"] ?? "";
 
   if ($action === "toggle_visibility") {
@@ -146,6 +147,7 @@ require __DIR__ . "/partials/header.php";
               <tr>
                 <td>
                   <form method="post" class="d-inline">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="update_order">
                     <input type="hidden" name="field_id" value="<?= $field['id'] ?>">
                     <input type="number" name="display_order" value="<?= $field['display_order'] ?>"
@@ -165,6 +167,7 @@ require __DIR__ . "/partials/header.php";
                 </td>
                 <td>
                   <form method="post" class="d-inline">
+                    <?= csrf_field() ?>
                     <input type="hidden" name="action" value="toggle_visibility">
                     <input type="hidden" name="field_id" value="<?= $field['id'] ?>">
                     <input type="hidden" name="is_visible" value="<?= $field['is_visible'] ? 0 : 1 ?>">
@@ -181,6 +184,7 @@ require __DIR__ . "/partials/header.php";
                   ?>
                   <?php if (!$isProtected): ?>
                     <form method="post" class="d-inline" onsubmit="return confirm('Supprimer ce champ ?');">
+                      <?= csrf_field() ?>
                       <input type="hidden" name="action" value="delete_field">
                       <input type="hidden" name="field_id" value="<?= $field['id'] ?>">
                       <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -206,6 +210,7 @@ require __DIR__ . "/partials/header.php";
     </div>
     <div class="card-body">
       <form method="post" class="row g-3">
+        <?= csrf_field() ?>
         <input type="hidden" name="action" value="add_field">
 
         <div class="col-md-4">
