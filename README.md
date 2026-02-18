@@ -200,6 +200,15 @@ EXIT;
 
 #### Étape 3 : Importer les schémas de base de données
 
+**Avec Docker :**
+```bash
+docker compose exec -T db mariadb -u root -proot inventaire_pc < schema.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_custom_fields.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_options.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_user.sql
+```
+
+**Sans Docker (MySQL installé localement) :**
 ```bash
 mysql -u root -p inventaire_pc < schema.sql
 mysql -u root -p inventaire_pc < schema_custom_fields.sql
@@ -209,6 +218,12 @@ mysql -u root -p inventaire_pc < schema_user.sql
 
 #### Étape 4 : (Optionnel) Importer les données de démonstration
 
+**Avec Docker :**
+```bash
+docker compose exec -T db mariadb -u root -proot inventaire_pc < inventaire_pc.sql
+```
+
+**Sans Docker :**
 ```bash
 mysql -u root -p inventaire_pc < inventaire_pc.sql
 ```
@@ -279,11 +294,12 @@ Ouvrez votre navigateur :
 projet_entreprise/
 ├── assets/                    # Ressources statiques
 │   ├── css/
-│   │   └── style.css         # Styles personnalisés (dark theme)
-│   └── js/                   # JavaScript
+│   │   └── style.css         # Styles personnalisés (dark theme, custom properties --gh-*)
+│   └── js/
+│       └── pc_form.js        # JS partagé pour les formulaires PC (ajout/modif)
 ├── partials/                  # Composants réutilisables
-│   ├── header.php            # En-tête HTML commun
-│   └── footer.php            # Pied de page HTML commun
+│   ├── header.php            # En-tête + sidebar responsive (fixe desktop / offcanvas mobile)
+│   └── footer.php            # Pied de page + JS sidebar toggle
 ├── config.php                 # Configuration de la base de données
 ├── db.php                     # Connexion PDO
 ├── get_options.php            # Chargement des options depuis la BDD
@@ -297,16 +313,20 @@ projet_entreprise/
 ├── admin_fields.php           # Admin : gestion des champs
 ├── admin_options.php          # Admin : gestion des options des listes
 ├── admin_users.php            # Admin : gestion des utilisateurs et permissions
+├── config_options.php         # Configuration statique des options (fallback)
 ├── schema.sql                 # Schéma principal de la base de données
 ├── schema_custom_fields.sql   # Schéma pour les champs personnalisés
 ├── schema_options.sql         # Schéma et données des options déroulantes
-├── schema_user.sql           # Schéma de la table users + compte admin par défaut
+├── schema_user.sql            # Schéma de la table users + compte admin par défaut
 ├── inventaire_pc.sql          # Données de démonstration
 ├── Dockerfile                 # Configuration Docker
 ├── docker-compose.yml         # Orchestration Docker
+├── setup.sh                   # Script d'installation automatique (Docker)
 ├── .dockerignore              # Fichiers exclus de Docker
 ├── README.md                  # Documentation complète
-└── STRUCTURE.md               # Architecture détaillée du projet
+├── STRUCTURE.md               # Architecture détaillée du projet
+├── ADMIN.md                   # Documentation administration
+└── MOBILE.md                  # Documentation interface mobile
 ```
 
 📖 **Pour plus de détails sur l'architecture**, consultez [STRUCTURE.md](STRUCTURE.md)
@@ -521,8 +541,8 @@ services:
 ## Personnalisation
 
 ### Modifier le thème
-Les styles CSS sont intégrés dans chaque fichier PHP (variable `$pageStyles`).
-Pour personnaliser les couleurs, modifiez les variables CSS dans `:root`.
+Les styles sont centralisés dans `assets/css/style.css` avec des custom properties CSS.
+Pour personnaliser les couleurs, modifiez les variables `--gh-*` dans `:root` (ex: `--gh-canvas`, `--gh-accent-blue`, `--gh-border-default`).
 
 ### Gérer les options des listes déroulantes
 Accéder à `admin_options.php` depuis le panneau d'administration :

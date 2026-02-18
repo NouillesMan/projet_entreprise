@@ -215,13 +215,7 @@ body {
 }
 
 .table-responsive {
-  overflow: visible !important;
-}
-
-@media (max-width: 768px) {
-  .table-responsive {
-    overflow-x: auto !important;
-  }
+  overflow-x: auto;
 }
 
 /* ── Buttons ───────────────────────────────────────────────── */
