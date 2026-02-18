@@ -54,6 +54,7 @@ function require_perm(string $perm): void
     if (empty($_SESSION[$perm])) {
         http_response_code(403);
         $pageTitle = "Accès refusé";
+        $activePage = "";
         require __DIR__ . "/partials/header.php";
         echo '<div class="container py-5 text-center">';
         echo '<i class="bi bi-shield-lock display-1 text-danger"></i>';

@@ -50,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Update permissions
     if ($action === "update_perms") {
         $uid = (int)($_POST["user_id"] ?? 0);
-        // Prevent removing own admin rights
         if ($uid === (int)$_SESSION["user_id"] && !isset($_POST["is_admin"])) {
             header("Location: admin_users.php?msg=self_admin_error");
             exit;
@@ -122,28 +121,14 @@ $messages = [
 ];
 
 $pageTitle = "Admin - Utilisateurs";
+$activePage = "admin_users";
 require __DIR__ . "/partials/header.php";
 ?>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
 
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h1 class="h2 mb-0">Gestion des Utilisateurs</h1>
-        <div class="d-flex gap-2">
-          <a class="btn btn-outline-info" href="admin_fields.php">
-            <i class="bi bi-gear"></i> Champs
-          </a>
-          <a class="btn btn-outline-info" href="admin_options.php">
-            <i class="bi bi-list-check"></i> Options
-          </a>
-          <a class="btn btn-outline-secondary" href="pcs.php">
-            <i class="bi bi-arrow-left"></i> Retour
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Gestion des Utilisateurs</h3>
   </div>
 
   <?php if (isset($_GET["msg"]) && isset($messages[$_GET["msg"]])): ?>
@@ -154,15 +139,16 @@ require __DIR__ . "/partials/header.php";
   <?php endif; ?>
 
   <?php if (!empty($errors)): ?>
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show">
       <ul class="mb-0"><?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?></ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
 
   <!-- ── User list ──────────────────────────────────────────────────────── -->
   <div class="card shadow-sm mb-4">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Utilisateurs (<?= count($users) ?>)</h5>
+    <div class="card-header">
+      <h6 class="mb-0">Utilisateurs (<?= count($users) ?>)</h6>
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
@@ -209,13 +195,11 @@ require __DIR__ . "/partials/header.php";
                   </form>
 
                   <div class="d-flex gap-1 flex-wrap">
-                    <!-- Save permissions -->
                     <button class="btn btn-sm btn-outline-primary"
                             onclick="document.getElementById('perm-form-<?= $u["id"] ?>').submit()">
                       <i class="bi bi-save"></i>
                     </button>
 
-                    <!-- Reset password -->
                     <button class="btn btn-sm btn-outline-warning"
                             data-bs-toggle="modal"
                             data-bs-target="#modalPwd"
@@ -224,7 +208,6 @@ require __DIR__ . "/partials/header.php";
                       <i class="bi bi-key"></i>
                     </button>
 
-                    <!-- Delete -->
                     <?php if ($u["id"] != $_SESSION["user_id"]): ?>
                       <form method="post" class="d-inline"
                             onsubmit="return confirm('Supprimer <?= e($u["username"]) ?> ?');">
@@ -248,8 +231,8 @@ require __DIR__ . "/partials/header.php";
 
   <!-- ── Create user ────────────────────────────────────────────────────── -->
   <div class="card shadow-sm">
-    <div class="card-header bg-success text-white">
-      <h5 class="mb-0">Créer un utilisateur</h5>
+    <div class="card-header">
+      <h6 class="mb-0">Créer un utilisateur</h6>
     </div>
     <div class="card-body">
       <form method="post" class="row g-3">

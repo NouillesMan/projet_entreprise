@@ -53,19 +53,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($action === "delete_field") {
     $fieldId = (int)($_POST["field_id"] ?? 0);
 
-    // Récupérer le nom du champ
     $stmt = $pdo->prepare("SELECT field_name FROM custom_fields WHERE id = ?");
     $stmt->execute([$fieldId]);
     $field = $stmt->fetch();
 
-    // Empêcher la suppression des champs obligatoires
     $protectedFields = ['hostname', 'serial', 'marque', 'utilisateur', 'os', 'architecture', 'statut'];
     if ($field && in_array($field['field_name'], $protectedFields)) {
       header("Location: admin_fields.php?msg=protected");
       exit;
     }
 
-    // Supprimer le champ
     $stmt = $pdo->prepare("DELETE FROM custom_fields WHERE id = ?");
     $stmt->execute([$fieldId]);
 
@@ -79,27 +76,13 @@ $stmt = $pdo->query("SELECT * FROM custom_fields ORDER BY display_order ASC, id 
 $fields = $stmt->fetchAll();
 
 $pageTitle = "Admin - Gestion des champs";
+$activePage = "admin_fields";
 require __DIR__ . "/partials/header.php";
 ?>
 
-<div class="container py-4">
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="h2 mb-0">Gestion des Champs</h1>
-        <div class="d-flex gap-2">
-          <a class="btn btn-outline-info" href="admin_options.php">
-            <i class="bi bi-list-check"></i> Gérer les options
-          </a>
-          <a class="btn btn-outline-info" href="admin_users.php">
-            <i class="bi bi-people"></i> Utilisateurs
-          </a>
-          <a class="btn btn-outline-secondary" href="pcs.php">
-            <i class="bi bi-arrow-left"></i> Retour à l'inventaire
-          </a>
-        </div>
-      </div>
-    </div>
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Gestion des Champs</h3>
   </div>
 
   <?php if (isset($_GET['msg'])): ?>
@@ -118,15 +101,16 @@ require __DIR__ . "/partials/header.php";
   <?php endif; ?>
 
   <?php if (isset($error)): ?>
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show">
       <?= htmlspecialchars($error) ?>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
 
   <!-- Liste des champs existants -->
   <div class="card shadow-sm mb-4">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Champs Existants</h5>
+    <div class="card-header">
+      <h6 class="mb-0">Champs Existants</h6>
     </div>
     <div class="card-body p-0">
       <div class="table-responsive">
@@ -205,8 +189,8 @@ require __DIR__ . "/partials/header.php";
 
   <!-- Formulaire d'ajout de nouveau champ -->
   <div class="card shadow-sm">
-    <div class="card-header bg-success text-white">
-      <h5 class="mb-0">Ajouter un Nouveau Champ Personnalisé</h5>
+    <div class="card-header">
+      <h6 class="mb-0">Ajouter un Nouveau Champ Personnalisé</h6>
     </div>
     <div class="card-body">
       <form method="post" class="row g-3">
@@ -256,7 +240,7 @@ require __DIR__ . "/partials/header.php";
     </div>
   </div>
 
-  <div class="alert alert-info mt-4">
+  <div class="alert alert-info alert-dismissible fade show mt-4">
     <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Information</h6>
     <ul class="mb-0">
       <li>Les champs obligatoires (hostname, serial, marque, utilisateur, OS, architecture, statut) ne peuvent pas être supprimés.</li>
@@ -264,6 +248,7 @@ require __DIR__ . "/partials/header.php";
       <li>Les nouveaux champs personnalisés seront stockés séparément et affichés dans les formulaires.</li>
       <li>Changez l'ordre d'affichage en modifiant les numéros dans la colonne "Ordre".</li>
     </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 </div>
 

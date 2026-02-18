@@ -47,49 +47,18 @@ $stmt->execute($params);
 $pcs = $stmt->fetchAll();
 
 $pageTitle = "Inventaire PC";
+$activePage = "pcs";
 require __DIR__ . "/partials/header.php";
 ?>
 
-<!-- Mobile Navigation -->
-<nav class="mobile-nav">
-  <div class="mobile-nav-content">
-    <h1 class="mobile-nav-title">Inventaire PC</h1>
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-      <i class="bi bi-list"></i>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a class="mobile-menu-item" href="pcs.php">
-      <i class="bi bi-list-ul"></i> Liste des PC
-    </a>
-    <a class="mobile-menu-item" href="pc_add.php">
-      <i class="bi bi-plus-circle"></i> Ajouter un PC
-    </a>
-    <a class="mobile-menu-item" href="admin_fields.php">
-      <i class="bi bi-gear"></i> Gérer les champs
-    </a>
-  </div>
-</nav>
-
 <div class="container-fluid py-4">
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h1 class="h2 mb-0">Inventaire PC</h1>
-        <div class="d-flex gap-2">
-          <?php if (!empty($_SESSION["is_admin"])): ?>
-          <a class="btn btn-outline-info" href="admin_fields.php">
-            <i class="bi bi-gear"></i> Gérer les champs
-          </a>
-          <?php endif; ?>
-          <?php if (!empty($_SESSION["can_add"])): ?>
-          <a class="btn btn-primary" href="pc_add.php">
-            <i class="bi bi-plus-circle"></i> Ajouter PC
-          </a>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Inventaire PC</h3>
+    <?php if (!empty($_SESSION["can_add"])): ?>
+    <a class="btn btn-primary" href="pc_add.php">
+      <i class="bi bi-plus-circle"></i> Ajouter PC
+    </a>
+    <?php endif; ?>
   </div>
 
   <div class="card shadow-sm mb-4">
@@ -218,25 +187,6 @@ require __DIR__ . "/partials/header.php";
     </div>
   </div>
 </div>
+
 <?php
-$pageScripts = <<<'JS'
-<script>
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('show');
-}
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', function(event) {
-  const nav = document.querySelector('.mobile-nav');
-  const menu = document.getElementById('mobileMenu');
-  const toggle = document.querySelector('.mobile-menu-toggle');
-
-  if (menu && menu.classList.contains('show') &&
-      !nav.contains(event.target)) {
-    menu.classList.remove('show');
-  }
-});
-</script>
-JS;
 require __DIR__ . "/partials/footer.php";

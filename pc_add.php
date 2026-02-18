@@ -34,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $statut = $_POST["statut"] ?? "";
   $remarques = trim($_POST["remarques"] ?? "");
 
-  // validations mini
   if ($hostname === "") $errors[] = "Hostname obligatoire";
   if ($serial === "") $errors[] = "Serial obligatoire";
   if ($marque === "") $errors[] = "Marque obligatoire";
@@ -66,7 +65,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       header("Location: pcs.php");
       exit;
     } catch (PDOException $e) {
-      // Erreur serial unique
       if ($e->getCode() === "23000") {
         $errors[] = "Ce numéro de série existe déjà";
       } else {
@@ -79,32 +77,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 $pageTitle = "Ajouter un PC";
+$activePage = "pc_add";
 require __DIR__ . "/partials/header.php";
 ?>
-<div class="container py-4">
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="h2 mb-0">Ajouter un PC</h1>
-        <a class="btn btn-outline-secondary" href="pcs.php">
-          <i class="bi bi-arrow-left"></i> Retour
-        </a>
-      </div>
-    </div>
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Ajouter un PC</h3>
+    <a class="btn btn-outline-secondary" href="pcs.php">
+      <i class="bi bi-arrow-left"></i> Retour
+    </a>
   </div>
 
   <?php if ($errors): ?>
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-dismissible fade show">
       <h5 class="alert-heading">Erreurs de validation</h5>
       <ul class="mb-0">
         <?php foreach ($errors as $err): ?>
           <li><?= e($err) ?></li>
         <?php endforeach; ?>
       </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
 
   <div class="card shadow-sm">
+    <div class="card-header">
+      <h6 class="mb-0">Informations du PC</h6>
+    </div>
     <div class="card-body">
       <form method="post" class="row g-3">
         <?= csrf_field() ?>
@@ -146,7 +145,7 @@ require __DIR__ . "/partials/header.php";
                 <?= e($user) ?>
               </option>
             <?php endforeach; ?>
-            <option value="__nouveau__">➕ Nouveau utilisateur</option>
+            <option value="__nouveau__">+ Nouveau utilisateur</option>
           </select>
           <input class="form-control mt-1" name="utilisateur_custom" id="utilisateur_custom"
                  placeholder="Nom du nouvel utilisateur" style="display:none;">
@@ -216,7 +215,7 @@ require __DIR__ . "/partials/header.php";
 
         <div class="col-12">
           <hr>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <div class="d-flex justify-content-end gap-2">
             <a href="pcs.php" class="btn btn-secondary">Annuler</a>
             <button type="submit" class="btn btn-primary px-4">
               <i class="bi bi-plus-circle"></i> Ajouter le PC
@@ -228,100 +227,6 @@ require __DIR__ . "/partials/header.php";
   </div>
 </div>
 <?php
-$pageScripts = <<<'JS'
-<script>
-// Configuration des modèles par marque
-const modelesByBrand = <?= json_encode($options['modele']) ?>;
-
-// Gérer le changement de marque pour mettre à jour les modèles
-document.getElementById('marque').addEventListener('change', function() {
-  const brand = this.value;
-  const modeleSelect = document.getElementById('modele');
-
-  // Réinitialiser le select
-  modeleSelect.innerHTML = '<option value="">Sélectionner...</option>';
-
-  // Ajouter les modèles de la marque sélectionnée
-  if (modelesByBrand[brand]) {
-    modelesByBrand[brand].forEach(model => {
-      const option = document.createElement('option');
-      option.value = model;
-      option.textContent = model;
-      modeleSelect.appendChild(option);
-    });
-  }
-
-  // Ajouter l'option "Autre"
-  const otherOption = document.createElement('option');
-  otherOption.value = '__custom__';
-  otherOption.textContent = '➕ Modèle personnalisé';
-  modeleSelect.appendChild(otherOption);
-});
-
-// Gérer le modèle personnalisé
-document.getElementById('modele').addEventListener('change', function() {
-  const customInput = document.getElementById('modele_custom');
-  if (this.value === '__custom__') {
-    customInput.style.display = 'block';
-    customInput.required = true;
-  } else {
-    customInput.style.display = 'none';
-    customInput.required = false;
-  }
-});
-
-// Gérer l'utilisateur personnalisé
-document.getElementById('utilisateur').addEventListener('change', function() {
-  const customInput = document.getElementById('utilisateur_custom');
-  if (this.value === '__nouveau__') {
-    customInput.style.display = 'block';
-    customInput.required = true;
-    this.removeAttribute('name'); // Le custom input prendra le nom
-    customInput.setAttribute('name', 'utilisateur');
-  } else {
-    customInput.style.display = 'none';
-    customInput.required = false;
-    this.setAttribute('name', 'utilisateur');
-    customInput.removeAttribute('name');
-  }
-});
-
-// Gérer la soumission du formulaire pour les champs personnalisés
-document.querySelector('form').addEventListener('submit', function(e) {
-  const modeleSelect = document.getElementById('modele');
-  const modeleCustom = document.getElementById('modele_custom');
-
-  // Si un modèle personnalisé est saisi, l'utiliser
-  if (modeleCustom.value.trim() !== '') {
-    modeleSelect.value = '';
-    // Créer un champ caché avec la valeur personnalisée
-    const hiddenModele = document.createElement('input');
-    hiddenModele.type = 'hidden';
-    hiddenModele.name = 'modele';
-    hiddenModele.value = modeleCustom.value;
-    this.appendChild(hiddenModele);
-    modeleCustom.removeAttribute('name');
-  } else if (modeleSelect.value && modeleSelect.value !== '__custom__') {
-    // Utiliser la valeur du select
-    modeleSelect.setAttribute('name', 'modele');
-  }
-
-  // Même chose pour os_version
-  const osVersionSelect = document.querySelector('select[name="os_version"]');
-  const osVersionCustom = document.querySelector('input[name="os_version_custom"]');
-
-  if (osVersionCustom.value.trim() !== '') {
-    osVersionSelect.value = '';
-    const hiddenVersion = document.createElement('input');
-    hiddenVersion.type = 'hidden';
-    hiddenVersion.name = 'os_version';
-    hiddenVersion.value = osVersionCustom.value;
-    this.appendChild(hiddenVersion);
-    osVersionCustom.removeAttribute('name');
-  } else if (osVersionSelect.value) {
-    osVersionSelect.setAttribute('name', 'os_version');
-  }
-});
-</script>
-JS;
+$pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . ';</script>'
+             . '<script src="assets/js/pc_form.js"></script>';
 require __DIR__ . "/partials/footer.php";

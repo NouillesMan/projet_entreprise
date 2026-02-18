@@ -43,49 +43,20 @@ $recentAdded = $pdo->query(
 )->fetchAll();
 
 $pageTitle = "Dashboard";
+$activePage = "dashboard";
 require __DIR__ . "/partials/header.php";
 ?>
-
-<!-- Mobile Navigation -->
-<nav class="mobile-nav">
-  <div class="mobile-nav-content">
-    <h1 class="mobile-nav-title">Dashboard</h1>
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-      <i class="bi bi-list"></i>
-    </button>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a class="mobile-menu-item" href="dashboard.php">
-      <i class="bi bi-speedometer2"></i> Dashboard
-    </a>
-    <a class="mobile-menu-item" href="pcs.php">
-      <i class="bi bi-list-ul"></i> Liste des PC
-    </a>
-    <a class="mobile-menu-item" href="pc_add.php">
-      <i class="bi bi-plus-circle"></i> Ajouter un PC
-    </a>
-  </div>
-</nav>
 
 <div class="container-fluid py-4">
 
   <!-- Page header -->
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <h1 class="h2 mb-0"><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h1>
-        <div class="d-flex gap-2">
-          <a class="btn btn-outline-secondary" href="pcs.php">
-            <i class="bi bi-list-ul"></i> Voir l'inventaire
-          </a>
-          <?php if (!empty($_SESSION["can_add"])): ?>
-          <a class="btn btn-primary" href="pc_add.php">
-            <i class="bi bi-plus-circle"></i> Ajouter PC
-          </a>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0"><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h3>
+    <?php if (!empty($_SESSION["can_add"])): ?>
+    <a class="btn btn-primary" href="pc_add.php">
+      <i class="bi bi-plus-circle"></i> Ajouter PC
+    </a>
+    <?php endif; ?>
   </div>
 
   <!-- Status cards row -->
@@ -134,7 +105,7 @@ require __DIR__ . "/partials/header.php";
     <!-- Architecture breakdown -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header bg-transparent border-bottom border-secondary">
+        <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-cpu"></i> Architecture</h6>
         </div>
         <div class="card-body">
@@ -160,7 +131,7 @@ require __DIR__ . "/partials/header.php";
     <!-- Top brands -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header bg-transparent border-bottom border-secondary">
+        <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-building"></i> Top marques</h6>
         </div>
         <div class="card-body">
@@ -186,7 +157,7 @@ require __DIR__ . "/partials/header.php";
     <!-- Top OS -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100">
-        <div class="card-header bg-transparent border-bottom border-secondary">
+        <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-windows"></i> Top OS</h6>
         </div>
         <div class="card-body">
@@ -217,7 +188,7 @@ require __DIR__ . "/partials/header.php";
     <!-- Recently updated -->
     <div class="col-lg-7">
       <div class="card shadow-sm">
-        <div class="card-header bg-transparent border-bottom border-secondary">
+        <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-clock-history"></i> Dernières modifications</h6>
         </div>
         <div class="card-body p-0">
@@ -274,7 +245,7 @@ require __DIR__ . "/partials/header.php";
     <!-- Recently added -->
     <div class="col-lg-5">
       <div class="card shadow-sm">
-        <div class="card-header bg-transparent border-bottom border-secondary">
+        <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-plus-circle"></i> Derniers ajouts</h6>
         </div>
         <div class="card-body p-0">
@@ -309,20 +280,4 @@ require __DIR__ . "/partials/header.php";
 </div>
 
 <?php
-$pageScripts = <<<'JS'
-<script>
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  menu.classList.toggle('show');
-}
-
-document.addEventListener('click', function(event) {
-  const nav = document.querySelector('.mobile-nav');
-  const menu = document.getElementById('mobileMenu');
-  if (menu && menu.classList.contains('show') && !nav.contains(event.target)) {
-    menu.classList.remove('show');
-  }
-});
-</script>
-JS;
 require __DIR__ . "/partials/footer.php";

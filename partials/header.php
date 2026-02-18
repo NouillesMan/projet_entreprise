@@ -1,7 +1,11 @@
 <?php
-$pageTitle = $pageTitle ?? "Inventaire PC";
-$bodyClass = $bodyClass ?? "bg-dark";
+$pageTitle  = $pageTitle  ?? "Inventaire PC";
+$bodyClass  = $bodyClass  ?? "";
 $pageStyles = $pageStyles ?? "";
+$activePage = $activePage ?? "";
+
+if (session_status() === PHP_SESSION_NONE) session_start();
+$isLoggedIn = isset($_SESSION["user_id"]);
 ?>
 <!doctype html>
 <html lang="fr" data-bs-theme="dark">
@@ -22,34 +26,76 @@ $pageStyles = $pageStyles ?? "";
   <!-- Custom CSS -->
   <link href="assets/css/style.css" rel="stylesheet">
 
-  <!-- Page-specific styles -->
   <?php if ($pageStyles !== ""): ?>
   <style><?= $pageStyles ?></style>
   <?php endif; ?>
 </head>
-<body class="<?= htmlspecialchars($bodyClass, ENT_QUOTES, "UTF-8") ?>">
+<body class="<?= htmlspecialchars($bodyClass, ENT_QUOTES, 'UTF-8') ?>">
 
-<?php if (session_status() === PHP_SESSION_NONE) session_start(); ?>
-<?php if (isset($_SESSION["user_id"])): ?>
-<nav class="navbar navbar-dark bg-black border-bottom border-secondary px-3 py-2">
-  <a class="navbar-brand fw-bold" href="pcs.php">
+<?php if ($isLoggedIn): ?>
+
+<!-- Mobile top bar -->
+<div class="app-topbar">
+  <button class="btn btn-sm btn-outline-secondary" type="button" id="sidebarToggle" aria-label="Menu">
+    <i class="bi bi-list fs-5"></i>
+  </button>
+  <a class="topbar-brand" href="dashboard.php">
     <i class="bi bi-pc-display text-primary"></i> Inventaire PC
   </a>
-  <div class="d-flex align-items-center gap-3">
-    <a href="dashboard.php" class="text-decoration-none text-muted small">
+</div>
+
+<!-- Backdrop for mobile sidebar -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<!-- Sidebar -->
+<nav class="app-sidebar" id="appSidebar">
+  <a href="dashboard.php" class="sidebar-brand">
+    <i class="bi bi-pc-display text-primary fs-4"></i>
+    Inventaire PC
+  </a>
+
+  <div class="sidebar-nav">
+    <!-- Main navigation -->
+    <div class="nav-section">Navigation</div>
+    <a href="dashboard.php" class="nav-link <?= $activePage === 'dashboard' ? 'active' : '' ?>">
       <i class="bi bi-speedometer2"></i> Dashboard
     </a>
-    <?php if (!empty($_SESSION["is_admin"])): ?>
-      <a href="admin_users.php" class="text-decoration-none text-muted small">
-        <i class="bi bi-people"></i> Utilisateurs
-      </a>
+    <a href="pcs.php" class="nav-link <?= $activePage === 'pcs' ? 'active' : '' ?>">
+      <i class="bi bi-list-ul"></i> Inventaire
+    </a>
+    <?php if (!empty($_SESSION["can_add"])): ?>
+    <a href="pc_add.php" class="nav-link <?= $activePage === 'pc_add' ? 'active' : '' ?>">
+      <i class="bi bi-plus-circle"></i> Ajouter un PC
+    </a>
     <?php endif; ?>
-    <span class="text-muted small">
-      <i class="bi bi-person-circle"></i> <?= htmlspecialchars($_SESSION["username"] ?? "", ENT_QUOTES, "UTF-8") ?>
-    </span>
-    <a href="logout.php" class="btn btn-sm btn-outline-secondary">
-      <i class="bi bi-box-arrow-right"></i> Déconnexion
+
+    <?php if (!empty($_SESSION["is_admin"])): ?>
+    <!-- Admin section -->
+    <div class="nav-section mt-3">Administration</div>
+    <a href="admin_users.php" class="nav-link <?= $activePage === 'admin_users' ? 'active' : '' ?>">
+      <i class="bi bi-people"></i> Utilisateurs
+    </a>
+    <a href="admin_options.php" class="nav-link <?= $activePage === 'admin_options' ? 'active' : '' ?>">
+      <i class="bi bi-list-check"></i> Options
+    </a>
+    <a href="admin_fields.php" class="nav-link <?= $activePage === 'admin_fields' ? 'active' : '' ?>">
+      <i class="bi bi-gear"></i> Champs
+    </a>
+    <?php endif; ?>
+  </div>
+
+  <!-- User info + logout at bottom -->
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <i class="bi bi-person-circle"></i>
+      <?= htmlspecialchars($_SESSION["username"] ?? "", ENT_QUOTES, "UTF-8") ?>
+    </div>
+    <a href="logout.php" class="btn btn-sm btn-outline-secondary w-100">
+      <i class="bi bi-box-arrow-right"></i> Deconnexion
     </a>
   </div>
 </nav>
+
+<main class="app-main">
+
 <?php endif; ?>

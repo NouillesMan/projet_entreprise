@@ -1,22 +1,211 @@
-/* Custom styles for Inventaire PC - Bootstrap Dark Theme */
+/* ============================================================
+   Inventaire PC — Unified Dark Theme (GitHub-style)
+   ============================================================ */
 
+/* ── CSS Custom Properties ─────────────────────────────────── */
 :root {
+  --gh-canvas:         #0d1117;
+  --gh-canvas-subtle:  #161b22;
+  --gh-canvas-inset:   #010409;
+  --gh-border-default: #30363d;
+  --gh-border-muted:   #21262d;
+  --gh-fg-default:     #e6edf3;
+  --gh-fg-muted:       #8b949e;
+  --gh-fg-subtle:      #6e7681;
+  --gh-accent-blue:    #58a6ff;
+  --gh-accent-blue-bg: #1f6feb;
+  --gh-accent-green:   #3fb950;
+  --gh-accent-red:     #ff7b72;
+  --gh-accent-yellow:  #d29922;
+  --gh-accent-purple:  #bc8cff;
+  --gh-sidebar-width:  260px;
+  --gh-topbar-height:  56px;
   --bs-body-font-family: 'Space Grotesk', sans-serif;
 }
 
 body {
   font-family: 'Space Grotesk', sans-serif;
-  background: linear-gradient(180deg, #0d1117 0%, #010409 100%);
+  background: var(--gh-canvas);
   min-height: 100vh;
+  color: var(--gh-fg-default);
 }
 
-/* Cards */
+/* ── Sidebar Layout ────────────────────────────────────────── */
+
+/* Desktop: fixed left sidebar */
+.app-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--gh-sidebar-width);
+  background: var(--gh-canvas-subtle);
+  border-right: 1px solid var(--gh-border-default);
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.app-sidebar .sidebar-brand {
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--gh-border-default);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--gh-fg-default);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.app-sidebar .sidebar-brand:hover {
+  color: var(--gh-accent-blue);
+}
+
+.app-sidebar .sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+}
+
+.app-sidebar .nav-section {
+  padding: 8px 16px 4px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gh-fg-subtle);
+  font-weight: 600;
+}
+
+.app-sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  color: var(--gh-fg-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.app-sidebar .nav-link:hover {
+  color: var(--gh-fg-default);
+  background: var(--gh-border-muted);
+}
+
+.app-sidebar .nav-link.active {
+  color: var(--gh-fg-default);
+  background: var(--gh-border-muted);
+  border-left-color: var(--gh-accent-blue);
+  font-weight: 500;
+}
+
+.app-sidebar .nav-link i {
+  width: 18px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.app-sidebar .sidebar-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--gh-border-default);
+  margin-top: auto;
+}
+
+.app-sidebar .sidebar-footer .user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gh-fg-muted);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+/* Main content area — offset by sidebar on desktop */
+.app-main {
+  margin-left: var(--gh-sidebar-width);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile top bar (hamburger) */
+.app-topbar {
+  display: none;
+}
+
+/* ── Mobile: sidebar becomes offcanvas ─────────────────────── */
+@media (max-width: 991.98px) {
+  .app-sidebar {
+    /* Hidden by default on mobile; Bootstrap offcanvas-lg handles this */
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .app-sidebar.show {
+    transform: translateX(0);
+  }
+
+  .app-main {
+    margin-left: 0;
+    padding-top: var(--gh-topbar-height);
+  }
+
+  .app-topbar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--gh-topbar-height);
+    background: var(--gh-canvas-subtle);
+    border-bottom: 1px solid var(--gh-border-default);
+    align-items: center;
+    padding: 0 16px;
+    z-index: 1030;
+    gap: 12px;
+  }
+
+  .app-topbar .topbar-brand {
+    color: var(--gh-fg-default);
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+
+  /* Offcanvas backdrop */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1035;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
+  }
+}
+
+/* ── Cards ─────────────────────────────────────────────────── */
 .card {
-  background: linear-gradient(135deg, #161b22, #0d1117);
-  border: 1px solid #30363d;
+  background: linear-gradient(135deg, var(--gh-canvas-subtle), var(--gh-canvas));
+  border: 1px solid var(--gh-border-default);
 }
 
-/* Tables */
+.card-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--gh-border-default);
+  color: var(--gh-fg-default) !important;
+}
+
+.card-header h5,
+.card-header h6 {
+  color: var(--gh-fg-default) !important;
+}
+
+/* ── Tables ────────────────────────────────────────────────── */
 .table {
   --bs-table-bg: transparent;
 }
@@ -29,64 +218,23 @@ body {
   overflow: visible !important;
 }
 
-/* Allow table to scroll horizontally on small screens while keeping dropdowns visible */
 @media (max-width: 768px) {
   .table-responsive {
     overflow-x: auto !important;
   }
 }
 
-/* Buttons */
+/* ── Buttons ───────────────────────────────────────────────── */
 .btn-primary {
-  background: #1f6feb;
-  border-color: #1f6feb;
+  background: var(--gh-accent-blue-bg);
+  border-color: var(--gh-accent-blue-bg);
 }
 
 .btn-primary:hover {
-  background: #388bfd;
-  border-color: #388bfd;
+  background: var(--gh-accent-blue);
+  border-color: var(--gh-accent-blue);
 }
 
-/* Badges */
-.badge {
-  font-size: 0.75rem;
-}
-
-/* Dropdown menu fixes for dark theme */
-.dropdown-menu {
-  background-color: #1c2128;
-  border: 1px solid #30363d;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  position: fixed !important;
-  z-index: 1050;
-}
-
-.dropdown-item {
-  color: #e6edf3;
-  transition: all 0.2s ease;
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-  background-color: #2d333b;
-  color: #58a6ff;
-}
-
-.dropdown-item.text-danger {
-  color: #ff7b72 !important;
-}
-
-.dropdown-item.text-danger:hover,
-.dropdown-item.text-danger:focus {
-  background-color: rgba(255, 123, 114, 0.15);
-  color: #ff9492 !important;
-}
-
-.dropdown-divider {
-  border-color: #30363d;
-}
-
-/* Mobile-friendly button sizing */
 .btn {
   min-height: 44px;
   padding: 10px 16px;
@@ -96,7 +244,94 @@ body {
   min-height: 36px;
 }
 
-/* Mobile: Make cards and tables more compact */
+/* ── Badges ────────────────────────────────────────────────── */
+.badge {
+  font-size: 0.75rem;
+}
+
+/* ── Dropdown Menu ─────────────────────────────────────────── */
+.dropdown-menu {
+  background-color: #1c2128;
+  border: 1px solid var(--gh-border-default);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  position: fixed !important;
+  z-index: 1050;
+}
+
+.dropdown-item {
+  color: var(--gh-fg-default);
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--gh-border-muted);
+  color: var(--gh-accent-blue);
+}
+
+.dropdown-item.text-danger {
+  color: var(--gh-accent-red) !important;
+}
+
+.dropdown-item.text-danger:hover,
+.dropdown-item.text-danger:focus {
+  background-color: rgba(255, 123, 114, 0.15);
+  color: #ff9492 !important;
+}
+
+.dropdown-divider {
+  border-color: var(--gh-border-default);
+}
+
+/* ── Alerts — always dismissible style ─────────────────────── */
+.alert {
+  border: 1px solid var(--gh-border-default);
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+.app-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--gh-border-default);
+  color: var(--gh-fg-subtle);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* ── Login Page ────────────────────────────────────────────── */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-wrapper {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 16px;
+}
+
+/* ── Custom Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gh-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gh-border-default);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #484f58;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .container-fluid {
     padding-left: 12px !important;
@@ -111,17 +346,6 @@ body {
     padding: 16px !important;
   }
 
-  /* Stack buttons vertically on mobile */
-  .d-flex.gap-2 {
-    flex-direction: column !important;
-    width: 100%;
-  }
-
-  .d-flex.gap-2 > * {
-    width: 100% !important;
-  }
-
-  /* Make table text smaller but readable */
   .table {
     font-size: 0.85rem;
   }
@@ -132,51 +356,43 @@ body {
     white-space: nowrap;
   }
 
-  /* Hide less important columns on mobile */
-  .table th:nth-child(7), /* Version OS */
+  .table th:nth-child(7),
   .table td:nth-child(7),
-  .table th:nth-child(9), /* Domaine */
+  .table th:nth-child(9),
   .table td:nth-child(9),
-  .table th:nth-child(11), /* Mise à jour */
+  .table th:nth-child(11),
   .table td:nth-child(11) {
     display: none;
   }
 
-  /* Compact badges */
   .badge {
     font-size: 0.65rem;
     padding: 2px 6px;
   }
 
-  /* Better form spacing */
   .row.g-3 {
     row-gap: 1rem !important;
   }
 
-  /* Full-width form controls on mobile */
   .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-6 {
     width: 100% !important;
   }
 
-  /* Larger touch targets for dropdowns */
   .dropdown-toggle {
     min-width: 100px;
     padding: 8px 12px;
   }
 
-  /* Page title smaller on mobile */
   .h2 {
     font-size: 1.5rem !important;
   }
 
-  /* Alert spacing */
   .alert {
     padding: 12px;
     font-size: 0.9rem;
   }
 }
 
-/* Tablet optimization (between 768px and 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
   .table {
     font-size: 0.9rem;
@@ -187,7 +403,6 @@ body {
     padding: 10px 8px !important;
   }
 
-  /* Hide only timestamp on tablet */
   .table th:nth-child(11),
   .table td:nth-child(11) {
     display: none;
@@ -199,7 +414,6 @@ body {
   }
 }
 
-/* Landscape phone optimization */
 @media (max-width: 896px) and (orientation: landscape) {
   .card-body {
     padding: 12px !important;
@@ -211,130 +425,17 @@ body {
   }
 }
 
-/* Touch-friendly improvements */
 @media (hover: none) and (pointer: coarse) {
-  /* Larger tap targets for touch devices */
   .btn, .form-control, .form-select {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px;
   }
 
   .dropdown-item {
     padding: 12px 16px;
   }
 
-  /* Better spacing for forms */
   .form-label {
     margin-bottom: 8px;
     font-weight: 500;
   }
-}
-
-/* Custom scrollbar for dark theme */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0d1117;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #30363d;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #484f58;
-}
-
-/* Mobile Navigation Menu */
-.mobile-nav {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(135deg, #161b22, #0d1117);
-  border-bottom: 1px solid #30363d;
-  z-index: 1000;
-  padding: 12px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.mobile-nav-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.mobile-nav-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #e6edf3;
-  margin: 0;
-}
-
-.mobile-menu-toggle {
-  background: transparent;
-  border: 1px solid #30363d;
-  color: #e6edf3;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 1.2rem;
-}
-
-.mobile-menu {
-  display: none;
-  background: #161b22;
-  border-top: 1px solid #30363d;
-  padding: 12px 0;
-  margin-top: 12px;
-}
-
-.mobile-menu.show {
-  display: block;
-}
-
-.mobile-menu-item {
-  display: block;
-  padding: 12px 16px;
-  color: #e6edf3;
-  text-decoration: none;
-  border-bottom: 1px solid #21262d;
-  transition: background 0.2s;
-}
-
-.mobile-menu-item:hover {
-  background: #21262d;
-  color: #58a6ff;
-}
-
-.mobile-menu-item i {
-  width: 20px;
-  margin-right: 8px;
-}
-
-@media (max-width: 768px) {
-  .mobile-nav {
-    display: block;
-  }
-
-  body {
-    padding-top: 60px; /* Space for fixed nav */
-  }
-
-  /* Hide desktop header on mobile */
-  .container-fluid > .row:first-child {
-    display: none;
-  }
-}
-
-::-webkit-scrollbar-thumb {
-  background: #30363d;
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #484f58;
 }

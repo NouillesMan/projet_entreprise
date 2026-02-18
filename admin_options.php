@@ -51,7 +51,6 @@ $tab = $_GET["tab"] ?? "marque";
 $allowed_tabs = ["marque", "modele", "os", "os_version"];
 if (!in_array($tab, $allowed_tabs, true)) $tab = "marque";
 
-// All rows for the active tab
 $rows = $pdo->prepare(
     "SELECT id, option_group, option_value, display_order
      FROM field_options
@@ -61,39 +60,23 @@ $rows = $pdo->prepare(
 $rows->execute([$tab]);
 $options = $rows->fetchAll();
 
-// For modele: also need the list of marques to populate the group dropdown
 $marqueRows = $pdo->query(
     "SELECT DISTINCT option_value FROM field_options WHERE field_name = 'marque' ORDER BY option_value"
 )->fetchAll(PDO::FETCH_COLUMN);
 
-// For os: group names already used
 $osGroups = $pdo->query(
     "SELECT DISTINCT option_group FROM field_options WHERE field_name = 'os' AND option_group IS NOT NULL ORDER BY option_group"
 )->fetchAll(PDO::FETCH_COLUMN);
 
 $pageTitle = "Admin - Options des listes";
+$activePage = "admin_options";
 require __DIR__ . "/partials/header.php";
 ?>
 
-<div class="container py-4">
+<div class="container-fluid py-4">
 
-  <div class="row mb-4">
-    <div class="col">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="h2 mb-0">Options des listes déroulantes</h1>
-        <div class="d-flex gap-2">
-          <a class="btn btn-outline-info" href="admin_fields.php">
-            <i class="bi bi-gear"></i> Gérer les champs
-          </a>
-          <a class="btn btn-outline-info" href="admin_users.php">
-            <i class="bi bi-people"></i> Utilisateurs
-          </a>
-          <a class="btn btn-outline-secondary" href="pcs.php">
-            <i class="bi bi-arrow-left"></i> Retour à l'inventaire
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">Options des listes déroulantes</h3>
   </div>
 
   <?php if (isset($_GET['msg'])): ?>
@@ -128,8 +111,8 @@ require __DIR__ . "/partials/header.php";
     <!-- ── Left: existing values ─────────────────────────────────────────── -->
     <div class="col-lg-8">
       <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0"><?= e($tabs[$tab]) ?></h5>
+        <div class="card-header">
+          <h6 class="mb-0"><?= e($tabs[$tab]) ?></h6>
         </div>
         <div class="card-body p-0">
 
@@ -138,7 +121,6 @@ require __DIR__ . "/partials/header.php";
           <?php else: ?>
 
             <?php
-            // Group rows by option_group for display
             $grouped = [];
             foreach ($options as $row) {
                 $g = $row['option_group'] ?? '';
@@ -184,8 +166,8 @@ require __DIR__ . "/partials/header.php";
     <!-- ── Right: add form ───────────────────────────────────────────────── -->
     <div class="col-lg-4">
       <div class="card shadow-sm">
-        <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Ajouter une option</h5>
+        <div class="card-header">
+          <h6 class="mb-0">Ajouter une option</h6>
         </div>
         <div class="card-body">
           <form method="post">
@@ -201,7 +183,7 @@ require __DIR__ . "/partials/header.php";
                   <?php foreach ($marqueRows as $m): ?>
                     <option value="<?= e($m) ?>"><?= e($m) ?></option>
                   <?php endforeach; ?>
-                  <option value="__new__">➕ Nouvelle marque...</option>
+                  <option value="__new__">+ Nouvelle marque...</option>
                 </select>
                 <input class="form-control mt-2" id="new_group_input" name="option_group_new"
                        placeholder="Nom de la nouvelle marque" style="display:none;">
@@ -215,7 +197,7 @@ require __DIR__ . "/partials/header.php";
                   <?php foreach ($osGroups as $g): ?>
                     <option value="<?= e($g) ?>"><?= e($g) ?></option>
                   <?php endforeach; ?>
-                  <option value="__new__">➕ Nouvelle famille...</option>
+                  <option value="__new__">+ Nouvelle famille...</option>
                 </select>
                 <input class="form-control mt-2" id="new_os_group_input" name="option_group_new"
                        placeholder="Nom de la nouvelle famille" style="display:none;">
