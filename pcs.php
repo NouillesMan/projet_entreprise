@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/includes/auth.php";
 require_perm("can_view");
-require __DIR__ . "/db.php";
+require __DIR__ . "/includes/db.php";
 
 $q = trim($_GET["q"] ?? "");
 $statut = $_GET["statut"] ?? "";
@@ -55,7 +55,7 @@ require __DIR__ . "/partials/header.php";
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="mb-0">Inventaire PC</h3>
     <?php if (!empty($_SESSION["can_add"])): ?>
-    <a class="btn btn-primary" href="pc_add.php">
+    <a class="btn btn-primary" href="/pc_add.php">
       <i class="bi bi-plus-circle"></i> Ajouter PC
     </a>
     <?php endif; ?>
@@ -158,7 +158,7 @@ require __DIR__ . "/partials/header.php";
                   <ul class="dropdown-menu dropdown-menu-end">
                     <?php if (!empty($_SESSION["can_edit"])): ?>
                     <li>
-                      <a class="dropdown-item" href="pc_edit.php?id=<?= (int)$pc["id"] ?>">
+                      <a class="dropdown-item" href="/pc_edit.php?id=<?= (int)$pc["id"] ?>">
                         <i class="bi bi-pencil"></i> Modifier
                       </a>
                     </li>
@@ -166,7 +166,7 @@ require __DIR__ . "/partials/header.php";
                     <?php if (!empty($_SESSION["can_delete"])): ?>
                     <?php if (!empty($_SESSION["can_edit"])): ?><li><hr class="dropdown-divider"></li><?php endif; ?>
                     <li>
-                      <form method="post" action="pc_delete.php" class="d-inline"
+                      <form method="post" action="/pc_delete.php" class="d-inline"
                             onsubmit="return confirm('Supprimer ce PC ?');">
                         <?= csrf_field() ?>
                         <input type="hidden" name="id" value="<?= (int)$pc["id"] ?>">

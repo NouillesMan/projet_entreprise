@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/includes/auth.php";
 require_perm("can_delete");
-require __DIR__ . "/db.php";
+require __DIR__ . "/includes/db.php";
 
 csrf_check();
 
@@ -16,5 +16,5 @@ if (!$stmt->fetch()) {
 
 $pdo->prepare("DELETE FROM pcs WHERE id = ?")->execute([$id]);
 
-header("Location: pcs.php");
+header("Location: /pcs.php");
 exit;

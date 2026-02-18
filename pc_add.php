@@ -1,13 +1,13 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/includes/auth.php";
 require_perm("can_add");
-require __DIR__ . "/db.php";
+require __DIR__ . "/includes/db.php";
 
 $allowedArch = ["x86","x64","arm64"];
 $allowedStatut = ["En service","En stock","En réparation","Retiré"];
 
 // Charger les options de configuration
-$options = require __DIR__ . "/get_options.php";
+$options = require __DIR__ . "/includes/get_options.php";
 
 // Récupérer les utilisateurs existants
 $stmtUsers = $pdo->query("SELECT DISTINCT utilisateur FROM pcs ORDER BY utilisateur");
@@ -62,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":remarques" => $remarques,
       ]);
 
-      header("Location: pcs.php");
+      header("Location: /pcs.php");
       exit;
     } catch (PDOException $e) {
       if ($e->getCode() === "23000") {
@@ -83,7 +83,7 @@ require __DIR__ . "/partials/header.php";
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="mb-0">Ajouter un PC</h3>
-    <a class="btn btn-outline-secondary" href="pcs.php">
+    <a class="btn btn-outline-secondary" href="/pcs.php">
       <i class="bi bi-arrow-left"></i> Retour
     </a>
   </div>
@@ -216,7 +216,7 @@ require __DIR__ . "/partials/header.php";
         <div class="col-12">
           <hr>
           <div class="d-flex justify-content-end gap-2">
-            <a href="pcs.php" class="btn btn-secondary">Annuler</a>
+            <a href="/pcs.php" class="btn btn-secondary">Annuler</a>
             <button type="submit" class="btn btn-primary px-4">
               <i class="bi bi-plus-circle"></i> Ajouter le PC
             </button>
@@ -228,5 +228,5 @@ require __DIR__ . "/partials/header.php";
 </div>
 <?php
 $pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . ';</script>'
-             . '<script src="assets/js/pc_form.js"></script>';
+             . '<script src="/assets/js/pc_form.js"></script>';
 require __DIR__ . "/partials/footer.php";

@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
-require __DIR__ . "/db.php";
+require __DIR__ . "/../includes/db.php";
 
 function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     isset($_POST["can_edit"])   ? 1 : 0,
                     isset($_POST["can_delete"]) ? 1 : 0,
                 ]);
-                header("Location: admin_users.php?msg=created");
+                header("Location: /admin/users.php?msg=created");
                 exit;
             } catch (PDOException $e) {
                 if ($e->getCode() === "23000") {
@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($action === "update_perms") {
         $uid = (int)($_POST["user_id"] ?? 0);
         if ($uid === (int)$_SESSION["user_id"] && !isset($_POST["is_admin"])) {
-            header("Location: admin_users.php?msg=self_admin_error");
+            header("Location: /admin/users.php?msg=self_admin_error");
             exit;
         }
         if ($uid > 0) {
@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $uid,
             ]);
         }
-        header("Location: admin_users.php?msg=updated");
+        header("Location: /admin/users.php?msg=updated");
         exit;
     }
 
@@ -81,13 +81,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($action === "delete") {
         $uid = (int)($_POST["user_id"] ?? 0);
         if ($uid === (int)$_SESSION["user_id"]) {
-            header("Location: admin_users.php?msg=self_delete_error");
+            header("Location: /admin/users.php?msg=self_delete_error");
             exit;
         }
         if ($uid > 0) {
             $pdo->prepare("DELETE FROM users WHERE id = ?")->execute([$uid]);
         }
-        header("Location: admin_users.php?msg=deleted");
+        header("Location: /admin/users.php?msg=deleted");
         exit;
     }
 
@@ -99,10 +99,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?")
                 ->execute([$hash, $uid]);
-            header("Location: admin_users.php?msg=password_reset");
+            header("Location: /admin/users.php?msg=password_reset");
             exit;
         }
-        header("Location: admin_users.php?msg=password_error");
+        header("Location: /admin/users.php?msg=password_error");
         exit;
     }
 }
@@ -122,7 +122,7 @@ $messages = [
 
 $pageTitle = "Admin - Utilisateurs";
 $activePage = "admin_users";
-require __DIR__ . "/partials/header.php";
+require __DIR__ . "/../partials/header.php";
 ?>
 
 <div class="container-fluid py-4">
@@ -325,4 +325,4 @@ document.getElementById('modalPwd').addEventListener('show.bs.modal', function (
 });
 </script>
 JS;
-require __DIR__ . "/partials/footer.php";
+require __DIR__ . "/../partials/footer.php";

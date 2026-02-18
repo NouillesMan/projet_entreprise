@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
-require __DIR__ . "/db.php";
+require __DIR__ . "/../includes/db.php";
 
 $allowedArch = ["x86", "x64", "arm64"];
 $allowedStatut = ["En service", "En stock", "En réparation", "Retiré"];
@@ -113,7 +113,7 @@ function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 $pageTitle = "Admin - Import CSV";
 $activePage = "admin_import";
-require __DIR__ . "/partials/header.php";
+require __DIR__ . "/../partials/header.php";
 ?>
 
 <div class="container-fluid py-4">
@@ -206,4 +206,4 @@ require __DIR__ . "/partials/header.php";
 </div>
 
 <?php
-require __DIR__ . "/partials/footer.php";
+require __DIR__ . "/../partials/footer.php";

@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: /login.php');
     exit;
 }
 
@@ -55,14 +55,14 @@ function require_perm(string $perm): void
         http_response_code(403);
         $pageTitle = "Accès refusé";
         $activePage = "";
-        require __DIR__ . "/partials/header.php";
+        require __DIR__ . "/../partials/header.php";
         echo '<div class="container py-5 text-center">';
         echo '<i class="bi bi-shield-lock display-1 text-danger"></i>';
         echo '<h1 class="mt-3">Accès refusé</h1>';
         echo '<p class="text-muted">Vous n\'avez pas la permission d\'accéder à cette page.</p>';
-        echo '<a href="pcs.php" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left"></i> Retour</a>';
+        echo '<a href="/pcs.php" class="btn btn-outline-secondary mt-2"><i class="bi bi-arrow-left"></i> Retour</a>';
         echo '</div>';
-        require __DIR__ . "/partials/footer.php";
+        require __DIR__ . "/../partials/footer.php";
         exit;
     }
 }

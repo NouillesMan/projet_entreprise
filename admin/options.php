@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
-require __DIR__ . "/db.php";
+require __DIR__ . "/../includes/db.php";
 
 function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             );
             $stmt->execute([$field_name, $option_group, $option_value, $order]);
         }
-        header("Location: admin_options.php?tab=" . urlencode($field_name) . "&msg=added");
+        header("Location: /admin/options.php?tab=" . urlencode($field_name) . "&msg=added");
         exit;
     }
 
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($id > 0) {
             $pdo->prepare("DELETE FROM field_options WHERE id = ?")->execute([$id]);
         }
-        header("Location: admin_options.php?tab=" . urlencode($field_name) . "&msg=deleted");
+        header("Location: /admin/options.php?tab=" . urlencode($field_name) . "&msg=deleted");
         exit;
     }
 }
@@ -70,7 +70,7 @@ $osGroups = $pdo->query(
 
 $pageTitle = "Admin - Options des listes";
 $activePage = "admin_options";
-require __DIR__ . "/partials/header.php";
+require __DIR__ . "/../partials/header.php";
 ?>
 
 <div class="container-fluid py-4">
@@ -99,7 +99,7 @@ require __DIR__ . "/partials/header.php";
     ?>
       <li class="nav-item">
         <a class="nav-link <?= $tab === $key ? 'active' : '' ?>"
-           href="admin_options.php?tab=<?= e($key) ?>">
+           href="/admin/options.php?tab=<?= e($key) ?>">
           <?= e($label) ?>
         </a>
       </li>
@@ -262,4 +262,4 @@ if (modeleGroupSelect) {
 }
 </script>
 JS;
-require __DIR__ . "/partials/footer.php";
+require __DIR__ . "/../partials/footer.php";

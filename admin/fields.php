@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
-require __DIR__ . "/db.php";
+require __DIR__ . "/../includes/db.php";
 
 // Traitement des actions
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = $pdo->prepare("UPDATE custom_fields SET is_visible = ? WHERE id = ?");
     $stmt->execute([$isVisible, $fieldId]);
 
-    header("Location: admin_fields.php?msg=updated");
+    header("Location: /admin/fields.php?msg=updated");
     exit;
   }
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = $pdo->prepare("UPDATE custom_fields SET display_order = ? WHERE id = ?");
     $stmt->execute([$order, $fieldId]);
 
-    header("Location: admin_fields.php?msg=updated");
+    header("Location: /admin/fields.php?msg=updated");
     exit;
   }
 
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       ");
       $stmt->execute([$fieldName, $fieldLabel, $fieldType, $isRequired]);
 
-      header("Location: admin_fields.php?msg=added");
+      header("Location: /admin/fields.php?msg=added");
       exit;
     } catch (PDOException $e) {
       $error = "Erreur: " . $e->getMessage();
@@ -59,14 +59,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $protectedFields = ['hostname', 'serial', 'marque', 'utilisateur', 'os', 'architecture', 'statut'];
     if ($field && in_array($field['field_name'], $protectedFields)) {
-      header("Location: admin_fields.php?msg=protected");
+      header("Location: /admin/fields.php?msg=protected");
       exit;
     }
 
     $stmt = $pdo->prepare("DELETE FROM custom_fields WHERE id = ?");
     $stmt->execute([$fieldId]);
 
-    header("Location: admin_fields.php?msg=deleted");
+    header("Location: /admin/fields.php?msg=deleted");
     exit;
   }
 }
@@ -77,7 +77,7 @@ $fields = $stmt->fetchAll();
 
 $pageTitle = "Admin - Gestion des champs";
 $activePage = "admin_fields";
-require __DIR__ . "/partials/header.php";
+require __DIR__ . "/../partials/header.php";
 ?>
 
 <div class="container-fluid py-4">
@@ -253,4 +253,4 @@ require __DIR__ . "/partials/header.php";
 </div>
 
 <?php
-require __DIR__ . "/partials/footer.php";
+require __DIR__ . "/../partials/footer.php";

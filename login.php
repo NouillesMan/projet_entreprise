@@ -5,11 +5,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Already logged in
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: /dashboard.php');
     exit;
 }
 
-require __DIR__ . "/db.php";
+require __DIR__ . "/includes/db.php";
 
 $error = "";
 
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["can_edit"]   = (bool)$user["can_edit"];
             $_SESSION["can_delete"] = (bool)$user["can_delete"];
 
-            header("Location: dashboard.php");
+            header("Location: /dashboard.php");
             exit;
         }
     }

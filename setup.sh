@@ -50,7 +50,7 @@ ok "Base de données prête"
 # ── 4. Import schemas ─────────────────────────────────────────
 info "Import des schémas SQL..."
 
-for SCHEMA in schema_custom_fields.sql schema_options.sql schema_users.sql; do
+for SCHEMA in database/schema_custom_fields.sql database/schema_options.sql database/schema_user.sql; do
   if [ -f "$SCHEMA" ]; then
     docker compose exec -T db mariadb -u root -proot inventaire_pc < "$SCHEMA"
     ok "  $SCHEMA importé"

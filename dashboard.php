@@ -1,7 +1,7 @@
 <?php
-require __DIR__ . "/auth.php";
+require __DIR__ . "/includes/auth.php";
 require_perm("can_view");
-require __DIR__ . "/db.php";
+require __DIR__ . "/includes/db.php";
 
 // --- Stats ---
 $total = (int) $pdo->query("SELECT COUNT(*) FROM pcs")->fetchColumn();
@@ -53,7 +53,7 @@ require __DIR__ . "/partials/header.php";
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="mb-0"><i class="bi bi-speedometer2 text-primary"></i> Dashboard</h3>
     <?php if (!empty($_SESSION["can_add"])): ?>
-    <a class="btn btn-primary" href="pc_add.php">
+    <a class="btn btn-primary" href="/pc_add.php">
       <i class="bi bi-plus-circle"></i> Ajouter PC
     </a>
     <?php endif; ?>
@@ -208,7 +208,7 @@ require __DIR__ . "/partials/header.php";
                 <tr>
                   <td>
                     <?php if (!empty($_SESSION["can_edit"])): ?>
-                    <a href="pc_edit.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none">
+                    <a href="/pc_edit.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none">
                       <strong><?= htmlspecialchars($pc["hostname"]) ?></strong>
                     </a>
                     <?php else: ?>
