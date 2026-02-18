@@ -311,6 +311,7 @@ projet_entreprise/
 ├── login.php                  # Page de connexion
 ├── logout.php                 # Déconnexion (détruit la session)
 ├── admin_fields.php           # Admin : gestion des champs
+├── admin_import.php           # Admin : import CSV en masse de PC
 ├── admin_options.php          # Admin : gestion des options des listes
 ├── admin_users.php            # Admin : gestion des utilisateurs et permissions
 ├── config_options.php         # Configuration statique des options (fallback)
@@ -420,6 +421,14 @@ Champs obligatoires :
 - Ajouter ou supprimer des valeurs dans chaque liste déroulante
 - Les modèles sont groupés par marque, les OS par famille
 - Les modifications sont immédiates dans les formulaires d'ajout/modification
+
+### Import CSV (`admin_import.php`) *(admin uniquement)*
+- Importer des PC en masse depuis un fichier CSV
+- Colonnes obligatoires : hostname, serial, marque, utilisateur, os, architecture, statut
+- Colonnes optionnelles : modele, domaine, os_version, remarques
+- Les doublons (serial déjà existant) sont ignorés avec un message d'erreur
+- Validation des valeurs d'architecture (x86, x64, arm64) et de statut
+- Modèle CSV téléchargeable depuis la page
 
 ### Gestion des utilisateurs (`admin_users.php`) *(admin uniquement)*
 - Tableau de tous les comptes avec leurs permissions

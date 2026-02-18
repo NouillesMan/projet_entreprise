@@ -81,6 +81,9 @@ $isLoggedIn = isset($_SESSION["user_id"]);
     <a href="admin_fields.php" class="nav-link <?= $activePage === 'admin_fields' ? 'active' : '' ?>">
       <i class="bi bi-gear"></i> Champs
     </a>
+    <a href="admin_import.php" class="nav-link <?= $activePage === 'admin_import' ? 'active' : '' ?>">
+      <i class="bi bi-upload"></i> Import
+    </a>
     <?php endif; ?>
   </div>
 
