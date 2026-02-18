@@ -300,6 +300,9 @@ projet_entreprise/
 ├── partials/                  # Composants réutilisables
 │   ├── header.php            # En-tête + sidebar responsive (fixe desktop / offcanvas mobile)
 │   └── footer.php            # Pied de page + JS sidebar toggle
+├── scripts/                   # Scripts de collecte USB
+│   ├── collect_windows.ps1    # Collecte PowerShell (Windows)
+│   └── collect_linux.sh       # Collecte Bash (Linux)
 ├── config.php                 # Configuration de la base de données
 ├── db.php                     # Connexion PDO
 ├── get_options.php            # Chargement des options depuis la BDD
@@ -421,6 +424,22 @@ Champs obligatoires :
 - Ajouter ou supprimer des valeurs dans chaque liste déroulante
 - Les modèles sont groupés par marque, les OS par famille
 - Les modifications sont immédiates dans les formulaires d'ajout/modification
+
+### Collecte USB (`scripts/`)
+
+Scripts de collecte automatique a executer depuis une cle USB :
+
+**Windows** (PowerShell, en administrateur) :
+```powershell
+.\collect_windows.ps1
+```
+
+**Linux** (necessite sudo pour dmidecode) :
+```bash
+sudo bash collect_linux.sh
+```
+
+Les scripts collectent : hostname, serial, marque, modele, utilisateur, OS, version OS, architecture, domaine. Chaque execution ajoute une ligne dans `inventaire.csv` (meme dossier que le script). Le fichier CSV resultant peut etre importe directement via `admin_import.php`.
 
 ### Import CSV (`admin_import.php`) *(admin uniquement)*
 - Importer des PC en masse depuis un fichier CSV

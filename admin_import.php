@@ -142,6 +142,22 @@ require __DIR__ . "/partials/header.php";
     <?php endif; ?>
   <?php endif; ?>
 
+  <!-- Workflow USB -->
+  <div class="card shadow-sm mb-4 border-info">
+    <div class="card-header bg-info bg-opacity-10">
+      <h6 class="mb-0"><i class="bi bi-usb-drive"></i> Collecte via cle USB</h6>
+    </div>
+    <div class="card-body">
+      <p class="mb-2">Des scripts de collecte automatique sont fournis dans le dossier <code>scripts/</code> du projet :</p>
+      <ol class="mb-0">
+        <li>Copier <code>collect_windows.ps1</code> et/ou <code>collect_linux.sh</code> sur une cle USB</li>
+        <li>Executer le script sur chaque machine a inventorier (admin/sudo requis)</li>
+        <li>Recuperer le fichier <code>inventaire.csv</code> genere sur la cle USB</li>
+        <li>Importer le CSV ci-dessous</li>
+      </ol>
+    </div>
+  </div>
+
   <!-- Upload form -->
   <div class="card shadow-sm mb-4">
     <div class="card-header">
