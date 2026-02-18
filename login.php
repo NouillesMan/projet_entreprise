@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Already logged in → go to inventory
 if (isset($_SESSION['user_id'])) {
-    header('Location: pcs.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION["can_edit"]   = (bool)$user["can_edit"];
             $_SESSION["can_delete"] = (bool)$user["can_delete"];
 
-            header("Location: pcs.php");
+            header("Location: dashboard.php");
             exit;
         }
     }

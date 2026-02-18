@@ -36,6 +36,9 @@ $pageStyles = $pageStyles ?? "";
     <i class="bi bi-pc-display text-primary"></i> Inventaire PC
   </a>
   <div class="d-flex align-items-center gap-3">
+    <a href="dashboard.php" class="text-decoration-none text-muted small">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
     <?php if (!empty($_SESSION["is_admin"])): ?>
       <a href="admin_users.php" class="text-decoration-none text-muted small">
         <i class="bi bi-people"></i> Utilisateurs
