@@ -53,7 +53,7 @@ cd /chemin/vers/votre/projet
 Assurez-vous que les fichiers suivants sont présents :
 - `Dockerfile`
 - `docker-compose.yml`
-- `inventaire_pc.sql` (données de démonstration)
+- `database/inventaire_pc.sql` (données de démonstration)
 - Tous les fichiers PHP
 
 #### Étape 3 : Résoudre les permissions Docker (Linux uniquement)
@@ -90,9 +90,9 @@ Vous devriez voir deux services en cours d'exécution :
 
 #### Étape 5b : Importer les schémas additionnels
 ```bash
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_custom_fields.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_options.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_user.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_custom_fields.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_options.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_user.sql
 ```
 
 #### Étape 6 : Accéder à l'application
@@ -105,7 +105,7 @@ Connectez-vous avec les identifiants par défaut :
 - **Utilisateur :** `admin`
 - **Mot de passe :** `root`
 
-> Changez le mot de passe dès la première connexion via `admin_users.php`.
+> Changez le mot de passe dès la première connexion via `admin/users.php`.
 
 #### Développement : Modification du code
 
@@ -159,7 +159,7 @@ docker exec -it projet_entreprise-db-1 mysql -uroot -proot inventaire_pc
 
 **Importer un fichier SQL (ex: schema_options.sql) :**
 ```bash
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_options.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_options.sql
 ```
 
 ---
@@ -202,35 +202,35 @@ EXIT;
 
 **Avec Docker :**
 ```bash
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_custom_fields.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_options.sql
-docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_user.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_custom_fields.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_options.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_user.sql
 ```
 
 **Sans Docker (MySQL installé localement) :**
 ```bash
-mysql -u root -p inventaire_pc < schema.sql
-mysql -u root -p inventaire_pc < schema_custom_fields.sql
-mysql -u root -p inventaire_pc < schema_options.sql
-mysql -u root -p inventaire_pc < schema_user.sql
+mysql -u root -p inventaire_pc < database/schema.sql
+mysql -u root -p inventaire_pc < database/schema_custom_fields.sql
+mysql -u root -p inventaire_pc < database/schema_options.sql
+mysql -u root -p inventaire_pc < database/schema_user.sql
 ```
 
 #### Étape 4 : (Optionnel) Importer les données de démonstration
 
 **Avec Docker :**
 ```bash
-docker compose exec -T db mariadb -u root -proot inventaire_pc < inventaire_pc.sql
+docker compose exec -T db mariadb -u root -proot inventaire_pc < database/inventaire_pc.sql
 ```
 
 **Sans Docker :**
 ```bash
-mysql -u root -p inventaire_pc < inventaire_pc.sql
+mysql -u root -p inventaire_pc < database/inventaire_pc.sql
 ```
 
 #### Étape 5 : Configurer la connexion à la base de données
 
-Éditez le fichier `config.php` :
+Éditez le fichier `includes/config.php` :
 
 ```php
 <?php
@@ -292,48 +292,53 @@ Ouvrez votre navigateur :
 
 ```
 projet_entreprise/
+├── admin/                     # Pages d'administration
+│   ├── users.php              # Gestion des utilisateurs et permissions
+│   ├── options.php            # Gestion des options des listes déroulantes
+│   ├── fields.php             # Gestion des champs personnalisés
+│   └── import.php             # Import CSV en masse de PC
+├── includes/                  # Fichiers PHP internes (config, auth, helpers)
+│   ├── config.php             # Configuration de la base de données
+│   ├── db.php                 # Connexion PDO
+│   ├── auth.php               # Garde de session + helper require_perm()
+│   ├── get_options.php        # Chargement des options depuis la BDD
+│   └── config_options.php     # Configuration statique des options (fallback)
 ├── assets/                    # Ressources statiques
 │   ├── css/
-│   │   └── style.css         # Styles personnalisés (dark theme, custom properties --gh-*)
+│   │   └── style.css          # Styles personnalisés (dark theme, custom properties --gh-*)
 │   └── js/
-│       └── pc_form.js        # JS partagé pour les formulaires PC (ajout/modif)
+│       └── pc_form.js         # JS partagé pour les formulaires PC (ajout/modif)
 ├── partials/                  # Composants réutilisables
-│   ├── header.php            # En-tête + sidebar responsive (fixe desktop / offcanvas mobile)
-│   └── footer.php            # Pied de page + JS sidebar toggle
+│   ├── header.php             # En-tête + sidebar responsive (fixe desktop / offcanvas mobile)
+│   └── footer.php             # Pied de page + JS sidebar toggle
+├── database/                  # Schémas SQL et données
+│   ├── schema.sql             # Schéma principal de la base de données
+│   ├── schema_user.sql        # Schéma de la table users + compte admin par défaut
+│   ├── schema_custom_fields.sql # Schéma pour les champs personnalisés
+│   ├── schema_options.sql     # Schéma et données des options déroulantes
+│   └── inventaire_pc.sql      # Données de démonstration
+├── docs/                      # Documentation
+│   ├── STRUCTURE.md           # Architecture détaillée du projet
+│   ├── ADMIN.md               # Documentation administration
+│   ├── MOBILE.md              # Documentation interface mobile
+│   └── PATCH_NOTES.md         # Notes de version
 ├── scripts/                   # Scripts de collecte USB
 │   ├── collect_windows.ps1    # Collecte PowerShell (Windows)
 │   └── collect_linux.sh       # Collecte Bash (Linux)
-├── config.php                 # Configuration de la base de données
-├── db.php                     # Connexion PDO
-├── get_options.php            # Chargement des options depuis la BDD
+├── login.php                  # Page de connexion
+├── logout.php                 # Déconnexion (détruit la session)
+├── dashboard.php              # Tableau de bord
 ├── pcs.php                    # Page principale : liste des PC
 ├── pc_add.php                 # Ajouter un nouveau PC
 ├── pc_edit.php                # Modifier un PC existant
 ├── pc_delete.php              # Supprimer un PC
-├── auth.php                   # Garde de session + helper require_perm()
-├── login.php                  # Page de connexion
-├── logout.php                 # Déconnexion (détruit la session)
-├── admin_fields.php           # Admin : gestion des champs
-├── admin_import.php           # Admin : import CSV en masse de PC
-├── admin_options.php          # Admin : gestion des options des listes
-├── admin_users.php            # Admin : gestion des utilisateurs et permissions
-├── config_options.php         # Configuration statique des options (fallback)
-├── schema.sql                 # Schéma principal de la base de données
-├── schema_custom_fields.sql   # Schéma pour les champs personnalisés
-├── schema_options.sql         # Schéma et données des options déroulantes
-├── schema_user.sql            # Schéma de la table users + compte admin par défaut
-├── inventaire_pc.sql          # Données de démonstration
 ├── Dockerfile                 # Configuration Docker
 ├── docker-compose.yml         # Orchestration Docker
 ├── setup.sh                   # Script d'installation automatique (Docker)
-├── .dockerignore              # Fichiers exclus de Docker
-├── README.md                  # Documentation complète
-├── STRUCTURE.md               # Architecture détaillée du projet
-├── ADMIN.md                   # Documentation administration
-└── MOBILE.md                  # Documentation interface mobile
+└── README.md                  # Documentation complète
 ```
 
-📖 **Pour plus de détails sur l'architecture**, consultez [STRUCTURE.md](STRUCTURE.md)
+📖 **Pour plus de détails sur l'architecture**, consultez [docs/STRUCTURE.md](docs/STRUCTURE.md)
 
 ## Structure de la base de données
 
@@ -414,12 +419,12 @@ Champs obligatoires :
 - Confirmation requise avant suppression
 - Suppression définitive de la base de données
 
-### Gestion des champs (`admin_fields.php`)
+### Gestion des champs (`admin/fields.php`)
 - Afficher/masquer des champs dans les formulaires
 - Réordonner les champs
 - Ajouter des champs personnalisés supplémentaires
 
-### Gestion des options (`admin_options.php`)
+### Gestion des options (`admin/options.php`)
 - 4 onglets : **Marques**, **Modèles**, **OS**, **Versions OS**
 - Ajouter ou supprimer des valeurs dans chaque liste déroulante
 - Les modèles sont groupés par marque, les OS par famille
@@ -439,9 +444,9 @@ Scripts de collecte automatique a executer depuis une cle USB :
 sudo bash collect_linux.sh
 ```
 
-Les scripts collectent : hostname, serial, marque, modele, utilisateur, OS, version OS, architecture, domaine. Chaque execution ajoute une ligne dans `inventaire.csv` (meme dossier que le script). Le fichier CSV resultant peut etre importe directement via `admin_import.php`.
+Les scripts collectent : hostname, serial, marque, modele, utilisateur, OS, version OS, architecture, domaine. Chaque execution ajoute une ligne dans `inventaire.csv` (meme dossier que le script). Le fichier CSV resultant peut etre importe directement via `admin/import.php`.
 
-### Import CSV (`admin_import.php`) *(admin uniquement)*
+### Import CSV (`admin/import.php`) *(admin uniquement)*
 - Importer des PC en masse depuis un fichier CSV
 - Colonnes obligatoires : hostname, serial, marque, utilisateur, os, architecture, statut
 - Colonnes optionnelles : modele, domaine, os_version, remarques
@@ -449,7 +454,7 @@ Les scripts collectent : hostname, serial, marque, modele, utilisateur, OS, vers
 - Validation des valeurs d'architecture (x86, x64, arm64) et de statut
 - Modèle CSV téléchargeable depuis la page
 
-### Gestion des utilisateurs (`admin_users.php`) *(admin uniquement)*
+### Gestion des utilisateurs (`admin/users.php`) *(admin uniquement)*
 - Tableau de tous les comptes avec leurs permissions
 - Créer un utilisateur avec username, mot de passe et permissions
 - Modifier les permissions d'un utilisateur (checkboxes par ligne)
@@ -502,7 +507,7 @@ docker info
    sudo systemctl status mysql
    sudo systemctl start mysql
    ```
-2. Vérifier les identifiants dans `config.php`
+2. Vérifier les identifiants dans `includes/config.php`
 3. Avec Docker : vérifier que le service `db` est actif
 
 ### Port 8080 déjà utilisé (Docker)
@@ -545,8 +550,8 @@ services:
 ### En production, pensez à :
 
 1. **Changer les mots de passe par défaut** :
-   - Compte admin de l'application : via `admin_users.php`
-   - Dans `config.php` (mot de passe DB)
+   - Compte admin de l'application : via `admin/users.php`
+   - Dans `includes/config.php` (mot de passe DB)
    - Dans `docker-compose.yml` (`MARIADB_ROOT_PASSWORD`)
 
 2. **Ajouter HTTPS** avec Let's Encrypt ou un certificat SSL
@@ -557,13 +562,13 @@ services:
 
 4. **Authentification** :
    - Un système de login par session est en place
-   - Les permissions sont gérées par utilisateur depuis `admin_users.php`
+   - Les permissions sont gérées par utilisateur depuis `admin/users.php`
    - Les mots de passe sont hashés avec bcrypt
 
 5. **Limiter les permissions des fichiers** :
    ```bash
-   chmod 644 *.php
-   chmod 600 config.php
+   chmod 644 *.php admin/*.php includes/*.php
+   chmod 600 includes/config.php
    ```
 
 ## Personnalisation
@@ -573,12 +578,12 @@ Les styles sont centralisés dans `assets/css/style.css` avec des custom propert
 Pour personnaliser les couleurs, modifiez les variables `--gh-*` dans `:root` (ex: `--gh-canvas`, `--gh-accent-blue`, `--gh-border-default`).
 
 ### Gérer les options des listes déroulantes
-Accéder à `admin_options.php` depuis le panneau d'administration :
+Accéder à `admin/options.php` depuis le panneau d'administration :
 - Ajouter/supprimer des marques, modèles, OS, versions OS
 - Aucune modification de code requise
 
 ### Ajouter des champs personnalisés
-Accéder à `admin_fields.php` pour ajouter des champs supplémentaires sans toucher au code.
+Accéder à `admin/fields.php` pour ajouter des champs supplémentaires sans toucher au code.
 
 ## Licence
 

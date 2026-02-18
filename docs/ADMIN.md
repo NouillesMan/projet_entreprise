@@ -12,14 +12,14 @@ Le système de gestion des champs personnalisés vous permet de :
 
 ### 1. Importer le schéma des champs personnalisés
 
-Après avoir importé `schema.sql`, importez également le schéma pour les champs personnalisés :
+Après avoir importé `database/schema.sql`, importez également le schéma pour les champs personnalisés :
 
 ```bash
 # Avec Docker
-docker exec -i projet_entreprise-db-1 mysql -uroot -proot inventaire_pc < schema_custom_fields.sql
+docker exec -i projet_entreprise-db-1 mysql -uroot -proot inventaire_pc < database/schema_custom_fields.sql
 
 # Sans Docker
-mysql -u root -p inventaire_pc < schema_custom_fields.sql
+mysql -u root -p inventaire_pc < database/schema_custom_fields.sql
 ```
 
 ### 2. Accéder au panneau d'administration
@@ -27,7 +27,7 @@ mysql -u root -p inventaire_pc < schema_custom_fields.sql
 Une fois le schéma importé, accédez au panneau d'administration :
 
 ```
-http://localhost:8080/admin_fields.php
+http://localhost:8080/admin/fields.php
 ```
 
 Ou cliquez sur le bouton **"⚙️ Gérer les champs"** dans la page principale.
@@ -223,7 +223,7 @@ Vous voulez que "Utilisateur" apparaisse avant "Marque" :
 ## Support
 
 Pour toute question ou problème :
-1. Vérifier que `schema_custom_fields.sql` a bien été importé
+1. Vérifier que `database/schema_custom_fields.sql` a bien été importé
 2. Consulter les logs de la base de données
 3. Vérifier les permissions sur la table `custom_fields`
 
