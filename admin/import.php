@@ -27,8 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       if ($header === false) {
         $errors[] = "Le fichier CSV est vide.";
       } else {
-        // Normalize header (trim + lowercase)
+        // Normalize header (strip BOM + trim + lowercase)
         $header = array_map(function ($col) {
+          $col = preg_replace('/\x{FEFF}/u', '', $col); // strip UTF-8 BOM
           return strtolower(trim($col));
         }, $header);
 

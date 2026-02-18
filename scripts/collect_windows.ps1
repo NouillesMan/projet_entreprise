@@ -43,11 +43,11 @@ $line   = "$hostname,$serial,$marque,$modele,$utilisateur,$osName,$osVersion,$ar
 # --- Ecriture dans le fichier CSV ---
 if (-Not (Test-Path $csvPath)) {
     # Creer le fichier avec le header
-    $header | Out-File -FilePath $csvPath -Encoding UTF8
+    [System.IO.File]::WriteAllText($csvPath, "$header`n", (New-Object System.Text.UTF8Encoding $false))
 }
 
-# Ajouter la ligne de donnees
-$line | Out-File -FilePath $csvPath -Encoding UTF8 -Append
+# Ajouter la ligne de donnees (UTF-8 sans BOM)
+[System.IO.File]::AppendAllText($csvPath, "$line`n", (New-Object System.Text.UTF8Encoding $false))
 
 # --- Affichage du resume ---
 Write-Host ""

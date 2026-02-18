@@ -1,5 +1,5 @@
 -- Table des utilisateurs avec système de permissions
--- Docker: docker compose exec -T db mariadb -u root -proot inventaire_pc < schema_users.sql
+-- Docker: docker compose exec -T db mariadb -u root -proot inventaire_pc < database/schema_user.sql
 
 CREATE TABLE IF NOT EXISTS `users` (
   `id`            int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
