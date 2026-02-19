@@ -79,9 +79,10 @@ NEW_LINE="$HOSTNAME_VAL,$SERIAL,$MARQUE,$MODELE,$UTILISATEUR,$OS_NAME,$OS_VERSIO
 WAS_UPDATED=0
 
 if [ -f "$CSV_PATH" ]; then
-    # Verifier si le hostname ou le serial existe deja (hors header)
-    if grep -q "^${HOSTNAME_VAL}," "$CSV_PATH" 2>/dev/null || \
-       grep -q "^[^,]*,${SERIAL}," "$CSV_PATH" 2>/dev/null; then
+    # Verifier si le hostname ou le serial existe deja (comparaison exacte via awk)
+    if awk -F',' -v h="$HOSTNAME_VAL" -v s="$SERIAL" \
+        'NR>1 && ($1==h || $2==s){found=1} END{exit !found}' \
+        "$CSV_PATH" 2>/dev/null; then
         WAS_UPDATED=1
     fi
     # Remplacer la ligne existante ou ajouter en fin de fichier

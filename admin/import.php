@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $errors[] = "Impossible de lire le fichier.";
     } else {
       // Read header row
-      $header = fgetcsv($handle, 0, ",");
+      $header = fgetcsv($handle, 8192, ",");
       if ($header === false) {
         $errors[] = "Le fichier CSV est vide.";
       } else {
@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ");
           }
 
-          while (($row = fgetcsv($handle, 0, ",")) !== false) {
+          while (($row = fgetcsv($handle, 8192, ",")) !== false) {
             $rowNum++;
 
             // Skip empty rows

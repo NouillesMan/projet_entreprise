@@ -48,7 +48,20 @@ if ($marque !== "") {
   $params[":marque"] = $marque;
 }
 
-$sql .= "ORDER BY updated_at DESC LIMIT 200";
+$perPage = 50;
+$page    = max(1, (int)($_GET["page"] ?? 1));
+$offset  = ($page - 1) * $perPage;
+
+// Compter le total pour la pagination
+$countStmt = $pdo->prepare("SELECT COUNT(*) " . substr($sql, strpos($sql, "FROM")));
+$countStmt->execute($params);
+$total      = (int)$countStmt->fetchColumn();
+$totalPages = (int)ceil($total / $perPage);
+$page       = min($page, max(1, $totalPages));
+
+$sql .= "ORDER BY updated_at DESC LIMIT :perPage OFFSET :offset";
+$params[":perPage"] = $perPage;
+$params[":offset"]  = ($page - 1) * $perPage;
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
@@ -194,6 +207,27 @@ require __DIR__ . "/partials/header.php";
       </div>
     </div>
   </div>
+
+  <?php if ($totalPages > 1): ?>
+  <nav class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">«</a>
+      </li>
+      <?php for ($p = max(1, $page - 2); $p <= min($totalPages, $page + 2); $p++): ?>
+      <li class="page-item <?= $p === $page ? 'active' : '' ?>">
+        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $p])) ?>"><?= $p ?></a>
+      </li>
+      <?php endfor; ?>
+      <li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">»</a>
+      </li>
+    </ul>
+    <p class="text-center text-muted small">
+      <?= $total ?> PC au total — page <?= $page ?> / <?= $totalPages ?>
+    </p>
+  </nav>
+  <?php endif; ?>
 </div>
 
 <?php
