@@ -128,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $imported++;
               }
             } catch (PDOException $e) {
-              if ($e->getCode() === "23000") {
+              if (strval($e->getCode()) === "23000") {
                 $errors[] = "Ligne $rowNum : serial « " . $data["serial"] . " » déjà existant (doublon ignoré)";
               } else {
                 throw $e;

@@ -22,9 +22,18 @@ LOG_PATH="$LOGS_DIR/collect_log.txt"
 
 # --- Collecte des informations ---
 HOSTNAME_VAL=$(hostname)
-SERIAL=$(sudo dmidecode -s system-serial-number 2>/dev/null || echo "N/A")
-MARQUE=$(sudo dmidecode -s system-manufacturer 2>/dev/null || echo "N/A")
-MODELE=$(sudo dmidecode -s system-product-name 2>/dev/null || echo "N/A")
+
+if ! command -v dmidecode &>/dev/null; then
+    echo "[AVERTISSEMENT] dmidecode non installe - serial/marque/modele indisponibles."
+    echo "                Installer avec : sudo apt install dmidecode"
+    SERIAL="N/A"
+    MARQUE="N/A"
+    MODELE="N/A"
+else
+    SERIAL=$(sudo dmidecode -s system-serial-number 2>/dev/null || echo "N/A")
+    MARQUE=$(sudo dmidecode -s system-manufacturer 2>/dev/null || echo "N/A")
+    MODELE=$(sudo dmidecode -s system-product-name 2>/dev/null || echo "N/A")
+fi
 if [ -n "${SUDO_USER:-}" ]; then
     UTILISATEUR="$SUDO_USER"
 else

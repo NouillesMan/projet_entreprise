@@ -5,6 +5,11 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: inventaire_pc
+      DB_USER: root
+      DB_PASS: root
     depends_on:
       db:
         condition: service_healthy
