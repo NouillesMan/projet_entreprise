@@ -21,6 +21,23 @@ $stmtBrands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque");
 $existingBrands = $stmtBrands->fetchAll(PDO::FETCH_COLUMN);
 $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 
+$customFields = $pdo->query(
+    "SELECT field_name, field_label, field_type, is_required
+     FROM custom_fields
+     WHERE field_name NOT IN ('hostname','serial','marque','modele','utilisateur','os','os_version','architecture','domaine','statut','remarques')
+     AND is_visible = 1
+     ORDER BY display_order"
+)->fetchAll();
+
+$customValues = [];
+if (!empty($customFields)) {
+    $stmtCv = $pdo->prepare("SELECT field_name, field_value FROM pc_custom_data WHERE pc_id = ?");
+    $stmtCv->execute([$id]);
+    foreach ($stmtCv->fetchAll() as $row) {
+        $customValues[$row['field_name']] = $row['field_value'];
+    }
+}
+
 $errors = [];
 // Si formulaire envoyé
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -44,6 +61,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($os === "") $errors[] = "OS obligatoire";
   if (!in_array($architecture, $allowedArch, true)) $errors[] = "Architecture invalide";
   if (!in_array($statut, $allowedStatut, true)) $errors[] = "Statut invalide";
+  foreach ($customFields as $cf) {
+    if ($cf['is_required'] && trim($_POST["cf_" . $cf['field_name']] ?? "") === "") {
+      $errors[] = $cf['field_label'] . " obligatoire";
+    }
+  }
 
   if (!$errors) {
     try {
@@ -76,6 +98,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":remarques" => $remarques,
         ":id" => $id,
       ]);
+
+      if (!empty($customFields)) {
+        $stmtCf = $pdo->prepare(
+            "INSERT INTO pc_custom_data (pc_id, field_name, field_value) VALUES (?, ?, ?)
+             ON DUPLICATE KEY UPDATE field_value = VALUES(field_value)"
+        );
+        foreach ($customFields as $cf) {
+          $stmtCf->execute([$id, $cf['field_name'], trim($_POST["cf_" . $cf['field_name']] ?? "")]);
+        }
+      }
 
       header("Location: /pcs.php");
       exit;
@@ -203,10 +235,13 @@ require __DIR__ . "/partials/header.php";
         </div>
         <div class="col-md-4">
           <label class="form-label">Version OS</label>
+          <?php
+          $currentVersion  = $_POST["os_version"] ?? $pc["os_version"] ?? "";
+          $osVersionInList = in_array($currentVersion, $options['os_version'], true);
+          ?>
           <select class="form-select" name="os_version">
             <option value="">Aucune</option>
             <?php foreach ($options['os_version'] as $version): ?>
-              <?php $currentVersion = $_POST["os_version"] ?? $pc["os_version"]; ?>
               <option value="<?= e($version) ?>" <?= $currentVersion === $version ? "selected" : "" ?>>
                 <?= e($version) ?>
               </option>
@@ -214,7 +249,7 @@ require __DIR__ . "/partials/header.php";
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
           <input class="form-control form-control-sm mt-1" name="os_version_custom"
-                 value="<?= e($_POST["os_version"] ?? $pc["os_version"] ?? "") ?>" placeholder="Version personnalisée">
+                 value="<?= $osVersionInList ? '' : e($currentVersion) ?>" placeholder="Version personnalisée">
         </div>
         <div class="col-md-4">
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
@@ -244,6 +279,27 @@ require __DIR__ . "/partials/header.php";
           <label class="form-label">Remarques</label>
           <textarea class="form-control" name="remarques" rows="3"><?= e($_POST["remarques"] ?? $pc["remarques"]) ?></textarea>
         </div>
+
+        <?php if (!empty($customFields)): ?>
+        <?php foreach ($customFields as $cf): ?>
+        <?php $cfVal = $_POST["cf_" . $cf['field_name']] ?? ($customValues[$cf['field_name']] ?? ""); ?>
+        <div class="col-md-6">
+          <label class="form-label">
+            <?= e($cf['field_label']) ?>
+            <?php if ($cf['is_required']): ?><span class="text-danger">*</span><?php endif; ?>
+          </label>
+          <?php if ($cf['field_type'] === 'textarea'): ?>
+            <textarea class="form-control" name="cf_<?= e($cf['field_name']) ?>"
+                      rows="3"<?= $cf['is_required'] ? ' required' : '' ?>><?= e($cfVal) ?></textarea>
+          <?php else: ?>
+            <input class="form-control"
+                   type="<?= in_array($cf['field_type'], ['text','number','date']) ? e($cf['field_type']) : 'text' ?>"
+                   name="cf_<?= e($cf['field_name']) ?>"
+                   value="<?= e($cfVal) ?>"<?= $cf['is_required'] ? ' required' : '' ?>>
+          <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+        <?php endif; ?>
 
         <div class="col-12">
           <hr>
