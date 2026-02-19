@@ -3,21 +3,33 @@
 # Collecte les informations d'un PC Linux et les sauvegarde en CSV.
 # Necessite sudo pour dmidecode (serial, marque, modele).
 #
-# Usage : sudo bash collect_linux.sh
+# Usage : sudo bash ./collect_linux.sh
+# Note  : sur cle USB (FAT32), utiliser "sudo bash ./collect_linux.sh"
+#         car le systeme de fichiers ne supporte pas le bit executable.
 #
 
 set -euo pipefail
 
 # Dossier du script (= racine de la cle USB)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CSV_PATH="$SCRIPT_DIR/inventaire.csv"
+
+DATA_DIR="$SCRIPT_DIR/data"
+LOGS_DIR="$SCRIPT_DIR/logs"
+mkdir -p "$DATA_DIR" "$LOGS_DIR"
+
+CSV_PATH="$DATA_DIR/inventaire.csv"
+LOG_PATH="$LOGS_DIR/collect_log.txt"
 
 # --- Collecte des informations ---
 HOSTNAME_VAL=$(hostname)
 SERIAL=$(sudo dmidecode -s system-serial-number 2>/dev/null || echo "N/A")
 MARQUE=$(sudo dmidecode -s system-manufacturer 2>/dev/null || echo "N/A")
 MODELE=$(sudo dmidecode -s system-product-name 2>/dev/null || echo "N/A")
-UTILISATEUR=$(whoami)
+if [ -n "${SUDO_USER:-}" ]; then
+    UTILISATEUR="$SUDO_USER"
+else
+    UTILISATEUR=$(whoami)
+fi
 
 # OS et version
 if command -v lsb_release &>/dev/null; then
@@ -42,6 +54,7 @@ esac
 
 # Domaine
 DOMAINE=$(hostname -d 2>/dev/null || echo "")
+[ "$DOMAINE" = "(none)" ] && DOMAINE=""
 
 STATUT="En service"
 
@@ -53,12 +66,47 @@ OS_NAME="${OS_NAME//,/ }"
 
 # --- Ecriture dans le fichier CSV ---
 HEADER="hostname,serial,marque,modele,utilisateur,os,os_version,architecture,domaine,statut"
+NEW_LINE="$HOSTNAME_VAL,$SERIAL,$MARQUE,$MODELE,$UTILISATEUR,$OS_NAME,$OS_VERSION,$ARCHITECTURE,$DOMAINE,$STATUT"
+WAS_UPDATED=0
 
-if [ ! -f "$CSV_PATH" ]; then
-    echo "$HEADER" > "$CSV_PATH"
+if [ -f "$CSV_PATH" ]; then
+    # Verifier si le hostname ou le serial existe deja (hors header)
+    if grep -q "^${HOSTNAME_VAL}," "$CSV_PATH" 2>/dev/null || \
+       grep -q "^[^,]*,${SERIAL}," "$CSV_PATH" 2>/dev/null; then
+        WAS_UPDATED=1
+    fi
+    # Remplacer la ligne existante ou ajouter en fin de fichier
+    TMPFILE="${CSV_PATH}.tmp"
+    awk -v host="$HOSTNAME_VAL" -v serial="$SERIAL" -v newline="$NEW_LINE" \
+        'BEGIN{FS=",";found=0}
+         NR==1{print;next}
+         $1==host || $2==serial{print newline;found=1;next}
+         {print}
+         END{if(!found)print newline}' \
+        "$CSV_PATH" > "$TMPFILE"
+    mv "$TMPFILE" "$CSV_PATH"
+else
+    # Nouveau fichier CSV
+    printf '%s\n' "$HEADER"   > "$CSV_PATH"
+    printf '%s\n' "$NEW_LINE" >> "$CSV_PATH"
 fi
 
-echo "$HOSTNAME_VAL,$SERIAL,$MARQUE,$MODELE,$UTILISATEUR,$OS_NAME,$OS_VERSION,$ARCHITECTURE,$DOMAINE,$STATUT" >> "$CSV_PATH"
+# --- Ecriture du log ---
+TS=$(date '+%Y-%m-%d %H:%M:%S')
+{
+    echo ""
+    echo "============================================================"
+    echo "[$TS] [INFO] Hostname     : $HOSTNAME_VAL"
+    echo "[$TS] [INFO] Serial       : $SERIAL"
+    echo "[$TS] [INFO] Utilisateur  : $UTILISATEUR"
+    echo "[$TS] [INFO] OS           : $OS_NAME $OS_VERSION"
+    echo "[$TS] [INFO] Architecture : $ARCHITECTURE"
+    if [ "$WAS_UPDATED" -eq 1 ]; then
+        echo "[$TS] [OK]   Action       : Mis a jour"
+    else
+        echo "[$TS] [OK]   Action       : Ajoute"
+    fi
+} >> "$LOG_PATH"
 
 # --- Affichage du resume ---
 echo ""
@@ -75,4 +123,10 @@ echo "Domaine       : $DOMAINE"
 echo "Statut        : $STATUT"
 echo ""
 echo "Fichier CSV   : $CSV_PATH"
+echo "Fichier log   : $LOG_PATH"
+if [ "$WAS_UPDATED" -eq 1 ]; then
+    echo "Action        : Mis a jour"
+else
+    echo "Action        : Ajoute"
+fi
 echo ""

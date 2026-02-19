@@ -10,10 +10,13 @@ $optionalColumns = ["modele", "domaine", "os_version", "remarques"];
 $allColumns = array_merge($requiredColumns, $optionalColumns);
 
 $imported = 0;
-$errors = [];
+$updated  = 0;
+$errors   = [];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   csrf_check();
+
+  $updateExisting = !empty($_POST["update_existing"]);
 
   if (empty($_FILES["csv_file"]["tmp_name"]) || $_FILES["csv_file"]["error"] !== UPLOAD_ERR_OK) {
     $errors[] = "Veuillez sélectionner un fichier CSV valide.";
@@ -39,10 +42,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           $errors[] = "Colonnes manquantes : " . implode(", ", $missingCols);
         } else {
           $rowNum = 1; // header was row 1
-          $stmt = $pdo->prepare("
-            INSERT INTO pcs (hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, remarques)
-            VALUES (:hostname, :serial, :marque, :modele, :utilisateur, :os, :os_version, :architecture, :domaine, :statut, :remarques)
-          ");
+
+          if ($updateExisting) {
+            $stmt = $pdo->prepare("
+              INSERT INTO pcs (hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, remarques)
+              VALUES (:hostname, :serial, :marque, :modele, :utilisateur, :os, :os_version, :architecture, :domaine, :statut, :remarques)
+              ON DUPLICATE KEY UPDATE
+                hostname     = VALUES(hostname),
+                marque       = VALUES(marque),
+                modele       = VALUES(modele),
+                utilisateur  = VALUES(utilisateur),
+                os           = VALUES(os),
+                os_version   = VALUES(os_version),
+                architecture = VALUES(architecture),
+                domaine      = VALUES(domaine),
+                statut       = VALUES(statut),
+                remarques    = VALUES(remarques)
+            ");
+          } else {
+            $stmt = $pdo->prepare("
+              INSERT INTO pcs (hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, remarques)
+              VALUES (:hostname, :serial, :marque, :modele, :utilisateur, :os, :os_version, :architecture, :domaine, :statut, :remarques)
+            ");
+          }
 
           while (($row = fgetcsv($handle, 0, ",")) !== false) {
             $rowNum++;
@@ -58,12 +80,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               }
             }
 
-            // Validate required fields
+            // Serial manquant : auto-generer depuis le hostname
+            if (empty($data["serial"]) && !empty($data["hostname"])) {
+              $data["serial"] = "NOSERIAL-" . $data["hostname"];
+            }
+
+            // Validate required fields (ignorer les champs vides, juste skipper la ligne si hostname absent)
             $rowErrors = [];
-            foreach ($requiredColumns as $col) {
-              if (empty($data[$col])) {
-                $rowErrors[] = "champ « $col » vide";
-              }
+            if (empty($data["hostname"])) {
+              $rowErrors[] = "champ « hostname » vide";
             }
 
             // Validate enum values
@@ -79,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               continue;
             }
 
-            // Insert
+            // Insert / upsert
             try {
               $stmt->execute([
                 ":hostname"     => $data["hostname"],
@@ -94,7 +119,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 ":statut"       => $data["statut"],
                 ":remarques"    => $data["remarques"] ?? "",
               ]);
-              $imported++;
+              if ($updateExisting) {
+                $rc = $stmt->rowCount();
+                if ($rc === 2)      $updated++;   // ligne mise à jour
+                elseif ($rc === 1)  $imported++;  // nouvelle ligne
+                // rc === 0 : aucun changement, ignoré
+              } else {
+                $imported++;
+              }
             } catch (PDOException $e) {
               if ($e->getCode() === "23000") {
                 $errors[] = "Ligne $rowNum : serial « " . $data["serial"] . " » déjà existant (doublon ignoré)";
@@ -123,9 +155,17 @@ require __DIR__ . "/../partials/header.php";
   </div>
 
   <?php if ($_SERVER["REQUEST_METHOD"] === "POST"): ?>
-    <?php if ($imported > 0): ?>
+    <?php if ($imported > 0 || $updated > 0): ?>
       <div class="alert alert-success alert-dismissible fade show">
-        <i class="bi bi-check-circle"></i> <strong><?= $imported ?></strong> PC importé<?= $imported > 1 ? "s" : "" ?> avec succès.
+        <i class="bi bi-check-circle"></i>
+        <?php if ($imported > 0): ?>
+          <strong><?= $imported ?></strong> PC importé<?= $imported > 1 ? "s" : "" ?>
+        <?php endif; ?>
+        <?php if ($imported > 0 && $updated > 0): ?> — <?php endif; ?>
+        <?php if ($updated > 0): ?>
+          <strong><?= $updated ?></strong> PC mis à jour
+        <?php endif; ?>
+        avec succès.
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     <?php endif; ?>
@@ -172,6 +212,15 @@ require __DIR__ . "/../partials/header.php";
           <input type="file" class="form-control" name="csv_file" accept=".csv" required>
           <small class="text-muted">Encodage UTF-8 recommandé, séparateur virgule.</small>
         </div>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" name="update_existing" id="update_existing" value="1">
+          <label class="form-check-label" for="update_existing">
+            Mettre à jour les PC existants (par numéro de série)
+          </label>
+          <div class="form-text text-warning">
+            <i class="bi bi-exclamation-triangle"></i> Si coché, les données des PC déjà présents seront écrasées par celles du CSV.
+          </div>
+        </div>
         <button type="submit" class="btn btn-primary">
           <i class="bi bi-upload"></i> Importer
         </button>
@@ -200,7 +249,8 @@ require __DIR__ . "/../partials/header.php";
       <li><strong>Colonnes optionnelles :</strong> modele, domaine, os_version, remarques</li>
       <li><strong>Architecture :</strong> x86, x64 ou arm64</li>
       <li><strong>Statut :</strong> En service, En stock, En réparation, Retiré</li>
-      <li>Les numéros de série en doublon seront ignorés avec un message d'erreur.</li>
+      <li>Si le numéro de série est absent, il sera auto-généré à partir du hostname (<code>NOSERIAL-hostname</code>).</li>
+      <li>Par défaut, les numéros de série en doublon sont ignorés. Cochez "Mettre à jour" pour écraser les données existantes.</li>
     </ul>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>

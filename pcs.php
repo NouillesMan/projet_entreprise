@@ -19,10 +19,18 @@ $params = [];
 
 if ($q !== "") {
   $sql .= "AND (
-    hostname LIKE :q OR serial LIKE :q OR marque LIKE :q OR modele LIKE :q OR utilisateur LIKE :q
-    OR os LIKE :q OR os_version LIKE :q OR domaine LIKE :q
+    hostname LIKE :q1 OR serial LIKE :q2 OR marque LIKE :q3 OR modele LIKE :q4 OR utilisateur LIKE :q5
+    OR os LIKE :q6 OR os_version LIKE :q7 OR domaine LIKE :q8
   ) ";
-  $params[":q"] = "%{$q}%";
+  $qVal = "%{$q}%";
+  $params[":q1"] = $qVal;
+  $params[":q2"] = $qVal;
+  $params[":q3"] = $qVal;
+  $params[":q4"] = $qVal;
+  $params[":q5"] = $qVal;
+  $params[":q6"] = $qVal;
+  $params[":q7"] = $qVal;
+  $params[":q8"] = $qVal;
 }
 
 if (in_array($statut, $allowedStatut, true) && $statut !== "") {

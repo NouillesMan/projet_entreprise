@@ -7,7 +7,7 @@ referencaient `admin_options.php` (avec un 's'). Renommage du fichier pour corre
 a toutes les references. Cela corrige les erreurs 404 lors de la navigation vers la page
 d'administration des options.
 
-**Fichier concerne :** `admin_option.php` (renomme en `admin_options.php`, maintenant `admin/options.php`)
+**Fichier concerne :** `admin_option.php` (renomme en `admin_options.php`, maintenant `admin/options.php`)SERIA
 
 ---
 

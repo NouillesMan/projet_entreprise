@@ -441,8 +441,9 @@ Scripts de collecte automatique a executer depuis une cle USB :
 
 **Linux** (necessite sudo pour dmidecode) :
 ```bash
-sudo bash collect_linux.sh
+sudo bash ./collect_linux.sh
 ```
+> Sur cle USB (FAT32), le bit executable n'est pas supporte : utiliser `sudo bash ./collect_linux.sh` et non `./collect_linux.sh`.
 
 Les scripts collectent : hostname, serial, marque, modele, utilisateur, OS, version OS, architecture, domaine. Chaque execution ajoute une ligne dans `inventaire.csv` (meme dossier que le script). Le fichier CSV resultant peut etre importe directement via `admin/import.php`.
 
