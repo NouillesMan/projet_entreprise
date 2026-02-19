@@ -105,7 +105,7 @@ fi
 TS=$(date '+%Y-%m-%d %H:%M:%S')
 {
     echo ""
-    echo "============================================================"
+    echo "============================================================"  # 60 caracteres
     echo "[$TS] [INFO] Hostname     : $HOSTNAME_VAL"
     echo "[$TS] [INFO] Serial       : $SERIAL"
     echo "[$TS] [INFO] Utilisateur  : $UTILISATEUR"

@@ -52,7 +52,9 @@ function Write-Log {
     )
     $ts   = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $line = "[$ts] [$Level] $Message"
-    try { Add-Content -Path $logPath -Value $line -Encoding UTF8 } catch {}
+    try { Add-Content -Path $logPath -Value $line -Encoding UTF8 } catch {
+        Write-Host "[AVERTISSEMENT] Ecriture log impossible : $_" -ForegroundColor Yellow
+    }
     switch ($Level) {
         "OK"    { Write-Host $line -ForegroundColor Green }
         "ERROR" { Write-Host $line -ForegroundColor Red   }
@@ -65,7 +67,9 @@ try {
     try { Add-Content -Path $logPath -Value "" -Encoding UTF8 } catch {
         Write-Host "[AVERTISSEMENT] Impossible d'ecrire le log : $_" -ForegroundColor Yellow
     }
-    try { Add-Content -Path $logPath -Value ("=" * 60) -Encoding UTF8 } catch {}
+    try { Add-Content -Path $logPath -Value ("=" * 60) -Encoding UTF8 } catch {
+        Write-Host "[AVERTISSEMENT] Ecriture log impossible : $_" -ForegroundColor Yellow
+    }
 
     Write-Log "INFO" "=== Debut de la collecte ==="
     Write-Log "INFO" "PowerShell version : $($PSVersionTable.PSVersion)"

@@ -30,9 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       if ($header === false) {
         $errors[] = "Le fichier CSV est vide.";
       } else {
-        // Normalize header (strip BOM + trim + lowercase)
+        // Normalize header (strip BOM UTF-8 et UTF-16, trim + lowercase)
         $header = array_map(function ($col) {
-          $col = preg_replace('/\x{FEFF}/u', '', $col); // strip UTF-8 BOM
+          $col = preg_replace('/\x{FEFF}/u', '', $col);           // strip UTF-8 BOM
+          $col = preg_replace('/^\xFF\xFE|^\xFE\xFF/', '', $col); // strip UTF-16 BOM
           return strtolower(trim($col));
         }, $header);
 
@@ -71,6 +72,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // Skip empty rows
             if (count($row) === 1 && trim($row[0]) === "") continue;
+
+            // Avertir si la ligne a moins de colonnes que le header
+            if (count($row) < count($header)) {
+              $errors[] = "Ligne $rowNum : " . count($row) . " colonne(s) trouvée(s), " . count($header) . " attendue(s) — colonnes manquantes remplies avec vide";
+            }
 
             // Map columns by header position
             $data = [];
