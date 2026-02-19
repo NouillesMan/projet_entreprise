@@ -1,7 +1,6 @@
 <?php
-// Drop-in replacement for config_options.php
-// Loads dropdown options from the field_options table instead of hardcoded arrays.
-// Returns the same array structure so pc_add.php and pc_edit.php need no other changes.
+// Loads dropdown options from the field_options table.
+// Returns arrays for: marque, modele, os, os_version.
 
 if (!isset($pdo)) {
     require __DIR__ . "/db.php";

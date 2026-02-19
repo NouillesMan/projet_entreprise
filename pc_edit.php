@@ -155,6 +155,7 @@ require __DIR__ . "/partials/header.php";
             <?php
             $currentMarque = $_POST["marque"] ?? $pc["marque"];
             $currentModele = $_POST["modele"] ?? $pc["modele"];
+            $modeleInList  = in_array($currentModele, $options['modele'][$currentMarque] ?? [], true);
             if (isset($options['modele'][$currentMarque])):
               foreach ($options['modele'][$currentMarque] as $model):
             ?>
@@ -168,7 +169,7 @@ require __DIR__ . "/partials/header.php";
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
           <input class="form-control form-control-sm mt-1" name="modele_custom" id="modele_custom"
-                 value="<?= e($currentModele) ?>" placeholder="Modèle personnalisé">
+                 value="<?= $modeleInList ? '' : e($currentModele) ?>" placeholder="Modèle personnalisé">
         </div>
         <div class="col-md-4">
           <label class="form-label">Utilisateur <span class="text-danger">*</span></label>

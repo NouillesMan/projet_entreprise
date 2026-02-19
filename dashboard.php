@@ -61,7 +61,7 @@ require __DIR__ . "/partials/header.php";
 
   <!-- Status cards row -->
   <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
       <div class="card shadow-sm h-100">
         <div class="card-body text-center">
           <i class="bi bi-pc-display display-6 text-primary"></i>
@@ -70,7 +70,7 @@ require __DIR__ . "/partials/header.php";
         </div>
       </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
       <div class="card shadow-sm h-100">
         <div class="card-body text-center">
           <i class="bi bi-check-circle display-6 text-success"></i>
@@ -79,7 +79,7 @@ require __DIR__ . "/partials/header.php";
         </div>
       </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
       <div class="card shadow-sm h-100">
         <div class="card-body text-center">
           <i class="bi bi-box-seam display-6 text-info"></i>
@@ -88,12 +88,21 @@ require __DIR__ . "/partials/header.php";
         </div>
       </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg">
       <div class="card shadow-sm h-100">
         <div class="card-body text-center">
           <i class="bi bi-tools display-6 text-warning"></i>
           <h2 class="mt-2 mb-0"><?= $enReparation ?></h2>
           <small class="text-muted">En réparation</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-lg">
+      <div class="card shadow-sm h-100">
+        <div class="card-body text-center">
+          <i class="bi bi-x-circle display-6 text-secondary"></i>
+          <h2 class="mt-2 mb-0"><?= $retire ?></h2>
+          <small class="text-muted">Retirés</small>
         </div>
       </div>
     </div>

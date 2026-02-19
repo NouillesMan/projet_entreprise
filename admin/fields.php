@@ -3,6 +3,8 @@ require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
 require __DIR__ . "/../includes/db.php";
 
+$protectedFields = ['hostname', 'serial', 'marque', 'utilisateur', 'os', 'architecture', 'statut'];
+
 // Traitement des actions
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   csrf_check();
@@ -57,7 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->execute([$fieldId]);
     $field = $stmt->fetch();
 
-    $protectedFields = ['hostname', 'serial', 'marque', 'utilisateur', 'os', 'architecture', 'statut'];
     if ($field && in_array($field['field_name'], $protectedFields)) {
       header("Location: /admin/fields.php?msg=protected");
       exit;
@@ -163,7 +164,6 @@ require __DIR__ . "/../partials/header.php";
                 </td>
                 <td>
                   <?php
-                  $protectedFields = ['hostname', 'serial', 'marque', 'utilisateur', 'os', 'architecture', 'statut'];
                   $isProtected = in_array($field['field_name'], $protectedFields);
                   ?>
                   <?php if (!$isProtected): ?>

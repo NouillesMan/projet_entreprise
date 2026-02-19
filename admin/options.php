@@ -44,6 +44,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         header("Location: /admin/options.php?tab=" . urlencode($field_name) . "&msg=deleted");
         exit;
     }
+
+    if ($action === "dedupe") {
+        $field_name = $_POST["field_name"] ?? "";
+        $allowed = ["marque", "modele", "os", "os_version"];
+        if (in_array($field_name, $allowed, true)) {
+            $pdo->prepare(
+                "DELETE fo1 FROM field_options fo1
+                 INNER JOIN field_options fo2
+                 ON  fo1.field_name    = fo2.field_name
+                 AND fo1.option_group <=> fo2.option_group
+                 AND fo1.option_value  = fo2.option_value
+                 AND fo1.id > fo2.id
+                 WHERE fo1.field_name = ?"
+            )->execute([$field_name]);
+        }
+        header("Location: /admin/options.php?tab=" . urlencode($field_name) . "&msg=deduped");
+        exit;
+    }
 }
 
 // ── Load data ─────────────────────────────────────────────────────────────────
@@ -81,7 +99,12 @@ require __DIR__ . "/../partials/header.php";
 
   <?php if (isset($_GET['msg'])): ?>
     <div class="alert alert-success alert-dismissible fade show">
-      <?= $_GET['msg'] === 'added' ? 'Option ajoutée.' : 'Option supprimée.' ?>
+      <?= match($_GET['msg']) {
+        'added'   => 'Option ajoutée.',
+        'deleted' => 'Option supprimée.',
+        'deduped' => 'Doublons supprimés.',
+        default   => '',
+      } ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
@@ -111,8 +134,17 @@ require __DIR__ . "/../partials/header.php";
     <!-- ── Left: existing values ─────────────────────────────────────────── -->
     <div class="col-lg-8">
       <div class="card shadow-sm">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-between align-items-center">
           <h6 class="mb-0"><?= e($tabs[$tab]) ?></h6>
+          <form method="post" class="d-inline"
+                onsubmit="return confirm('Supprimer tous les doublons pour cet onglet ?');">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action"     value="dedupe">
+            <input type="hidden" name="field_name" value="<?= e($tab) ?>">
+            <button class="btn btn-sm btn-outline-warning" type="submit">
+              <i class="bi bi-scissors"></i> Supprimer les doublons
+            </button>
+          </form>
         </div>
         <div class="card-body p-0">
 
