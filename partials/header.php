@@ -84,6 +84,9 @@ $isLoggedIn = isset($_SESSION["user_id"]);
     <a href="/admin/import.php" class="nav-link <?= $activePage === 'admin_import' ? 'active' : '' ?>">
       <i class="bi bi-upload"></i> Import
     </a>
+    <a href="/admin/stats_utilisateurs.php" class="nav-link <?= $activePage === 'admin_stats_utilisateurs' ? 'active' : '' ?>">
+      <i class="bi bi-bar-chart-line"></i> Stats utilisateurs
+    </a>
     <?php endif; ?>
   </div>
 

@@ -12,6 +12,14 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 /**
+ * Escape a value for safe HTML output.
+ */
+function e($v): string
+{
+    return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+}
+
+/**
  * Generate or return the current CSRF token (stored in session).
  */
 function csrf_token(): string

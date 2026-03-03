@@ -3,7 +3,6 @@ require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
 require __DIR__ . "/../includes/db.php";
 
-function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

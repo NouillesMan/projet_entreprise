@@ -148,7 +148,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 }
 
-function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 $pageTitle = "Admin - Import CSV";
 $activePage = "admin_import";

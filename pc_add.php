@@ -8,6 +8,7 @@ $allowedStatut = ["En service","En stock","En réparation","Retiré"];
 
 // Charger les options de configuration
 $options = require __DIR__ . "/includes/get_options.php";
+require __DIR__ . "/includes/helpers.php";
 
 // Récupérer les utilisateurs existants
 $stmtUsers = $pdo->query("SELECT DISTINCT utilisateur FROM pcs ORDER BY utilisateur");
@@ -18,13 +19,7 @@ $stmtBrands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque");
 $existingBrands = $stmtBrands->fetchAll(PDO::FETCH_COLUMN);
 $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 
-$customFields = $pdo->query(
-    "SELECT field_name, field_label, field_type, is_required
-     FROM custom_fields
-     WHERE field_name NOT IN ('hostname','serial','marque','modele','utilisateur','os','os_version','architecture','domaine','statut','remarques')
-     AND is_visible = 1
-     ORDER BY display_order"
-)->fetchAll();
+$customFields = get_custom_fields($pdo);
 
 $errors = [];
 // Si formulaire envoyé
@@ -95,7 +90,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 }
 
-function e($v) { return htmlspecialchars((string)$v, ENT_QUOTES, "UTF-8"); }
 
 $pageTitle = "Ajouter un PC";
 $activePage = "pc_add";
