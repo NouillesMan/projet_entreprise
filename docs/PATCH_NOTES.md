@@ -1,3 +1,67 @@
+# Patch Notes — 2026-03-03
+
+## 1. Dashboard admin — Stats PCs par utilisateur (`admin/stats_utilisateurs.php`)
+
+Nouvelle page exclusive aux administrateurs affichant la répartition des PC par utilisateur.
+
+**Fonctionnalités :**
+- 3 cartes de synthèse : total PCs, nombre d'utilisateurs distincts, maximum par utilisateur
+- Tableau classé par nombre de PCs décroissant avec barre de progression relative
+- Badges de statut par utilisateur (En service, En stock, En réparation, Retiré)
+- Filtre de recherche instantané côté client
+- Bouton de lien direct vers l'inventaire filtré par utilisateur
+- Les PCs sans utilisateur sont regroupés sous "— Non attribué —"
+
+**Accès :** Lien "Stats utilisateurs" ajouté dans la section Administration du sidebar (`partials/header.php`)
+
+**Fichiers ajoutés/modifiés :** `admin/stats_utilisateurs.php`, `partials/header.php`
+
+---
+
+## 2. Centralisation de `function e()` dans `includes/auth.php`
+
+La fonction d'échappement HTML `e()` était redéfinie localement dans 6 fichiers distincts.
+Elle est désormais déclarée une seule fois dans `includes/auth.php` (qui est inclus en premier
+dans toutes les pages protégées) et supprimée des fichiers suivants :
+
+**Fichiers modifiés :** `pc_add.php`, `pc_edit.php`, `admin/users.php`, `admin/options.php`,
+`admin/import.php`, `admin/stats_utilisateurs.php`
+
+---
+
+## 3. Extraction de `get_custom_fields()` dans `includes/helpers.php`
+
+La requête SQL de chargement des champs personnalisés visibles était dupliquée à l'identique
+dans `pc_add.php` et `pc_edit.php`. Elle est désormais centralisée dans la fonction
+`get_custom_fields(PDO $pdo)` définie dans le nouveau fichier `includes/helpers.php`.
+
+**Fichiers ajoutés/modifiés :** `includes/helpers.php`, `pc_add.php`, `pc_edit.php`
+
+---
+
+## 4. Champs personnalisés dans les formulaires PC (`pc_add.php`, `pc_edit.php`)
+
+Les champs créés via `admin/fields.php` sont désormais affichés, validés et sauvegardés
+dans les formulaires d'ajout et de modification de PC.
+
+- Les champs marqués `is_visible = 1` et hors champs protégés apparaissent dans le formulaire
+- La validation des champs obligatoires est intégrée côté serveur
+- Les valeurs sont persistées dans `pc_custom_data` (INSERT pour l'ajout, UPSERT pour la modification)
+
+**Fichiers modifiés :** `pc_add.php`, `pc_edit.php`
+
+---
+
+## 5. Correction `pc_edit.php` — `os_version_custom` toujours pré-rempli
+
+Le champ de saisie manuelle de la version OS était toujours pré-rempli avec la valeur
+actuelle, même quand cette valeur était déjà sélectionnée dans la liste déroulante.
+Désormais, le champ manuel est vide si la version est présente dans la liste.
+
+**Fichier modifié :** `pc_edit.php`
+
+---
+
 # Patch Notes — 2026-02-17
 
 ## 1. Rename `admin_option.php` -> `admin_options.php` (maintenant `admin/options.php`)

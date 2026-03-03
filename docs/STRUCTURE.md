@@ -9,12 +9,14 @@ projet_entreprise/
 │   ├── users.php                # Gestion des utilisateurs et permissions
 │   ├── options.php              # Gestion des options des listes déroulantes
 │   ├── fields.php               # Gestion des champs personnalisés
-│   └── import.php               # Import CSV en masse
+│   ├── import.php               # Import CSV en masse
+│   └── stats_utilisateurs.php  # Dashboard PCs par utilisateur (admin only)
 │
 ├── includes/                    # Fichiers PHP internes (config, auth, helpers)
 │   ├── config.php               # Configuration de la base de données
 │   ├── db.php                   # Connexion PDO à la base de données
-│   ├── auth.php                 # Garde de session + CSRF + helper require_perm()
+│   ├── auth.php                 # Garde de session + CSRF + e() + require_perm()
+│   ├── helpers.php              # Fonctions utilitaires partagées (get_custom_fields)
 │   ├── get_options.php          # Chargement des options depuis la BDD
 │   └── config_options.php       # Configuration statique des options (fallback)
 │
@@ -69,13 +71,15 @@ Pages d'administration (accessibles uniquement aux admins)
 - **`options.php`** : Gestion des options des listes déroulantes (marques, modèles, OS, versions)
 - **`fields.php`** : Gestion des champs personnalisés (visibilité, ordre, ajout/suppression)
 - **`import.php`** : Import CSV en masse de PC
+- **`stats_utilisateurs.php`** : Dashboard exclusif admin — nombre de PCs par utilisateur avec répartition par statut
 
 ### `/includes/`
 Fichiers PHP internes (non accessibles directement par URL)
 
 - **`config.php`** : Paramètres de connexion à la base de données
 - **`db.php`** : Initialisation de la connexion PDO
-- **`auth.php`** : Garde de session, protection CSRF, helper `require_perm()`
+- **`auth.php`** : Garde de session, protection CSRF (`csrf_token`, `csrf_field`, `csrf_check`), helper `require_perm()`, helper `e()` (échappement HTML)
+- **`helpers.php`** : Fonctions utilitaires partagées — `get_custom_fields($pdo)` pour charger les champs personnalisés visibles
 - **`get_options.php`** : Chargement des options des listes déroulantes depuis la BDD
 - **`config_options.php`** : Configuration statique des options (fallback)
 
@@ -157,7 +161,8 @@ require __DIR__ . "/partials/footer.php";
 - `includes/config_options.php` : Options statiques (fallback)
 
 ### Authentification & Sécurité (`includes/` + racine)
-- `includes/auth.php` : Garde de session, protection CSRF (csrf_token, csrf_field, csrf_check), helper require_perm()
+- `includes/auth.php` : Garde de session, protection CSRF (csrf_token, csrf_field, csrf_check), helper `require_perm()`, helper `e()` (échappement HTML centralisé)
+- `includes/helpers.php` : Fonctions utilitaires partagées (`get_custom_fields`)
 - `login.php` : Formulaire de connexion avec protection session fixation
 - `logout.php` : Destruction de session et redirection
 
@@ -179,6 +184,7 @@ require __DIR__ . "/partials/footer.php";
 - `admin/options.php` : Gestion des options des listes déroulantes (marques, modèles, OS, versions)
 - `admin/users.php` : Gestion des utilisateurs et permissions (CRUD, reset password)
 - `admin/import.php` : Import CSV en masse de PC
+- `admin/stats_utilisateurs.php` : Dashboard nombre de PCs par utilisateur avec répartition par statut
 
 ### Données (`database/`)
 - `database/schema.sql` : Table principale `pcs`

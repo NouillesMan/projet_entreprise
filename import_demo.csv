@@ -1,0 +1,64 @@
+hostname,serial,marque,modele,utilisateur,os,os_version,domaine,architecture,statut,remarques
+PC-DUPONT-01,SN-DL-4820A1,Dell,Latitude 5520,jean.dupont,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,PC principal bureau
+PC-DUPONT-02,SN-DL-4820A2,Dell,Latitude 7420,jean.dupont,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,PC portable déplacement
+PC-DUPONT-03,SN-HP-9910B1,HP,EliteBook 840 G8,jean.dupont,Windows 10 Pro,22H2,corp.entreprise.fr,x64,En réparation,Ecran fissuré
+PC-DUPONT-04,SN-LN-3301C1,Lenovo,ThinkPad X1 Carbon,jean.dupont,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En stock,Remplacement prévu
+PC-MARTIN-01,SN-HP-9910B2,HP,EliteBook 840 G8,marie.martin,Windows 11 Pro,23H2,rh.entreprise.fr,x64,En service,
+PC-MARTIN-02,SN-HP-9910B3,HP,ProBook 450 G9,marie.martin,Windows 10 Pro,22H2,rh.entreprise.fr,x64,En service,
+PC-MARTIN-03,SN-DL-4820A3,Dell,OptiPlex 7090,marie.martin,Windows 11 Pro,23H2,rh.entreprise.fr,x64,En stock,Tour fixe salle de réunion
+PC-BERNARD-01,SN-LN-3301C2,Lenovo,ThinkPad T14s,pierre.bernard,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,Poste développeur
+PC-BERNARD-02,SN-LN-3301C3,Lenovo,ThinkPad T14s,pierre.bernard,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,
+PC-BERNARD-03,SN-AS-7762D1,ASUS,ZenBook 14,pierre.bernard,Windows 11 Pro,23H2,dev.entreprise.fr,x64,En service,Tests front-end
+PC-BERNARD-04,SN-DL-4820A4,Dell,Precision 3560,pierre.bernard,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,Station de compilation
+PC-BERNARD-05,SN-DL-4820A5,Dell,XPS 15,pierre.bernard,Windows 11 Pro,23H2,dev.entreprise.fr,x64,En réparation,Batterie défectueuse
+PC-THOMAS-01,SN-AP-1155E1,Apple,MacBook Pro 14,sophie.thomas,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,Direction artistique
+PC-THOMAS-02,SN-AP-1155E2,Apple,MacBook Air M2,sophie.thomas,macOS Ventura,13.6,corp.entreprise.fr,arm64,En stock,
+PC-PETIT-01,SN-HP-9910B4,HP,ZBook Fury 15,lucas.petit,Windows 11 Pro,23H2,it.entreprise.fr,x64,En service,Station graphique
+PC-PETIT-02,SN-HP-9910B5,HP,EliteDesk 800 G6,lucas.petit,Windows 10 Pro,22H2,it.entreprise.fr,x64,En service,Poste fixe support
+PC-PETIT-03,SN-AC-6643F1,Acer,TravelMate P4,lucas.petit,Windows 11 Pro,23H2,it.entreprise.fr,x64,En réparation,Clavier endommagé
+PC-ROBERT-01,SN-AP-1155E3,Apple,MacBook Pro 14,emma.robert,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,
+PC-ROBERT-02,SN-AP-1155E4,Apple,Mac Mini M2,emma.robert,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,Poste fixe studio
+PC-ROBERT-03,SN-LN-3301C4,Lenovo,IdeaPad 5 Pro,emma.robert,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,
+PC-ROBERT-04,SN-AS-7762D2,ASUS,ExpertBook B9450,emma.robert,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En stock,Spare
+PC-RICHARD-01,SN-DL-4820A6,Dell,Latitude 5520,hugo.richard,Windows 10 Pro,22H2,rh.entreprise.fr,x64,En service,
+PC-RICHARD-02,SN-HP-9910B6,HP,ProBook 450 G9,hugo.richard,Windows 11 Pro,23H2,rh.entreprise.fr,x64,Retiré,Remplacé en 2023
+PC-DURAND-01,SN-LN-3301C5,Lenovo,ThinkCentre M720q,camille.durand,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,Tour compacte bureau
+PC-DURAND-02,SN-LN-3301C6,Lenovo,ThinkPad X1 Carbon,camille.durand,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,PC portable
+PC-DURAND-03,SN-DL-4820A7,Dell,Latitude 7420,camille.durand,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En stock,
+PC-LEROY-01,SN-AS-7762D3,ASUS,VivoBook 15,maxime.leroy,Windows 11 Pro,23H2,dev.entreprise.fr,x64,En service,
+PC-LEROY-02,SN-AC-6643F2,Acer,Swift 3,maxime.leroy,Windows 10 Pro,22H2,dev.entreprise.fr,x64,Retiré,Obsolète
+PC-MOREAU-01,SN-AP-1155E5,Apple,MacBook Pro 14,alice.moreau,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,Direction
+PC-MOREAU-02,SN-AP-1155E6,Apple,MacBook Air M2,alice.moreau,macOS Ventura,13.6,corp.entreprise.fr,arm64,En service,
+PC-MOREAU-03,SN-DL-4820A8,Dell,XPS 15,alice.moreau,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,Dual boot
+PC-MOREAU-04,SN-HP-9910B7,HP,EliteBook 840 G8,alice.moreau,Windows 10 Pro,22H2,corp.entreprise.fr,x64,En réparation,
+PC-SIMON-01,SN-LN-3301C7,Lenovo,ThinkPad T14s,theo.simon,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,Poste devops
+PC-LAURENT-01,SN-HP-9910B8,HP,EliteDesk 800 G6,lea.laurent,Windows 11 Pro,23H2,rh.entreprise.fr,x64,En service,
+PC-LAURENT-02,SN-HP-9910B9,HP,ProBook 450 G9,lea.laurent,Windows 11 Pro,23H2,rh.entreprise.fr,x64,En service,
+PC-LAURENT-03,SN-DL-4820A9,Dell,OptiPlex 7090,lea.laurent,Windows 10 Pro,22H2,rh.entreprise.fr,x64,En service,
+PC-MICHEL-01,SN-AC-6643F3,Acer,Aspire 5,nicolas.michel,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,
+PC-MICHEL-02,SN-AS-7762D4,ASUS,ZenBook 14,nicolas.michel,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,
+PC-LEFEBVRE-01,SN-DL-4820B1,Dell,Latitude 5520,julie.lefebvre,Windows 10 Pro,22H2,corp.entreprise.fr,x64,En service,
+PC-LEFEBVRE-02,SN-LN-3301C8,Lenovo,ThinkPad X1 Carbon,julie.lefebvre,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,
+PC-GARCIA-01,SN-LN-3301C9,Lenovo,ThinkPad T14s,antoine.garcia,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,
+PC-GARCIA-02,SN-HP-9910C1,HP,ZBook Fury 15,antoine.garcia,Windows 11 Pro,23H2,dev.entreprise.fr,x64,En service,Rendu 3D
+PC-GARCIA-03,SN-DL-4820B2,Dell,Precision 3560,antoine.garcia,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,
+PC-ROUX-01,SN-AS-7762D5,ASUS,ExpertBook B9450,clara.roux,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En service,
+PC-ROUX-02,SN-AC-6643F4,Acer,TravelMate P4,clara.roux,Windows 10 Pro,22H2,corp.entreprise.fr,x64,En service,
+PC-BLANC-01,SN-DL-4820B3,Dell,Latitude 7420,thomas.blanc,Windows 11 Pro,23H2,it.entreprise.fr,x64,En service,
+PC-BLANC-02,SN-HP-9910C2,HP,EliteBook 840 G8,thomas.blanc,Windows 11 Pro,23H2,it.entreprise.fr,x64,En service,
+PC-BLANC-03,SN-LN-3301D1,Lenovo,ThinkCentre M720q,thomas.blanc,Windows 10 Pro,22H2,it.entreprise.fr,x64,En service,Serveur applicatif local
+PC-FONTAINE-01,SN-AP-1155E7,Apple,MacBook Air M2,isabelle.fontaine,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,
+PC-FONTAINE-02,SN-AP-1155E8,Apple,Mac Mini M2,isabelle.fontaine,macOS Sonoma,14.4,corp.entreprise.fr,arm64,En service,Bureau fixe
+PC-FONTAINE-03,SN-DL-4820B4,Dell,XPS 15,isabelle.fontaine,Windows 11 Pro,23H2,corp.entreprise.fr,x64,Retiré,Don association
+PC-HENRY-01,SN-HP-9910C3,HP,ProBook 450 G9,mathieu.henry,Windows 11 Pro,23H2,rh.entreprise.fr,x64,En service,
+PC-HENRY-02,SN-AS-7762D6,ASUS,VivoBook 15,mathieu.henry,Windows 10 Pro,22H2,rh.entreprise.fr,x64,Retiré,Hors service
+PC-MERCIER-01,SN-LN-3301D2,Lenovo,ThinkPad T14s,sarah.mercier,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,Lead dev
+PC-MERCIER-02,SN-DL-4820B5,Dell,Precision 3560,sarah.mercier,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x64,En service,
+PC-MERCIER-03,SN-HP-9910C4,HP,ZBook Fury 15,sarah.mercier,Windows 11 Pro,23H2,dev.entreprise.fr,x64,En service,Tests performance
+PC-STOCK-01,SN-DL-4820B6,Dell,OptiPlex 7090,,Windows 11 Pro,23H2,corp.entreprise.fr,x64,En stock,Nouveau lot non attribué
+PC-STOCK-02,SN-HP-9910C5,HP,EliteDesk 800 G6,,Windows 11 Pro,23H2,,x64,En stock,
+PC-STOCK-03,SN-LN-3301D3,Lenovo,ThinkCentre M720q,,Windows 11 Pro,23H2,,x64,En stock,
+PC-STOCK-04,SN-AS-7762D7,ASUS,ZenBook 14,,Windows 11 Pro,23H2,,x64,En stock,Commande octobre
+PC-OLD-01,SN-DL-2210X1,Dell,Latitude 5490,jean.dupont,Windows 10 Pro,22H2,corp.entreprise.fr,x86,Retiré,Ancien matériel — conservé archives
+PC-OLD-02,SN-HP-7780X1,HP,ProBook 430 G5,marie.martin,Windows 10 Pro,21H2,rh.entreprise.fr,x86,Retiré,Remplacé T1 2024
+PC-OLD-03,SN-LN-2890X1,Lenovo,ThinkPad E480,pierre.bernard,Ubuntu 22.04,22.04 LTS,dev.entreprise.fr,x86,Retiré,CPU insuffisant

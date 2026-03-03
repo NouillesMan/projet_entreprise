@@ -1,0 +1,52 @@
+hostname,serial,marque,modele,utilisateur,os,os_version,domaine,architecture,statut,remarques
+LAPTOP-DIR-001,SN-AP-D10001,Apple,MacBook Pro 14,direction.generale,macOS Sonoma,14.4,corp.demo.fr,arm64,En service,PC direction
+LAPTOP-DIR-002,SN-AP-D10002,Apple,MacBook Air M2,direction.generale,macOS Sonoma,14.4,corp.demo.fr,arm64,En service,Déplacements
+LAPTOP-DIR-003,SN-DL-D10003,Dell,XPS 15,direction.generale,Windows 11 Pro,23H2,corp.demo.fr,x64,En stock,Spare direction
+LAPTOP-COM-001,SN-AP-D10004,Apple,MacBook Pro 14,paul.lambert,macOS Sonoma,14.4,corp.demo.fr,arm64,En service,
+LAPTOP-COM-002,SN-AP-D10005,Apple,MacBook Air M2,paul.lambert,macOS Ventura,13.6,corp.demo.fr,arm64,En service,Mobilité client
+LAPTOP-COM-003,SN-HP-D10006,HP,EliteBook 840 G8,paul.lambert,Windows 11 Pro,23H2,corp.demo.fr,x64,Retiré,Remplacé MacBook
+LAPTOP-MKT-001,SN-AP-D10007,Apple,MacBook Pro 14,chloe.vasseur,macOS Sonoma,14.4,corp.demo.fr,arm64,En service,Retouche photo
+LAPTOP-MKT-002,SN-AP-D10008,Apple,Mac Mini M2,chloe.vasseur,macOS Sonoma,14.4,corp.demo.fr,arm64,En service,Station montage vidéo
+LAPTOP-MKT-003,SN-DL-D10009,Dell,XPS 15,chloe.vasseur,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,Maquettes print
+LAPTOP-MKT-004,SN-AS-D10010,ASUS,ProArt Studiobook,chloe.vasseur,Windows 11 Pro,23H2,corp.demo.fr,x64,En réparation,GPU instable
+DESKTOP-RH-001,SN-HP-D10011,HP,EliteDesk 800 G6,nadine.collet,Windows 11 Pro,23H2,rh.demo.fr,x64,En service,
+DESKTOP-RH-002,SN-DL-D10012,Dell,OptiPlex 7090,nadine.collet,Windows 10 Pro,22H2,rh.demo.fr,x64,En service,Paie et congés
+LAPTOP-RH-001,SN-HP-D10013,HP,ProBook 450 G9,nadine.collet,Windows 11 Pro,23H2,rh.demo.fr,x64,En stock,
+DESKTOP-RH-003,SN-LN-D10014,Lenovo,ThinkCentre M720q,sylvie.morin,Windows 11 Pro,23H2,rh.demo.fr,x64,En service,
+LAPTOP-RH-002,SN-HP-D10015,HP,EliteBook 840 G8,sylvie.morin,Windows 11 Pro,23H2,rh.demo.fr,x64,En service,
+LAPTOP-DEV-001,SN-LN-D10016,Lenovo,ThinkPad X1 Carbon,romain.gillet,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,Lead backend
+LAPTOP-DEV-002,SN-LN-D10017,Lenovo,ThinkPad T14s,romain.gillet,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,Tests locaux
+LAPTOP-DEV-003,SN-DL-D10018,Dell,Precision 3560,romain.gillet,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,Build serveur
+DESKTOP-DEV-001,SN-AS-D10019,ASUS,ExpertBook B9450,romain.gillet,Windows 11 Pro,23H2,dev.demo.fr,x64,En stock,
+LAPTOP-DEV-004,SN-LN-D10020,Lenovo,ThinkPad T14s,justine.arnaud,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,Frontend React
+LAPTOP-DEV-005,SN-LN-D10021,Lenovo,ThinkPad X1 Carbon,justine.arnaud,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,
+LAPTOP-DEV-006,SN-DL-D10022,Dell,XPS 15,justine.arnaud,Windows 11 Pro,23H2,dev.demo.fr,x64,En réparation,SSD HS
+LAPTOP-DEV-007,SN-AP-D10023,Apple,MacBook Pro 14,kevin.rousseau,macOS Sonoma,14.4,dev.demo.fr,arm64,En service,iOS dev
+LAPTOP-DEV-008,SN-AP-D10024,Apple,MacBook Air M2,kevin.rousseau,macOS Sonoma,14.4,dev.demo.fr,arm64,En service,
+LAPTOP-DEV-009,SN-LN-D10025,Lenovo,ThinkPad T14s,kevin.rousseau,Ubuntu 22.04,22.04 LTS,dev.demo.fr,x64,En service,Android dev
+LAPTOP-IT-001,SN-DL-D10026,Dell,Latitude 5520,marc.tessier,Windows 11 Pro,23H2,it.demo.fr,x64,En service,Poste admin réseau
+LAPTOP-IT-002,SN-HP-D10027,HP,ZBook Fury 15,marc.tessier,Windows 11 Pro,23H2,it.demo.fr,x64,En service,Virtualisation
+LAPTOP-IT-003,SN-LN-D10028,Lenovo,ThinkPad X1 Carbon,marc.tessier,Windows 11 Pro,23H2,it.demo.fr,x64,En service,Audit sécurité
+DESKTOP-IT-001,SN-HP-D10029,HP,EliteDesk 800 G6,marc.tessier,Windows 10 Pro,22H2,it.demo.fr,x64,En réparation,RAM défectueuse
+LAPTOP-IT-004,SN-DL-D10030,Dell,Latitude 7420,marc.tessier,Windows 11 Pro,23H2,it.demo.fr,x64,En service,Intervention terrain
+LAPTOP-IT-005,SN-HP-D10031,HP,ProBook 450 G9,anais.perrot,Windows 11 Pro,23H2,it.demo.fr,x64,En service,Support N1
+LAPTOP-IT-006,SN-AC-D10032,Acer,TravelMate P4,anais.perrot,Windows 11 Pro,23H2,it.demo.fr,x64,En service,
+LAPTOP-COMPTA-001,SN-DL-D10033,Dell,Latitude 5520,gerard.faure,Windows 10 Pro,22H2,corp.demo.fr,x64,En service,Comptabilité générale
+LAPTOP-COMPTA-002,SN-HP-D10034,HP,EliteBook 840 G8,gerard.faure,Windows 10 Pro,22H2,corp.demo.fr,x64,Retiré,Trop ancien
+DESKTOP-COMPTA-001,SN-LN-D10035,Lenovo,ThinkCentre M720q,gerard.faure,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,
+LAPTOP-COMPTA-003,SN-DL-D10036,Dell,Latitude 7420,veronique.aubin,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,
+LAPTOP-COMPTA-004,SN-HP-D10037,HP,ProBook 450 G9,veronique.aubin,Windows 10 Pro,22H2,corp.demo.fr,x64,En service,
+LAPTOP-PROD-001,SN-AS-D10038,ASUS,ZenBook 14,florian.guerin,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,Chef de projet
+LAPTOP-PROD-002,SN-DL-D10039,Dell,Latitude 5520,florian.guerin,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,
+LAPTOP-PROD-003,SN-LN-D10040,Lenovo,ThinkPad T14s,florian.guerin,Windows 10 Pro,22H2,corp.demo.fr,x64,En stock,
+LAPTOP-PROD-004,SN-AC-D10041,Acer,Swift 3,manon.charpentier,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,
+LAPTOP-PROD-005,SN-HP-D10042,HP,EliteBook 840 G8,manon.charpentier,Windows 11 Pro,23H2,corp.demo.fr,x64,En service,
+LAPTOP-PROD-006,SN-DL-D10043,Dell,XPS 15,manon.charpentier,Windows 11 Pro,23H2,corp.demo.fr,x64,En réparation,Charnière cassée
+PC-STOCK-D01,SN-DL-D10044,Dell,OptiPlex 7090,,Windows 11 Pro,23H2,,x64,En stock,Lot neuf — non attribué
+PC-STOCK-D02,SN-HP-D10045,HP,EliteDesk 800 G6,,Windows 11 Pro,23H2,,x64,En stock,
+PC-STOCK-D03,SN-LN-D10046,Lenovo,ThinkCentre M720q,,Windows 11 Pro,23H2,,x64,En stock,
+PC-STOCK-D04,SN-DL-D10047,Dell,Latitude 5520,,Windows 11 Pro,23H2,,x64,En stock,Réservé onboarding
+PC-STOCK-D05,SN-HP-D10048,HP,ProBook 450 G9,,Windows 11 Pro,23H2,,x64,En stock,
+PC-OLD-D01,SN-DL-D00001,Dell,Latitude 5490,romain.gillet,Windows 10 Pro,21H2,dev.demo.fr,x86,Retiré,Remplacé ThinkPad
+PC-OLD-D02,SN-HP-D00002,HP,ProBook 430 G5,nadine.collet,Windows 10 Pro,21H2,rh.demo.fr,x86,Retiré,Don école
+PC-OLD-D03,SN-LN-D00003,Lenovo,ThinkPad E480,marc.tessier,Windows 10 Pro,21H2,it.demo.fr,x86,Retiré,CPU trop lent

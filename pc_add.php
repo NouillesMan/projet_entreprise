@@ -6,8 +6,11 @@ require __DIR__ . "/includes/db.php";
 $allowedArch = ["x86","x64","arm64"];
 $allowedStatut = ["En service","En stock","En réparation","Retiré"];
 
-// Charger les options de configuration
+// Charger les options de configuration (marques, modèles, OS, versions)
+// require avec retour de valeur : get_options.php exécute son code et retourne un tableau
 $options = require __DIR__ . "/includes/get_options.php";
+
+// Charge les fonctions utilitaires partagées, notamment get_custom_fields()
 require __DIR__ . "/includes/helpers.php";
 
 // Récupérer les utilisateurs existants
@@ -19,6 +22,8 @@ $stmtBrands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque");
 $existingBrands = $stmtBrands->fetchAll(PDO::FETCH_COLUMN);
 $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 
+// Récupère les champs personnalisés visibles définis par l'admin via admin/fields.php.
+// Ce sont des colonnes supplémentaires à afficher et sauvegarder en plus des champs fixes.
 $customFields = get_custom_fields($pdo);
 
 $errors = [];
@@ -44,9 +49,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($os === "") $errors[] = "OS obligatoire";
   if (!in_array($architecture, $allowedArch, true)) $errors[] = "Architecture invalide";
   if (!in_array($statut, $allowedStatut, true)) $errors[] = "Statut invalide";
+  // Validation des champs personnalisés obligatoires.
+  // On boucle sur chaque champ custom chargé depuis la BDD.
   foreach ($customFields as $cf) {
+    // is_required : flag BDD (1 = obligatoire, 0 = facultatif)
+    // Les valeurs des champs custom sont postées sous le préfixe "cf_" + field_name
+    // Ex : le champ "localisation" arrive dans $_POST["cf_localisation"]
+    // L'opérateur ?? "" évite un warning si la clé n'existe pas dans $_POST
     if ($cf['is_required'] && trim($_POST["cf_" . $cf['field_name']] ?? "") === "") {
-      $errors[] = $cf['field_label'] . " obligatoire";
+      $errors[] = $cf['field_label'] . " obligatoire"; // field_label = texte lisible par l'humain
     }
   }
 
@@ -70,10 +81,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":remarques" => $remarques,
       ]);
 
+      // Sauvegarde des champs personnalisés dans la table pc_custom_data.
+      // On ne fait ce bloc que s'il y a effectivement des champs custom (optimisation).
       if (!empty($customFields)) {
-        $lastId   = (int)$pdo->lastInsertId();
-        $stmtCf   = $pdo->prepare("INSERT INTO pc_custom_data (pc_id, field_name, field_value) VALUES (?, ?, ?)");
+        // lastInsertId() retourne l'id AUTO_INCREMENT du PC qu'on vient d'insérer.
+        // (int) : on force en entier pour la sécurité (évite une injection si jamais).
+        $lastId = (int)$pdo->lastInsertId();
+
+        // On prépare la requête UNE SEULE FOIS en dehors de la boucle.
+        // PDO réutilise la requête compilée à chaque execute() → plus performant que N prepare().
+        // Les ? sont des paramètres positionnels (placeholders) : remplacés par les vraies valeurs à l'exécution.
+        $stmtCf = $pdo->prepare("INSERT INTO pc_custom_data (pc_id, field_name, field_value) VALUES (?, ?, ?)");
+
         foreach ($customFields as $cf) {
+          // execute() envoie les valeurs dans l'ordre des ? de la requête préparée.
+          // trim() supprime les espaces parasites autour de la valeur saisie.
           $stmtCf->execute([$lastId, $cf['field_name'], trim($_POST["cf_" . $cf['field_name']] ?? "")]);
         }
       }
@@ -228,22 +250,40 @@ require __DIR__ . "/partials/header.php";
                     placeholder="Notes supplémentaires..."><?= e($_POST["remarques"] ?? "") ?></textarea>
         </div>
 
-        <?php if (!empty($customFields)): ?>
-        <?php foreach ($customFields as $cf): ?>
-        <div class="col-md-6">
+        <?php if (!empty($customFields)): // N'affiche ce bloc que si des champs custom existent ?>
+        <?php foreach ($customFields as $cf): // On boucle sur chaque champ custom ?>
+        <div class="col-md-6"><!-- Chaque champ prend la moitié de la largeur -->
+
           <label class="form-label">
-            <?= e($cf['field_label']) ?>
-            <?php if ($cf['is_required']): ?><span class="text-danger">*</span><?php endif; ?>
+            <?= e($cf['field_label']) ?><!-- Libellé lisible ex : "Localisation" -->
+            <?php if ($cf['is_required']): ?>
+              <span class="text-danger">*</span><!-- Astérisque rouge si obligatoire -->
+            <?php endif; ?>
           </label>
+
           <?php if ($cf['field_type'] === 'textarea'): ?>
-            <textarea class="form-control" name="cf_<?= e($cf['field_name']) ?>"
-                      rows="3"<?= $cf['is_required'] ? ' required' : '' ?>><?= e($_POST["cf_" . $cf['field_name']] ?? "") ?></textarea>
+            <!-- Cas spécial : le type "textarea" nécessite une balise différente de <input> -->
+            <textarea class="form-control"
+                      name="cf_<?= e($cf['field_name']) ?>"<!-- Préfixe "cf_" pour distinguer des champs fixes -->
+                      rows="3"<?= $cf['is_required'] ? ' required' : '' ?>
+                      ><?= e($_POST["cf_" . $cf['field_name']] ?? "") ?></textarea>
+                      <!-- Pré-remplissage si le formulaire a été soumis avec des erreurs -->
+
           <?php else: ?>
+            <!-- Pour tous les autres types : text, number, date -->
             <input class="form-control"
+                   <?php
+                   // in_array() vérifie que le type est bien dans la liste des types HTML valides.
+                   // Si l'admin avait rentré un type inconnu en BDD, on fallback sur 'text' (sécurité).
+                   // On n'échappe pas la valeur ici car in_array() garantit déjà qu'elle est sûre.
+                   ?>
                    type="<?= in_array($cf['field_type'], ['text','number','date']) ? e($cf['field_type']) : 'text' ?>"
                    name="cf_<?= e($cf['field_name']) ?>"
-                   value="<?= e($_POST["cf_" . $cf['field_name']] ?? "") ?>"<?= $cf['is_required'] ? ' required' : '' ?>>
+                   value="<?= e($_POST["cf_" . $cf['field_name']] ?? "") ?>"
+                   <?= $cf['is_required'] ? ' required' : '' ?>>
+                   <!-- L'attribut HTML "required" active la validation native du navigateur -->
           <?php endif; ?>
+
         </div>
         <?php endforeach; ?>
         <?php endif; ?>

@@ -9,8 +9,10 @@ if (!$id) { die("ID invalide"); }
 $allowedArch = ["x86","x64","arm64"];
 $allowedStatut = ["En service","En stock","En réparation","Retiré"];
 
-// Charger les options de configuration
+// Charger les options de configuration (marques, modèles, OS, versions)
 $options = require __DIR__ . "/includes/get_options.php";
+
+// Charge les fonctions utilitaires partagées, notamment get_custom_fields()
 require __DIR__ . "/includes/helpers.php";
 
 // Récupérer les utilisateurs existants
@@ -22,12 +24,18 @@ $stmtBrands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque");
 $existingBrands = $stmtBrands->fetchAll(PDO::FETCH_COLUMN);
 $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 
+// Récupère les champs personnalisés visibles définis par l'admin.
 $customFields = get_custom_fields($pdo);
 
-$customValues = [];
+// Charge les valeurs actuelles des champs custom pour CE PC, afin de pré-remplir le formulaire.
+$customValues = []; // Tableau associatif : field_name => valeur actuelle en BDD
 if (!empty($customFields)) {
+    // Requête préparée : le ? sera remplacé par $id lors de execute()
     $stmtCv = $pdo->prepare("SELECT field_name, field_value FROM pc_custom_data WHERE pc_id = ?");
-    $stmtCv->execute([$id]);
+    $stmtCv->execute([$id]); // Exécute avec l'ID du PC en cours d'édition
+
+    // On transforme le tableau de lignes en tableau associatif pour un accès rapide :
+    // $customValues['localisation'] = 'Salle B' plutôt que chercher dans un tableau de lignes
     foreach ($stmtCv->fetchAll() as $row) {
         $customValues[$row['field_name']] = $row['field_value'];
     }
@@ -56,6 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if ($os === "") $errors[] = "OS obligatoire";
   if (!in_array($architecture, $allowedArch, true)) $errors[] = "Architecture invalide";
   if (!in_array($statut, $allowedStatut, true)) $errors[] = "Statut invalide";
+  // Validation des champs personnalisés obligatoires (même logique que pc_add.php)
   foreach ($customFields as $cf) {
     if ($cf['is_required'] && trim($_POST["cf_" . $cf['field_name']] ?? "") === "") {
       $errors[] = $cf['field_label'] . " obligatoire";
@@ -94,12 +103,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":id" => $id,
       ]);
 
+      // Sauvegarde des champs personnalisés via un UPSERT (INSERT ou UPDATE selon existence).
       if (!empty($customFields)) {
         $stmtCf = $pdo->prepare(
+            // INSERT ... ON DUPLICATE KEY UPDATE : c'est la syntaxe MySQL pour un "upsert".
+            // Si la combinaison (pc_id, field_name) existe déjà → on met à jour field_value.
+            // Si elle n'existe pas encore → on insère une nouvelle ligne.
+            // C'est plus robuste qu'un DELETE + INSERT car ça gère les deux cas en une seule requête.
             "INSERT INTO pc_custom_data (pc_id, field_name, field_value) VALUES (?, ?, ?)
              ON DUPLICATE KEY UPDATE field_value = VALUES(field_value)"
+            // VALUES(field_value) fait référence à la valeur qu'on tentait d'insérer
         );
         foreach ($customFields as $cf) {
+          // On utilise $id (l'ID du PC en cours de modification) et non lastInsertId()
+          // car on ne crée pas un nouveau PC ici, on met à jour un existant.
           $stmtCf->execute([$id, $cf['field_name'], trim($_POST["cf_" . $cf['field_name']] ?? "")]);
         }
       }
@@ -276,7 +293,13 @@ require __DIR__ . "/partials/header.php";
 
         <?php if (!empty($customFields)): ?>
         <?php foreach ($customFields as $cf): ?>
-        <?php $cfVal = $_POST["cf_" . $cf['field_name']] ?? ($customValues[$cf['field_name']] ?? ""); ?>
+        <?php
+          // Priorité de la valeur affichée (de haute en basse) :
+          // 1. $_POST["cf_..."] : si le formulaire a été re-soumis avec des erreurs, on conserve la saisie
+          // 2. $customValues[...] : valeur actuelle enregistrée en BDD pour ce PC
+          // 3. "" : chaîne vide si le champ n'a jamais été renseigné
+          $cfVal = $_POST["cf_" . $cf['field_name']] ?? ($customValues[$cf['field_name']] ?? "");
+        ?>
         <div class="col-md-6">
           <label class="form-label">
             <?= e($cf['field_label']) ?>
@@ -290,6 +313,8 @@ require __DIR__ . "/partials/header.php";
                    type="<?= in_array($cf['field_type'], ['text','number','date']) ? e($cf['field_type']) : 'text' ?>"
                    name="cf_<?= e($cf['field_name']) ?>"
                    value="<?= e($cfVal) ?>"<?= $cf['is_required'] ? ' required' : '' ?>>
+            <!-- Différence avec pc_add.php : $cfVal contient la valeur BDD existante ($customValues),
+                 alors que pc_add.php utilise uniquement $_POST (pas de valeur pré-existante). -->
           <?php endif; ?>
         </div>
         <?php endforeach; ?>
