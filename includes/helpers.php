@@ -3,6 +3,27 @@
 // Ce fichier est inclus manuellement avec require() dans les pages qui en ont besoin
 // (pc_add.php, pc_edit.php), contrairement à auth.php qui est inclus partout.
 
+if (!defined('PC_ARCH')) {
+    define('PC_ARCH', ['x86', 'x64', 'arm64']);
+}
+if (!defined('PC_STATUTS')) {
+    define('PC_STATUTS', ['En service', 'En stock', 'En réparation', 'Retiré']);
+}
+
+/**
+ * Retourne la classe Bootstrap bg-* correspondant au statut d'un PC.
+ */
+function statut_badge_class(string $statut): string
+{
+    return match($statut) {
+        'En service'   => 'success',
+        'En stock'     => 'info',
+        'En réparation' => 'warning',
+        'Retiré'       => 'secondary',
+        default        => 'secondary',
+    };
+}
+
 /**
  * Charge les champs personnalisés visibles depuis la base de données,
  * dans l'ordre d'affichage défini par l'admin.

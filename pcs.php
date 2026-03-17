@@ -2,23 +2,23 @@
 require __DIR__ . "/includes/auth.php";
 require_perm("can_view");
 require __DIR__ . "/includes/db.php";
+require __DIR__ . "/includes/helpers.php";
 
 $q = trim($_GET["q"] ?? "");
 $statut = $_GET["statut"] ?? "";
 $arch = $_GET["arch"] ?? "";
 $marque = $_GET["marque"] ?? "";
 
-$allowedStatut = ["", "En service", "En stock", "En réparation", "Retiré"];
-$allowedArch = ["", "x86", "x64", "arm64"];
+$allowedStatut = array_merge([''], PC_STATUTS);
+$allowedArch   = array_merge([''], PC_ARCH);
 $brands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque")
   ->fetchAll(PDO::FETCH_COLUMN);
-$sql = "SELECT id, hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, updated_at
-        FROM pcs
-        WHERE 1=1 ";
+
+$where  = "WHERE 1=1 ";
 $params = [];
 
 if ($q !== "") {
-  $sql .= "AND (
+  $where .= "AND (
     hostname LIKE :q1 OR serial LIKE :q2 OR marque LIKE :q3 OR modele LIKE :q4 OR utilisateur LIKE :q5
     OR os LIKE :q6 OR os_version LIKE :q7 OR domaine LIKE :q8
   ) ";
@@ -34,32 +34,32 @@ if ($q !== "") {
 }
 
 if (in_array($statut, $allowedStatut, true) && $statut !== "") {
-  $sql .= "AND statut = :statut ";
+  $where .= "AND statut = :statut ";
   $params[":statut"] = $statut;
 }
 
 if (in_array($arch, $allowedArch, true) && $arch !== "") {
-  $sql .= "AND architecture = :arch ";
+  $where .= "AND architecture = :arch ";
   $params[":arch"] = $arch;
 }
 
 if ($marque !== "") {
-  $sql .= "AND marque = :marque ";
+  $where .= "AND marque = :marque ";
   $params[":marque"] = $marque;
 }
 
 $perPage = 50;
 $page    = max(1, (int)($_GET["page"] ?? 1));
-$offset  = ($page - 1) * $perPage;
 
 // Compter le total pour la pagination
-$countStmt = $pdo->prepare("SELECT COUNT(*) " . substr($sql, strpos($sql, "FROM")));
+$countStmt = $pdo->prepare("SELECT COUNT(*) FROM pcs $where");
 $countStmt->execute($params);
 $total      = (int)$countStmt->fetchColumn();
 $totalPages = (int)ceil($total / $perPage);
 $page       = min($page, max(1, $totalPages));
 
-$sql .= "ORDER BY updated_at DESC LIMIT :perPage OFFSET :offset";
+$sql = "SELECT id, hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, updated_at
+        FROM pcs $where ORDER BY updated_at DESC LIMIT :perPage OFFSET :offset";
 $params[":perPage"] = $perPage;
 $params[":offset"]  = ($page - 1) * $perPage;
 
@@ -86,14 +86,14 @@ require __DIR__ . "/partials/header.php";
     <div class="card-body">
       <form class="row g-3" method="get">
         <div class="col-md-4">
-          <input class="form-control" name="q" value="<?= htmlspecialchars($q) ?>"
+          <input class="form-control" name="q" value="<?= e($q) ?>"
                  placeholder="Recherche (hostname, serial, user, OS...)">
         </div>
         <div class="col-md-2">
           <select class="form-select" name="statut">
             <?php foreach ($allowedStatut as $s): ?>
-              <option value="<?= htmlspecialchars($s) ?>" <?= $statut === $s ? "selected" : "" ?>>
-                <?= $s === "" ? "Tous statuts" : htmlspecialchars($s) ?>
+              <option value="<?= e($s) ?>" <?= $statut === $s ? "selected" : "" ?>>
+                <?= $s === "" ? "Tous statuts" : e($s) ?>
               </option>
             <?php endforeach; ?>
           </select>
@@ -101,8 +101,8 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-2">
           <select class="form-select" name="arch">
             <?php foreach ($allowedArch as $a): ?>
-              <option value="<?= htmlspecialchars($a) ?>" <?= $arch === $a ? "selected" : "" ?>>
-                <?= $a === "" ? "Toute archi" : htmlspecialchars($a) ?>
+              <option value="<?= e($a) ?>" <?= $arch === $a ? "selected" : "" ?>>
+                <?= $a === "" ? "Toute archi" : e($a) ?>
               </option>
             <?php endforeach; ?>
           </select>
@@ -111,8 +111,8 @@ require __DIR__ . "/partials/header.php";
           <select class="form-select" name="marque">
             <option value="">Toutes marques</option>
             <?php foreach ($brands as $b): ?>
-              <option value="<?= htmlspecialchars($b) ?>" <?= $marque === $b ? "selected" : "" ?>>
-                <?= htmlspecialchars($b) ?>
+              <option value="<?= e($b) ?>" <?= $marque === $b ? "selected" : "" ?>>
+                <?= e($b) ?>
               </option>
             <?php endforeach; ?>
           </select>
@@ -147,28 +147,19 @@ require __DIR__ . "/partials/header.php";
           <tbody>
           <?php foreach ($pcs as $pc): ?>
             <tr>
-              <td><strong><?= htmlspecialchars($pc["hostname"]) ?></strong></td>
-              <td><code class="text-info"><?= htmlspecialchars($pc["serial"]) ?></code></td>
-              <td><?= htmlspecialchars($pc["marque"]) ?></td>
-              <td><?= htmlspecialchars($pc["modele"] ?? "-") ?></td>
-              <td><?= htmlspecialchars($pc["utilisateur"]) ?></td>
-              <td><?= htmlspecialchars($pc["os"]) ?></td>
-              <td><?= htmlspecialchars($pc["os_version"] ?? "-") ?></td>
-              <td><span class="badge bg-secondary"><?= htmlspecialchars($pc["architecture"]) ?></span></td>
-              <td><?= htmlspecialchars($pc["domaine"] ?? "-") ?></td>
+              <td><strong><?= e($pc["hostname"]) ?></strong></td>
+              <td><code class="text-info"><?= e($pc["serial"]) ?></code></td>
+              <td><?= e($pc["marque"]) ?></td>
+              <td><?= e($pc["modele"] ?? "-") ?></td>
+              <td><?= e($pc["utilisateur"]) ?></td>
+              <td><?= e($pc["os"]) ?></td>
+              <td><?= e($pc["os_version"] ?? "-") ?></td>
+              <td><span class="badge bg-secondary"><?= e($pc["architecture"]) ?></span></td>
+              <td><?= e($pc["domaine"] ?? "-") ?></td>
               <td>
-                <?php
-                $statusClass = match($pc["statut"]) {
-                  "En service" => "success",
-                  "En stock" => "info",
-                  "En réparation" => "warning",
-                  "Retiré" => "secondary",
-                  default => "secondary"
-                };
-                ?>
-                <span class="badge bg-<?= $statusClass ?>"><?= htmlspecialchars($pc["statut"]) ?></span>
+                <span class="badge bg-<?= statut_badge_class($pc["statut"]) ?>"><?= e($pc["statut"]) ?></span>
               </td>
-              <td><small class="text-muted"><?= htmlspecialchars($pc["updated_at"]) ?></small></td>
+              <td><small class="text-muted"><?= e($pc["updated_at"]) ?></small></td>
               <td>
                 <div class="dropdown">
                   <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"

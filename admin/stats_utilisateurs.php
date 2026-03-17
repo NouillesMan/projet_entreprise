@@ -21,33 +21,22 @@ const UNASSIGNED = '— Non attribué —';
 // ── Requête principale ─────────────────────────────────────────────────────────
 // Une seule requête SQL récupère tout ce qu'on affiche :
 // nombre de PCs par utilisateur + décompte par statut.
-$rows = $pdo->query("
+// La constante UNASSIGNED est passée en paramètre PDO pour éviter de dupliquer
+// la chaîne littérale dans le SQL (elle est liée deux fois : SELECT + GROUP BY).
+$stmtRows = $pdo->prepare("
     SELECT
-        -- TRIM() supprime les espaces en début/fin du nom d'utilisateur
-        -- NULLIF(x, '') retourne NULL si x est une chaîne vide, sinon retourne x
-        -- COALESCE(x, fallback) retourne x si x n'est pas NULL, sinon retourne fallback
-        -- Résultat : si utilisateur est vide ou NULL → on affiche '— Non attribué —'
-        COALESCE(NULLIF(TRIM(utilisateur), ''), '— Non attribué —') AS utilisateur,
-
-        COUNT(*) AS nb_pcs, -- Nombre total de PCs pour cet utilisateur
-
-        -- SUM(condition) : en MySQL, une condition booléenne vaut 1 si vraie, 0 sinon.
-        -- SUM additionne ces 1 et 0 → donne le nombre de lignes où la condition est vraie.
+        COALESCE(NULLIF(TRIM(utilisateur), ''), ?) AS utilisateur,
+        COUNT(*) AS nb_pcs,
         SUM(statut = 'En service')    AS en_service,
         SUM(statut = 'En stock')      AS en_stock,
         SUM(statut = 'En réparation') AS en_reparation,
         SUM(statut = 'Retiré')        AS retire
-
     FROM pcs
-
-    -- GROUP BY regroupe toutes les lignes ayant le même utilisateur (après transformation COALESCE).
-    -- Sans GROUP BY, COUNT(*) compterait tous les PCs de la table.
-    GROUP BY COALESCE(NULLIF(TRIM(utilisateur), ''), '— Non attribué —')
-
-    -- On trie d'abord par nb_pcs décroissant (le plus chargé en premier),
-    -- puis par nom utilisateur croissant pour les ex-æquo.
+    GROUP BY utilisateur
     ORDER BY nb_pcs DESC, utilisateur ASC
-")->fetchAll(); // fetchAll() charge tous les résultats en mémoire sous forme de tableau PHP
+");
+$stmtRows->execute([UNASSIGNED]);
+$rows = $stmtRows->fetchAll();
 
 
 // ── Calcul des métriques résumé ────────────────────────────────────────────────
@@ -64,7 +53,8 @@ $nbUtilisateurs = count(array_filter($rows, fn($r) => $r['utilisateur'] !== UNAS
 // $rows est déjà trié par nb_pcs DESC, donc $rows[0] est l'utilisateur avec le plus de PCs.
 // (int) convertit la valeur string retournée par PDO en entier PHP.
 // Si le tableau est vide (aucun PC en BDD), on met 1 par défaut pour éviter une division par zéro plus loin.
-$maxPcs = !empty($rows) ? (int)$rows[0]['nb_pcs'] : 1;
+$maxPcs   = !empty($rows) ? (int)$rows[0]['nb_pcs'] : 1;
+$rowCount = count($rows);
 
 
 // ── Préparation de l'affichage ─────────────────────────────────────────────────
@@ -144,7 +134,7 @@ require __DIR__ . "/../partials/header.php";    // Affiche le HTML de début de 
       <h6 class="mb-0">
         Répartition des PCs
         <!-- Affichage du nombre de lignes avec accord pluriel -->
-        (<?= count($rows) ?> entrée<?= count($rows) > 1 ? 's' : '' ?>)
+        (<?= $rowCount ?> entrée<?= $rowCount > 1 ? 's' : '' ?>)
       </h6>
 
       <!-- Champ de recherche live : filtrage des lignes sans rechargement de page -->

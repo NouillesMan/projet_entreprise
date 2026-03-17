@@ -6,14 +6,14 @@ require __DIR__ . "/includes/db.php";
 $id = filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT);
 if (!$id) { die("ID invalide"); }
 
-$allowedArch = ["x86","x64","arm64"];
-$allowedStatut = ["En service","En stock","En réparation","Retiré"];
-
 // Charger les options de configuration (marques, modèles, OS, versions)
 $options = require __DIR__ . "/includes/get_options.php";
 
-// Charge les fonctions utilitaires partagées, notamment get_custom_fields()
+// Charge les fonctions utilitaires partagées, notamment get_custom_fields() et les constantes
 require __DIR__ . "/includes/helpers.php";
+
+$allowedArch   = PC_ARCH;
+$allowedStatut = PC_STATUTS;
 
 // Récupérer les utilisateurs existants
 $stmtUsers = $pdo->query("SELECT DISTINCT utilisateur FROM pcs ORDER BY utilisateur");
@@ -27,15 +27,17 @@ $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 // Récupère les champs personnalisés visibles définis par l'admin.
 $customFields = get_custom_fields($pdo);
 
+// Charger le PC immédiatement — fail fast avant tout autre traitement.
+$stmt = $pdo->prepare("SELECT * FROM pcs WHERE id = ?");
+$stmt->execute([$id]);
+$pc = $stmt->fetch();
+if (!$pc) { die("PC introuvable"); }
+
 // Charge les valeurs actuelles des champs custom pour CE PC, afin de pré-remplir le formulaire.
 $customValues = []; // Tableau associatif : field_name => valeur actuelle en BDD
 if (!empty($customFields)) {
-    // Requête préparée : le ? sera remplacé par $id lors de execute()
     $stmtCv = $pdo->prepare("SELECT field_name, field_value FROM pc_custom_data WHERE pc_id = ?");
-    $stmtCv->execute([$id]); // Exécute avec l'ID du PC en cours d'édition
-
-    // On transforme le tableau de lignes en tableau associatif pour un accès rapide :
-    // $customValues['localisation'] = 'Salle B' plutôt que chercher dans un tableau de lignes
+    $stmtCv->execute([$id]);
     foreach ($stmtCv->fetchAll() as $row) {
         $customValues[$row['field_name']] = $row['field_value'];
     }
@@ -133,13 +135,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 }
 
-// Charger le PC (pour affichage / pré-remplissage)
-$stmt = $pdo->prepare("SELECT * FROM pcs WHERE id = ?");
-$stmt->execute([$id]);
-$pc = $stmt->fetch();
-if (!$pc) { die("PC introuvable"); }
-
-
 $pageTitle = "Modifier un PC";
 $activePage = "pcs";
 require __DIR__ . "/partials/header.php";
@@ -183,8 +178,8 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-4">
           <label class="form-label">Marque <span class="text-danger">*</span></label>
           <select class="form-select" name="marque" id="marque" required>
+            <?php $currentMarque = $_POST["marque"] ?? $pc["marque"]; ?>
             <?php foreach ($allBrands as $brand): ?>
-              <?php $currentMarque = $_POST["marque"] ?? $pc["marque"]; ?>
               <option value="<?= e($brand) ?>" <?= $currentMarque === $brand ? "selected" : "" ?>>
                 <?= e($brand) ?>
               </option>
@@ -217,8 +212,8 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-4">
           <label class="form-label">Utilisateur <span class="text-danger">*</span></label>
           <select class="form-select" name="utilisateur" id="utilisateur" required>
+            <?php $currentUser = $_POST["utilisateur"] ?? $pc["utilisateur"]; ?>
             <?php foreach ($existingUsers as $user): ?>
-              <?php $currentUser = $_POST["utilisateur"] ?? $pc["utilisateur"]; ?>
               <option value="<?= e($user) ?>" <?= $currentUser === $user ? "selected" : "" ?>>
                 <?= e($user) ?>
               </option>
@@ -232,10 +227,10 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-4">
           <label class="form-label">OS <span class="text-danger">*</span></label>
           <select class="form-select" name="os" id="os" required>
+            <?php $currentOS = $_POST["os"] ?? $pc["os"]; ?>
             <?php foreach ($options['os'] as $osFamily => $osList): ?>
               <optgroup label="<?= e($osFamily) ?>">
                 <?php foreach ($osList as $osName): ?>
-                  <?php $currentOS = $_POST["os"] ?? $pc["os"]; ?>
                   <option value="<?= e($osName) ?>" <?= $currentOS === $osName ? "selected" : "" ?>>
                     <?= e($osName) ?>
                   </option>
@@ -265,9 +260,9 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-4">
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
           <select class="form-select" name="architecture" required>
-            <?php foreach (["x86","x64","arm64"] as $a): ?>
-              <?php $cur = $_POST["architecture"] ?? $pc["architecture"]; ?>
-              <option value="<?= e($a) ?>" <?= $cur === $a ? "selected" : "" ?>><?= e($a) ?></option>
+            <?php $curArch = $_POST["architecture"] ?? $pc["architecture"]; ?>
+            <?php foreach ($allowedArch as $a): ?>
+              <option value="<?= e($a) ?>" <?= $curArch === $a ? "selected" : "" ?>><?= e($a) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -279,9 +274,9 @@ require __DIR__ . "/partials/header.php";
         <div class="col-md-6">
           <label class="form-label">Statut <span class="text-danger">*</span></label>
           <select class="form-select" name="statut" required>
-            <?php foreach (["En service","En stock","En réparation","Retiré"] as $s): ?>
-              <?php $cur = $_POST["statut"] ?? $pc["statut"]; ?>
-              <option value="<?= e($s) ?>" <?= $cur === $s ? "selected" : "" ?>><?= e($s) ?></option>
+            <?php $curStatut = $_POST["statut"] ?? $pc["statut"]; ?>
+            <?php foreach ($allowedStatut as $s): ?>
+              <option value="<?= e($s) ?>" <?= $curStatut === $s ? "selected" : "" ?>><?= e($s) ?></option>
             <?php endforeach; ?>
           </select>
         </div>

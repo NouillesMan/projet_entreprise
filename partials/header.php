@@ -6,13 +6,20 @@ $activePage = $activePage ?? "";
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 $isLoggedIn = isset($_SESSION["user_id"]);
+
+// Fallback : e() peut ne pas encore être définie (ex : login.php n'inclut pas auth.php)
+if (!function_exists('e')) {
+    function e($v): string {
+        return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+    }
+}
 ?>
 <!doctype html>
 <html lang="fr" data-bs-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, "UTF-8") ?></title>
+  <title><?= e($pageTitle) ?></title>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,7 +37,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
   <style><?= $pageStyles ?></style>
   <?php endif; ?>
 </head>
-<body class="<?= htmlspecialchars($bodyClass, ENT_QUOTES, 'UTF-8') ?>">
+<body class="<?= e($bodyClass) ?>">
 
 <?php if ($isLoggedIn): ?>
 
@@ -94,7 +101,7 @@ $isLoggedIn = isset($_SESSION["user_id"]);
   <div class="sidebar-footer">
     <div class="user-info">
       <i class="bi bi-person-circle"></i>
-      <?= htmlspecialchars($_SESSION["username"] ?? "", ENT_QUOTES, "UTF-8") ?>
+      <?= e($_SESSION["username"] ?? "") ?>
     </div>
     <a href="/logout.php" class="btn btn-sm btn-outline-secondary w-100">
       <i class="bi bi-box-arrow-right"></i> Deconnexion

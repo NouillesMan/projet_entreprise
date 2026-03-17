@@ -3,15 +3,15 @@ require __DIR__ . "/includes/auth.php";
 require_perm("can_add");
 require __DIR__ . "/includes/db.php";
 
-$allowedArch = ["x86","x64","arm64"];
-$allowedStatut = ["En service","En stock","En réparation","Retiré"];
-
 // Charger les options de configuration (marques, modèles, OS, versions)
 // require avec retour de valeur : get_options.php exécute son code et retourne un tableau
 $options = require __DIR__ . "/includes/get_options.php";
 
-// Charge les fonctions utilitaires partagées, notamment get_custom_fields()
+// Charge les fonctions utilitaires partagées, notamment get_custom_fields() et les constantes
 require __DIR__ . "/includes/helpers.php";
+
+$allowedArch   = PC_ARCH;
+$allowedStatut = PC_STATUTS;
 
 // Récupérer les utilisateurs existants
 $stmtUsers = $pdo->query("SELECT DISTINCT utilisateur FROM pcs ORDER BY utilisateur");
@@ -221,9 +221,9 @@ require __DIR__ . "/partials/header.php";
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
           <select class="form-select" name="architecture" required>
             <option value="">Sélectionner...</option>
-            <?php foreach (["x86","x64","arm64"] as $a): ?>
-              <?php $cur = $_POST["architecture"] ?? ""; ?>
-              <option value="<?= e($a) ?>" <?= $cur === $a ? "selected" : "" ?>><?= e($a) ?></option>
+            <?php $curArch = $_POST["architecture"] ?? ""; ?>
+            <?php foreach ($allowedArch as $a): ?>
+              <option value="<?= e($a) ?>" <?= $curArch === $a ? "selected" : "" ?>><?= e($a) ?></option>
             <?php endforeach; ?>
           </select>
         </div>
@@ -237,9 +237,9 @@ require __DIR__ . "/partials/header.php";
           <label class="form-label">Statut <span class="text-danger">*</span></label>
           <select class="form-select" name="statut" required>
             <option value="">Sélectionner...</option>
-            <?php foreach (["En service","En stock","En réparation","Retiré"] as $s): ?>
-              <?php $cur = $_POST["statut"] ?? ""; ?>
-              <option value="<?= e($s) ?>" <?= $cur === $s ? "selected" : "" ?>><?= e($s) ?></option>
+            <?php $curStatut = $_POST["statut"] ?? ""; ?>
+            <?php foreach ($allowedStatut as $s): ?>
+              <option value="<?= e($s) ?>" <?= $curStatut === $s ? "selected" : "" ?>><?= e($s) ?></option>
             <?php endforeach; ?>
           </select>
         </div>

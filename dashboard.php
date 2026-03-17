@@ -2,6 +2,7 @@
 require __DIR__ . "/includes/auth.php";
 require_perm("can_view");
 require __DIR__ . "/includes/db.php";
+require __DIR__ . "/includes/helpers.php";
 
 // --- Stats ---
 $total = (int) $pdo->query("SELECT COUNT(*) FROM pcs")->fetchColumn();
@@ -122,7 +123,7 @@ require __DIR__ . "/partials/header.php";
           <?php $pct = $total > 0 ? round($cnt / $total * 100) : 0; ?>
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">
-              <span class="badge bg-secondary"><?= htmlspecialchars($arch) ?></span>
+              <span class="badge bg-secondary"><?= e($arch) ?></span>
               <small class="text-muted"><?= $cnt ?> (<?= $pct ?>%)</small>
             </div>
             <div class="progress" style="height: 6px;">
@@ -148,7 +149,7 @@ require __DIR__ . "/partials/header.php";
           <?php $pct = $total > 0 ? round($brand["cnt"] / $total * 100) : 0; ?>
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">
-              <span><?= htmlspecialchars($brand["marque"]) ?></span>
+              <span><?= e($brand["marque"]) ?></span>
               <small class="text-muted"><?= $brand["cnt"] ?> (<?= $pct ?>%)</small>
             </div>
             <div class="progress" style="height: 6px;">
@@ -174,7 +175,7 @@ require __DIR__ . "/partials/header.php";
           <?php $pct = $total > 0 ? round($os["cnt"] / $total * 100) : 0; ?>
           <div class="mb-3">
             <div class="d-flex justify-content-between mb-1">
-              <span><?= htmlspecialchars($os["os"]) ?></span>
+              <span><?= e($os["os"]) ?></span>
               <small class="text-muted"><?= $os["cnt"] ?> (<?= $pct ?>%)</small>
             </div>
             <div class="progress" style="height: 6px;">
@@ -218,27 +219,18 @@ require __DIR__ . "/partials/header.php";
                   <td>
                     <?php if (!empty($_SESSION["can_edit"])): ?>
                     <a href="/pc_edit.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none">
-                      <strong><?= htmlspecialchars($pc["hostname"]) ?></strong>
+                      <strong><?= e($pc["hostname"]) ?></strong>
                     </a>
                     <?php else: ?>
-                    <strong><?= htmlspecialchars($pc["hostname"]) ?></strong>
+                    <strong><?= e($pc["hostname"]) ?></strong>
                     <?php endif; ?>
                   </td>
-                  <td><code class="text-info"><?= htmlspecialchars($pc["serial"]) ?></code></td>
-                  <td><?= htmlspecialchars($pc["utilisateur"]) ?></td>
+                  <td><code class="text-info"><?= e($pc["serial"]) ?></code></td>
+                  <td><?= e($pc["utilisateur"]) ?></td>
                   <td>
-                    <?php
-                    $statusClass = match($pc["statut"]) {
-                      "En service" => "success",
-                      "En stock" => "info",
-                      "En réparation" => "warning",
-                      "Retiré" => "secondary",
-                      default => "secondary"
-                    };
-                    ?>
-                    <span class="badge bg-<?= $statusClass ?>"><?= htmlspecialchars($pc["statut"]) ?></span>
+                    <span class="badge bg-<?= statut_badge_class($pc["statut"]) ?>"><?= e($pc["statut"]) ?></span>
                   </td>
-                  <td><small class="text-muted"><?= htmlspecialchars($pc["updated_at"]) ?></small></td>
+                  <td><small class="text-muted"><?= e($pc["updated_at"]) ?></small></td>
                 </tr>
               <?php endforeach; ?>
               <?php if (empty($recentPcs)): ?>
@@ -263,14 +255,14 @@ require __DIR__ . "/partials/header.php";
             <li class="list-group-item bg-transparent border-secondary">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <strong><?= htmlspecialchars($pc["hostname"]) ?></strong>
+                  <strong><?= e($pc["hostname"]) ?></strong>
                   <br>
                   <small class="text-muted">
-                    <?= htmlspecialchars($pc["marque"]) ?>
-                    <?= $pc["modele"] ? " - " . htmlspecialchars($pc["modele"]) : "" ?>
+                    <?= e($pc["marque"]) ?>
+                    <?= $pc["modele"] ? " - " . e($pc["modele"]) : "" ?>
                   </small>
                 </div>
-                <small class="text-muted"><?= htmlspecialchars($pc["created_at"]) ?></small>
+                <small class="text-muted"><?= e($pc["created_at"]) ?></small>
               </div>
             </li>
           <?php endforeach; ?>

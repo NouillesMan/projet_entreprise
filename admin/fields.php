@@ -38,17 +38,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $fieldType = $_POST["field_type"] ?? "text";
     $isRequired = (int)($_POST["is_required"] ?? 0);
 
-    try {
-      $stmt = $pdo->prepare("
-        INSERT INTO custom_fields (field_name, field_label, field_type, is_required, is_visible, display_order)
-        VALUES (?, ?, ?, ?, 1, (SELECT IFNULL(MAX(display_order), 0) + 1 FROM custom_fields AS cf))
-      ");
-      $stmt->execute([$fieldName, $fieldLabel, $fieldType, $isRequired]);
+    if (!preg_match('/^[a-z_]+$/', $fieldName)) {
+      $error = "Nom de champ invalide : lettres minuscules et underscores uniquement.";
+    } else {
+      try {
+        $stmt = $pdo->prepare("
+          INSERT INTO custom_fields (field_name, field_label, field_type, is_required, is_visible, display_order)
+          VALUES (?, ?, ?, ?, 1, (SELECT IFNULL(MAX(display_order), 0) + 1 FROM custom_fields AS cf))
+        ");
+        $stmt->execute([$fieldName, $fieldLabel, $fieldType, $isRequired]);
 
-      header("Location: /admin/fields.php?msg=added");
-      exit;
-    } catch (PDOException $e) {
-      $error = "Erreur: " . $e->getMessage();
+        header("Location: /admin/fields.php?msg=added");
+        exit;
+      } catch (PDOException $e) {
+        $error = "Erreur: " . $e->getMessage();
+      }
     }
   }
 
@@ -95,7 +99,7 @@ require __DIR__ . "/../partials/header.php";
         'deleted' => 'Champ supprimé avec succès',
         'protected' => 'Ce champ est protégé et ne peut pas être supprimé'
       ];
-      echo htmlspecialchars($messages[$_GET['msg']] ?? 'Opération effectuée');
+      echo e($messages[$_GET['msg']] ?? 'Opération effectuée');
       ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
@@ -103,7 +107,7 @@ require __DIR__ . "/../partials/header.php";
 
   <?php if (isset($error)): ?>
     <div class="alert alert-danger alert-dismissible fade show">
-      <?= htmlspecialchars($error) ?>
+      <?= e($error) ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
   <?php endif; ?>
@@ -140,9 +144,9 @@ require __DIR__ . "/../partials/header.php";
                            onchange="this.form.submit()">
                   </form>
                 </td>
-                <td><code><?= htmlspecialchars($field['field_name']) ?></code></td>
-                <td><?= htmlspecialchars($field['field_label']) ?></td>
-                <td><span class="badge bg-info"><?= htmlspecialchars($field['field_type']) ?></span></td>
+                <td><code><?= e($field['field_name']) ?></code></td>
+                <td><?= e($field['field_label']) ?></td>
+                <td><span class="badge bg-info"><?= e($field['field_type']) ?></span></td>
                 <td>
                   <?php if ($field['is_required']): ?>
                     <span class="badge bg-danger">Oui</span>

@@ -2,9 +2,10 @@
 require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
 require __DIR__ . "/../includes/db.php";
+require __DIR__ . "/../includes/helpers.php";
 
-$allowedArch = ["x86", "x64", "arm64"];
-$allowedStatut = ["En service", "En stock", "En réparation", "Retiré"];
+$allowedArch   = PC_ARCH;
+$allowedStatut = PC_STATUTS;
 $requiredColumns = ["hostname", "serial", "marque", "utilisateur", "os", "architecture", "statut"];
 $optionalColumns = ["modele", "domaine", "os_version", "remarques"];
 $allColumns = array_merge($requiredColumns, $optionalColumns);

@@ -14,7 +14,8 @@ if (!$stmt->fetch()) {
     die("PC introuvable");
 }
 
+$pdo->prepare("DELETE FROM pc_custom_data WHERE pc_id = ?")->execute([$id]);
 $pdo->prepare("DELETE FROM pcs WHERE id = ?")->execute([$id]);
 
-header("Location: /pcs.php");
+header("Location: /pcs.php?msg=deleted");
 exit;
