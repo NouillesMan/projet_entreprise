@@ -215,7 +215,16 @@ require __DIR__ . "/../partials/header.php";
         <?= csrf_field() ?>
         <div class="mb-3">
           <label class="form-label">Fichier CSV <span class="text-danger">*</span></label>
-          <input type="file" class="form-control" name="csv_file" accept=".csv" required>
+          <div id="drop-zone" class="border rounded p-4 text-center mb-2"
+               style="border-style: dashed !important; cursor: pointer; transition: border-color .15s, color .15s;">
+            <i class="bi bi-cloud-upload fs-2 text-secondary"></i>
+            <p class="mt-2 mb-1 text-secondary">Glissez votre fichier CSV ici</p>
+            <span class="text-muted small">ou cliquez pour parcourir</span>
+          </div>
+          <div id="file-info" class="d-none alert alert-secondary py-2 mb-2">
+            <i class="bi bi-file-earmark-spreadsheet"></i> <span id="file-name"></span>
+          </div>
+          <input type="file" id="csv-input" name="csv_file" accept=".csv" required class="d-none">
           <small class="text-muted">Encodage UTF-8 recommandé, séparateur virgule.</small>
         </div>
         <div class="mb-3 form-check">
@@ -263,4 +272,54 @@ require __DIR__ . "/../partials/header.php";
 </div>
 
 <?php
+$pageScripts = '
+<script>
+(function() {
+  const zone    = document.getElementById("drop-zone");
+  const input   = document.getElementById("csv-input");
+  const info    = document.getElementById("file-info");
+  const nameEl  = document.getElementById("file-name");
+
+  let dragCounter = 0;
+
+  function showFile(file) {
+    if (!file || !file.name.toLowerCase().endsWith(".csv")) {
+      alert("Veuillez sélectionner un fichier CSV (.csv).");
+      return;
+    }
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    input.files = dt.files;
+
+    nameEl.textContent = file.name + " (" + (file.size / 1024).toFixed(1) + " Ko)";
+    info.classList.remove("d-none");
+    zone.classList.remove("border-primary");
+    zone.classList.add("border-success");
+  }
+
+  zone.addEventListener("click", () => input.click());
+
+  zone.addEventListener("dragenter", e => {
+    e.preventDefault();
+    if (++dragCounter === 1) zone.classList.add("border-primary");
+  });
+
+  zone.addEventListener("dragleave", () => {
+    if (--dragCounter === 0) zone.classList.remove("border-primary");
+  });
+
+  zone.addEventListener("dragover", e => e.preventDefault());
+
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    dragCounter = 0;
+    showFile(e.dataTransfer.files[0]);
+  });
+
+  input.addEventListener("change", () => {
+    if (input.files[0]) showFile(input.files[0]);
+  });
+})();
+</script>
+';
 require __DIR__ . "/../partials/footer.php";

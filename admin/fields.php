@@ -21,16 +21,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     exit;
   }
 
-  if ($action === "update_order") {
-    $fieldId = (int)($_POST["field_id"] ?? 0);
-    $order = (int)($_POST["display_order"] ?? 0);
-
-    $stmt = $pdo->prepare("UPDATE custom_fields SET display_order = ? WHERE id = ?");
-    $stmt->execute([$order, $fieldId]);
-
-    header("Location: /admin/fields.php?msg=updated");
-    exit;
-  }
 
   if ($action === "add_field") {
     $fieldName = trim($_POST["field_name"] ?? "");
@@ -54,6 +44,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $error = "Erreur: " . $e->getMessage();
       }
     }
+  }
+
+  if ($action === "reorder_fields") {
+    $ids = array_values(array_map('intval', json_decode($_POST["ids"] ?? "[]", true) ?: []));
+    if (empty($ids)) {
+      http_response_code(400);
+      header('Content-Type: application/json');
+      echo json_encode(['success' => false]);
+      exit;
+    }
+    $stmt = $pdo->prepare("UPDATE custom_fields SET display_order = ? WHERE id = ?");
+    try {
+      $pdo->beginTransaction();
+      foreach ($ids as $position => $id) {
+        $stmt->execute([$position + 1, $id]);
+      }
+      $pdo->commit();
+    } catch (PDOException $e) {
+      $pdo->rollBack();
+      http_response_code(500);
+      header('Content-Type: application/json');
+      echo json_encode(['success' => false]);
+      exit;
+    }
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true]);
+    exit;
   }
 
   if ($action === "delete_field") {
@@ -122,7 +139,7 @@ require __DIR__ . "/../partials/header.php";
         <table class="table table-hover mb-0">
           <thead>
             <tr>
-              <th>Ordre</th>
+              <th style="width:40px;"></th>
               <th>Nom du champ</th>
               <th>Libellé</th>
               <th>Type</th>
@@ -131,18 +148,11 @@ require __DIR__ . "/../partials/header.php";
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="fields-sortable">
             <?php foreach ($fields as $field): ?>
-              <tr>
-                <td>
-                  <form method="post" class="d-inline">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="action" value="update_order">
-                    <input type="hidden" name="field_id" value="<?= $field['id'] ?>">
-                    <input type="number" name="display_order" value="<?= $field['display_order'] ?>"
-                           class="form-control form-control-sm" style="width: 80px;"
-                           onchange="this.form.submit()">
-                  </form>
+              <tr data-id="<?= $field['id'] ?>">
+                <td class="drag-handle text-center text-secondary" style="cursor: grab;">
+                  <i class="bi bi-grip-vertical fs-5"></i>
                 </td>
                 <td><code><?= e($field['field_name']) ?></code></td>
                 <td><?= e($field['field_label']) ?></td>
@@ -250,11 +260,41 @@ require __DIR__ . "/../partials/header.php";
       <li>Les champs obligatoires (hostname, serial, marque, utilisateur, OS, architecture, statut) ne peuvent pas être supprimés.</li>
       <li>Vous pouvez cacher temporairement un champ en cliquant sur le bouton "Visible/Caché".</li>
       <li>Les nouveaux champs personnalisés seront stockés séparément et affichés dans les formulaires.</li>
-      <li>Changez l'ordre d'affichage en modifiant les numéros dans la colonne "Ordre".</li>
+      <li>Glissez-déposez les lignes avec l'icône <i class="bi bi-grip-vertical"></i> pour réordonner les champs.</li>
     </ul>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 </div>
 
 <?php
+$pageScripts = '
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+<script>
+(function() {
+  const tbody = document.getElementById("fields-sortable");
+  if (!tbody) return;
+
+  const csrfToken = ' . json_encode(csrf_token()) . ';
+
+  Sortable.create(tbody, {
+    handle: ".drag-handle",
+    animation: 150,
+    ghostClass: "table-active",
+    onEnd: function() {
+      const ids = [...tbody.querySelectorAll("tr[data-id]")].map(tr => tr.dataset.id);
+
+      const formData = new FormData();
+      formData.append("action", "reorder_fields");
+      formData.append("_csrf_token", csrfToken);
+      formData.append("ids", JSON.stringify(ids));
+
+      fetch("/admin/fields.php", { method: "POST", body: formData })
+        .then(r => r.json())
+        .then(data => { if (!data.success) alert("Erreur lors de la sauvegarde de l\'ordre."); })
+        .catch(() => alert("Erreur réseau."));
+    }
+  });
+})();
+</script>
+';
 require __DIR__ . "/../partials/footer.php";
