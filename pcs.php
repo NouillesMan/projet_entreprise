@@ -9,6 +9,22 @@ $statut = $_GET["statut"] ?? "";
 $arch = $_GET["arch"] ?? "";
 $marque = $_GET["marque"] ?? "";
 
+$allowedSort = [
+  'hostname'     => 'hostname',
+  'serial'       => 'serial',
+  'marque'       => 'marque',
+  'modele'       => 'modele',
+  'utilisateur'  => 'utilisateur',
+  'os'           => 'os',
+  'os_version'   => 'os_version',
+  'architecture' => 'architecture',
+  'domaine'      => 'domaine',
+  'statut'       => 'statut',
+  'updated_at'   => 'updated_at',
+];
+$sort = isset($allowedSort[$_GET['sort'] ?? '']) ? $_GET['sort'] : 'updated_at';
+$dir  = strtolower($_GET['dir'] ?? 'desc') === 'asc' ? 'asc' : 'desc';
+
 $allowedStatut = array_merge([''], PC_STATUTS);
 $allowedArch   = array_merge([''], PC_ARCH);
 $brands = $pdo->query("SELECT DISTINCT marque FROM pcs ORDER BY marque")
@@ -58,8 +74,9 @@ $total      = (int)$countStmt->fetchColumn();
 $totalPages = (int)ceil($total / $perPage);
 $page       = min($page, max(1, $totalPages));
 
+$sortCol = $allowedSort[$sort];
 $sql = "SELECT id, hostname, serial, marque, modele, utilisateur, os, os_version, architecture, domaine, statut, updated_at
-        FROM pcs $where ORDER BY updated_at DESC LIMIT :perPage OFFSET :offset";
+        FROM pcs $where ORDER BY $sortCol $dir LIMIT :perPage OFFSET :offset";
 $params[":perPage"] = $perPage;
 $params[":offset"]  = ($page - 1) * $perPage;
 
@@ -128,19 +145,32 @@ require __DIR__ . "/partials/header.php";
     <div class="card-body p-0">
       <div class="table-responsive">
         <table class="table table-hover table-striped mb-0">
+          <?php
+            function sortLink(string $col, string $label, string $currentSort, string $currentDir, array $get): string {
+              $nextDir = ($currentSort === $col && $currentDir === 'asc') ? 'desc' : 'asc';
+              $params  = array_merge($get, ['sort' => $col, 'dir' => $nextDir, 'page' => 1]);
+              $url     = '?' . http_build_query($params);
+              $icon    = '';
+              if ($currentSort === $col) {
+                $icon = $currentDir === 'asc' ? ' ▲' : ' ▼';
+              }
+              return '<a href="' . htmlspecialchars($url) . '" class="text-decoration-none text-reset fw-bold">'
+                   . htmlspecialchars($label) . '<span class="text-primary">' . $icon . '</span></a>';
+            }
+          ?>
           <thead>
             <tr>
-              <th>Hostname</th>
-              <th>Serial</th>
-              <th>Marque</th>
-              <th>Modèle</th>
-              <th>Utilisateur</th>
-              <th>OS</th>
-              <th>Version</th>
-              <th>Arch</th>
-              <th>Domaine</th>
-              <th>Statut</th>
-              <th>Mise à jour</th>
+              <th><?= sortLink('hostname',     'Hostname',    $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('serial',       'Serial',      $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('marque',       'Marque',      $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('modele',       'Modèle',      $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('utilisateur',  'Utilisateur', $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('os',           'OS',          $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('os_version',   'Version',     $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('architecture', 'Arch',        $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('domaine',      'Domaine',     $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('statut',       'Statut',      $sort, $dir, $_GET) ?></th>
+              <th><?= sortLink('updated_at',   'Mise à jour', $sort, $dir, $_GET) ?></th>
               <th>Actions</th>
             </tr>
           </thead>
