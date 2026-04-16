@@ -205,17 +205,14 @@ require __DIR__ . "/partials/header.php";
         </div>
         <div class="col-md-4">
           <label class="form-label">Version OS</label>
-          <select class="form-select" name="os_version">
+          <select class="form-select" name="os_version" id="os_version">
             <option value="">Aucune</option>
-            <?php foreach ($options['os_version'] as $version): ?>
-              <option value="<?= e($version) ?>" <?= ($_POST["os_version"] ?? "") === $version ? "selected" : "" ?>>
-                <?= e($version) ?>
-              </option>
-            <?php endforeach; ?>
+            <?= render_os_version_options($options['os_version'], $_POST["os_version"] ?? "") ?>
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
+          <?php $currentVersion = $_POST["os_version"] ?? ""; ?>
           <input class="form-control form-control-sm mt-1" name="os_version_custom"
-                 value="<?= e($_POST["os_version"] ?? "") ?>" placeholder="Version personnalisée">
+                 value="<?= os_version_in_list($options['os_version'], $currentVersion) ? '' : e($currentVersion) ?>" placeholder="Version personnalisée">
         </div>
         <div class="col-md-4">
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
@@ -262,26 +259,16 @@ require __DIR__ . "/partials/header.php";
           </label>
 
           <?php if ($cf['field_type'] === 'textarea'): ?>
-            <!-- Cas spécial : le type "textarea" nécessite une balise différente de <input> -->
             <textarea class="form-control"
-                      name="cf_<?= e($cf['field_name']) ?>"<!-- Préfixe "cf_" pour distinguer des champs fixes -->
+                      name="cf_<?= e($cf['field_name']) ?>"
                       rows="3"<?= $cf['is_required'] ? ' required' : '' ?>
-                      ><?= e($_POST["cf_" . $cf['field_name']] ?? "") ?></textarea>
-                      <!-- Pré-remplissage si le formulaire a été soumis avec des erreurs -->
-
+            ><?= e($_POST["cf_" . $cf['field_name']] ?? "") ?></textarea>
           <?php else: ?>
-            <!-- Pour tous les autres types : text, number, date -->
             <input class="form-control"
-                   <?php
-                   // in_array() vérifie que le type est bien dans la liste des types HTML valides.
-                   // Si l'admin avait rentré un type inconnu en BDD, on fallback sur 'text' (sécurité).
-                   // On n'échappe pas la valeur ici car in_array() garantit déjà qu'elle est sûre.
-                   ?>
-                   type="<?= in_array($cf['field_type'], ['text','number','date']) ? e($cf['field_type']) : 'text' ?>"
+                   type="<?= in_array($cf['field_type'], ['text','number','date']) ? $cf['field_type'] : 'text' ?>"
                    name="cf_<?= e($cf['field_name']) ?>"
                    value="<?= e($_POST["cf_" . $cf['field_name']] ?? "") ?>"
-                   <?= $cf['is_required'] ? ' required' : '' ?>>
-                   <!-- L'attribut HTML "required" active la validation native du navigateur -->
+                   <?= $cf['is_required'] ? 'required' : '' ?>>
           <?php endif; ?>
 
         </div>
@@ -302,6 +289,6 @@ require __DIR__ . "/partials/header.php";
   </div>
 </div>
 <?php
-$pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . ';</script>'
+$pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . '; window.versionsByOsFamily = ' . json_encode($options['os_version']) . ';</script>'
              . '<script src="/assets/js/pc_form.js"></script>';
 require __DIR__ . "/partials/footer.php";

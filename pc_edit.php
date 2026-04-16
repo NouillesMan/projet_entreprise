@@ -241,21 +241,14 @@ require __DIR__ . "/partials/header.php";
         </div>
         <div class="col-md-4">
           <label class="form-label">Version OS</label>
-          <?php
-          $currentVersion  = $_POST["os_version"] ?? $pc["os_version"] ?? "";
-          $osVersionInList = in_array($currentVersion, $options['os_version'], true);
-          ?>
-          <select class="form-select" name="os_version">
+          <?php $currentVersion = $_POST["os_version"] ?? $pc["os_version"] ?? ""; ?>
+          <select class="form-select" name="os_version" id="os_version">
             <option value="">Aucune</option>
-            <?php foreach ($options['os_version'] as $version): ?>
-              <option value="<?= e($version) ?>" <?= $currentVersion === $version ? "selected" : "" ?>>
-                <?= e($version) ?>
-              </option>
-            <?php endforeach; ?>
+            <?= render_os_version_options($options['os_version'], $currentVersion) ?>
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
           <input class="form-control form-control-sm mt-1" name="os_version_custom"
-                 value="<?= $osVersionInList ? '' : e($currentVersion) ?>" placeholder="Version personnalisée">
+                 value="<?= os_version_in_list($options['os_version'], $currentVersion) ? '' : e($currentVersion) ?>" placeholder="Version personnalisée">
         </div>
         <div class="col-md-4">
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
@@ -334,6 +327,6 @@ require __DIR__ . "/partials/header.php";
   </div>
 </div>
 <?php
-$pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . ';</script>'
+$pageScripts = '<script>window.modelesByBrand = ' . json_encode($options['modele']) . '; window.versionsByOsFamily = ' . json_encode($options['os_version']) . ';</script>'
              . '<script src="/assets/js/pc_form.js"></script>';
 require __DIR__ . "/partials/footer.php";

@@ -29,7 +29,7 @@ foreach ($rows as $row) {
     } elseif ($fn === 'os') {
         $os[$grp][] = $val;
     } elseif ($fn === 'os_version') {
-        $os_version[] = $val;
+        $os_version[$grp ?? ''][] = $val;
     }
 }
 

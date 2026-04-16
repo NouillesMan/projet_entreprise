@@ -5,16 +5,15 @@ require __DIR__ . "/includes/db.php";
 require __DIR__ . "/includes/helpers.php";
 
 // --- Stats ---
-$total = (int) $pdo->query("SELECT COUNT(*) FROM pcs")->fetchColumn();
-
 $statusCounts = $pdo->query(
     "SELECT statut, COUNT(*) AS cnt FROM pcs GROUP BY statut"
 )->fetchAll(PDO::FETCH_KEY_PAIR);
 
-$enService   = (int) ($statusCounts["En service"] ?? 0);
-$enStock     = (int) ($statusCounts["En stock"] ?? 0);
+$total        = (int) array_sum($statusCounts);
+$enService    = (int) ($statusCounts["En service"] ?? 0);
+$enStock      = (int) ($statusCounts["En stock"] ?? 0);
 $enReparation = (int) ($statusCounts["En réparation"] ?? 0);
-$retire      = (int) ($statusCounts["Retiré"] ?? 0);
+$retire       = (int) ($statusCounts["Retiré"] ?? 0);
 
 // Architecture breakdown
 $archCounts = $pdo->query(
@@ -217,13 +216,9 @@ require __DIR__ . "/partials/header.php";
               <?php foreach ($recentPcs as $pc): ?>
                 <tr>
                   <td>
-                    <?php if (!empty($_SESSION["can_edit"])): ?>
-                    <a href="/pc_edit.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none">
+                    <a href="/pc_view.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none text-reset">
                       <strong><?= e($pc["hostname"]) ?></strong>
                     </a>
-                    <?php else: ?>
-                    <strong><?= e($pc["hostname"]) ?></strong>
-                    <?php endif; ?>
                   </td>
                   <td><code class="text-info"><?= e($pc["serial"]) ?></code></td>
                   <td><?= e($pc["utilisateur"]) ?></td>
@@ -255,7 +250,9 @@ require __DIR__ . "/partials/header.php";
             <li class="list-group-item bg-transparent border-secondary">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <strong><?= e($pc["hostname"]) ?></strong>
+                  <a href="/pc_view.php?id=<?= (int) $pc["id"] ?>" class="text-decoration-none text-reset">
+                    <strong><?= e($pc["hostname"]) ?></strong>
+                  </a>
                   <br>
                   <small class="text-muted">
                     <?= e($pc["marque"]) ?>

@@ -10,9 +10,11 @@ $requiredColumns = ["hostname", "serial", "marque", "utilisateur", "os", "archit
 $optionalColumns = ["modele", "domaine", "os_version", "remarques"];
 $allColumns = array_merge($requiredColumns, $optionalColumns);
 
-$imported = 0;
-$updated  = 0;
-$errors   = [];
+$imported     = 0;
+$updated      = 0;
+$optionsAdded = 0;
+$errors       = [];
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   csrf_check();
@@ -44,6 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           $errors[] = "Colonnes manquantes : " . implode(", ", $missingCols);
         } else {
           $rowNum = 1; // header was row 1
+          $toSync = ['marque' => [], 'modele' => [], 'os' => [], 'os_version' => []];
+
+          try {
+          $pdo->beginTransaction();
 
           if ($updateExisting) {
             $stmt = $pdo->prepare("
@@ -92,10 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               $data["serial"] = "NOSERIAL-" . $data["hostname"];
             }
 
-            // Validate required fields (ignorer les champs vides, juste skipper la ligne si hostname absent)
             $rowErrors = [];
-            if (empty($data["hostname"])) {
-              $rowErrors[] = "champ « hostname » vide";
+            foreach ($requiredColumns as $col) {
+              if (empty($data[$col])) {
+                $rowErrors[] = "champ « $col » vide";
+              }
             }
 
             // Validate enum values
@@ -128,12 +135,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               ]);
               if ($updateExisting) {
                 $rc = $stmt->rowCount();
-                if ($rc === 2)      $updated++;   // ligne mise à jour
-                elseif ($rc === 1)  $imported++;  // nouvelle ligne
-                // rc === 0 : aucun changement, ignoré
+                if ($rc === 2)      $updated++;
+                elseif ($rc === 1)  $imported++;
               } else {
                 $imported++;
               }
+              // Collecter les valeurs pour sync dans field_options
+              $osGroup = deriveOsGroup($data['os']);
+              if (!empty($data['marque']))     $toSync['marque'][$data['marque']] = null;
+              if (!empty($data['modele']))     $toSync['modele'][$data['marque']][$data['modele']] = null;
+              if (!empty($data['os']))         $toSync['os'][$osGroup][$data['os']] = null;
+              if (!empty($data['os_version'])) $toSync['os_version'][$osGroup][$data['os_version']] = null;
             } catch (PDOException $e) {
               if (strval($e->getCode()) === "23000") {
                 $errors[] = "Ligne $rowNum : serial « " . $data["serial"] . " » déjà existant (doublon ignoré)";
@@ -141,6 +153,63 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 throw $e;
               }
             }
+          }
+
+          // Synchroniser les nouvelles valeurs dans field_options
+          if ($imported > 0 || $updated > 0) {
+            $candidates = [];
+            foreach ($toSync['marque'] as $m => $_)         $candidates[] = ['marque',     null,         $m];
+            foreach ($toSync['modele'] as $g => $modeles)   foreach ($modeles as $mo => $_) $candidates[] = ['modele', $g ?: null, $mo];
+            foreach ($toSync['os'] as $g => $osVals)        foreach ($osVals as $os => $_)  $candidates[] = ['os',     $g,         $os];
+            foreach ($toSync['os_version'] as $g => $vers)  foreach ($vers as $v => $_)     $candidates[] = ['os_version', $g ?: null, $v];
+
+            $garbage = ['', 'n/a', 'to be filled by o.e.m.', 'system manufacturer',
+                        'system product name', 'default string', 'none', 'not applicable',
+                        'not specified', 'not available'];
+            $candidates = array_values(array_filter($candidates,
+              fn($c) => !in_array(strtolower(trim($c[2])), $garbage, true)
+            ));
+
+            if (!empty($candidates)) {
+              $fns = array_values(array_unique(array_column($candidates, 0)));
+              $ph  = sql_placeholders(count($fns));
+
+              // 1 requête : charger les valeurs existantes + max display_order
+              $rowsAll = $pdo->prepare(
+                "SELECT field_name, option_group, option_value, display_order
+                 FROM field_options WHERE field_name IN ($ph)"
+              );
+              $rowsAll->execute($fns);
+              $existingSet = [];
+              $maxOrders   = [];
+              foreach ($rowsAll->fetchAll() as $r) {
+                $existingSet[$r['field_name'] . '|' . ($r['option_group'] ?? '') . '|' . $r['option_value']] = true;
+                $ordKey = $r['field_name'] . '|' . ($r['option_group'] ?? '');
+                $maxOrders[$ordKey] = max($maxOrders[$ordKey] ?? 0, (int)$r['display_order']);
+              }
+
+              $stmtInsOpt = $pdo->prepare("INSERT INTO field_options (field_name, option_group, option_value, display_order) VALUES (?,?,?,?)");
+              foreach ($candidates as [$fn, $grp, $val]) {
+                $key    = $fn . '|' . ($grp ?? '') . '|' . $val;
+                $ordKey = $fn . '|' . ($grp ?? '');
+                if (!isset($existingSet[$key])) {
+                  $maxOrders[$ordKey] = ($maxOrders[$ordKey] ?? 0) + 1;
+                  $stmtInsOpt->execute([$fn, $grp, $val, $maxOrders[$ordKey]]);
+                  $existingSet[$key] = true;
+                  $optionsAdded++;
+                }
+              }
+            }
+          }
+
+          $pdo->commit();
+          } catch (PDOException $e) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
+            error_log("CSV import failed: " . $e->getMessage());
+            $errors[]     = "Erreur pendant l'import. Aucune donnée importée.";
+            $imported     = 0;
+            $updated      = 0;
+            $optionsAdded = 0;
           }
         }
       }
@@ -172,6 +241,9 @@ require __DIR__ . "/../partials/header.php";
           <strong><?= $updated ?></strong> PC mis à jour
         <?php endif; ?>
         avec succès.
+        <?php if ($optionsAdded > 0): ?>
+          <br><small><i class="bi bi-list-check"></i> <?= $optionsAdded ?> nouvelle<?= $optionsAdded > 1 ? "s" : "" ?> option<?= $optionsAdded > 1 ? "s" : "" ?> ajoutée<?= $optionsAdded > 1 ? "s" : "" ?> aux listes déroulantes.</small>
+        <?php endif; ?>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
     <?php endif; ?>
@@ -189,19 +261,81 @@ require __DIR__ . "/../partials/header.php";
     <?php endif; ?>
   <?php endif; ?>
 
-  <!-- Workflow USB -->
-  <div class="card shadow-sm mb-4 border-info">
-    <div class="card-header bg-info bg-opacity-10">
-      <h6 class="mb-0"><i class="bi bi-usb-drive"></i> Collecte via cle USB</h6>
+  <!-- Scripts de collecte -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header">
+      <h6 class="mb-0"><i class="bi bi-download"></i> Scripts de collecte automatique</h6>
     </div>
     <div class="card-body">
-      <p class="mb-2">Des scripts de collecte automatique sont fournis dans le dossier <code>scripts/</code> du projet :</p>
-      <ol class="mb-0">
-        <li>Copier <code>collect_windows.ps1</code> et/ou <code>collect_linux.sh</code> sur une cle USB</li>
-        <li>Executer le script sur chaque machine a inventorier (admin/sudo requis)</li>
-        <li>Recuperer le fichier <code>inventaire.csv</code> genere sur la cle USB</li>
-        <li>Importer le CSV ci-dessous</li>
-      </ol>
+      <p class="text-muted mb-3">
+        Exécutez un script sur chaque machine à inventorier, récupérez le <code>inventaire.csv</code> généré, puis importez-le ci-dessous.
+      </p>
+
+      <!-- Tabs OS -->
+      <ul class="nav nav-tabs mb-3" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-windows" type="button" role="tab">
+            <i class="bi bi-windows"></i> Windows
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-linux" type="button" role="tab">
+            <i class="bi bi-terminal"></i> Linux
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab-windows" role="tabpanel">
+          <p class="mb-3">
+            Téléchargez les deux fichiers dans le <strong>même dossier</strong> (ex : clé USB), puis double-cliquez sur <code>lancer_collecte.bat</code>.
+            <br><small class="text-muted">Droits administrateur requis.</small>
+          </p>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="/admin/download_script.php?script=bat" class="btn btn-outline-primary">
+              <i class="bi bi-download"></i> lancer_collecte.bat
+            </a>
+            <a href="/admin/download_script.php?script=windows" class="btn btn-outline-secondary">
+              <i class="bi bi-download"></i> collect_windows.ps1
+            </a>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-linux" role="tabpanel">
+          <p class="mb-3">
+            Un seul script universel. Installez <code>dmidecode</code> si absent, puis exécutez avec <code>sudo</code>.
+            <br><small class="text-muted">Droits sudo requis pour lire le numéro de série matériel.</small>
+          </p>
+
+          <a href="/admin/download_script.php?script=linux" class="btn btn-outline-primary mb-3">
+            <i class="bi bi-download"></i> collect_linux.sh
+          </a>
+
+          <div class="row g-2">
+            <?php foreach ([
+              ['icon' => 'bi-ubuntu', 'label' => 'Ubuntu / Debian / Mint',  'cmd' => 'sudo apt install -y dmidecode'],
+              ['icon' => 'bi-linux',  'label' => 'Fedora / RHEL / CentOS',  'cmd' => 'sudo dnf install -y dmidecode'],
+              ['icon' => 'bi-linux',  'label' => 'openSUSE',                'cmd' => 'sudo zypper install -y dmidecode'],
+              ['icon' => 'bi-linux',  'label' => 'Arch Linux / Manjaro',    'cmd' => 'sudo pacman -S --noconfirm dmidecode'],
+            ] as $d): ?>
+            <div class="col-md-6">
+              <div class="rounded border p-2 d-flex align-items-start gap-2">
+                <i class="bi <?= $d['icon'] ?> text-secondary mt-1"></i>
+                <div class="flex-fill">
+                  <div class="small fw-semibold"><?= $d['label'] ?></div>
+                  <code class="small text-muted"><?= $d['cmd'] ?></code>
+                </div>
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+
+          <div class="mt-3 text-muted small">
+            Puis : <code>sudo bash collect_linux.sh</code>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 

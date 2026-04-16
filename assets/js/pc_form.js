@@ -44,6 +44,68 @@
     });
   }
 
+  // ── OS → Version OS cascade ───────────────────────────────────────────
+  var osSelect      = document.getElementById('os');
+  var osVerSelect   = document.getElementById('os_version');
+  var versByFamily  = window.versionsByOsFamily || {};
+
+  if (osSelect && osVerSelect) {
+    function getOsFamily() {
+      var opt = osSelect.options[osSelect.selectedIndex];
+      if (!opt) return '';
+      return opt.parentElement.tagName === 'OPTGROUP' ? opt.parentElement.label : '';
+    }
+
+    function addOptgroup(label, versions, current) {
+      if (!versions.length) return;
+      var grp = document.createElement('optgroup');
+      grp.label = label;
+      versions.forEach(function(v) {
+        var o = document.createElement('option');
+        o.value = v;
+        o.textContent = v;
+        if (v === current) o.selected = true;
+        grp.appendChild(o);
+      });
+      osVerSelect.appendChild(grp);
+    }
+
+    function addFlat(versions, current) {
+      versions.forEach(function(v) {
+        var o = document.createElement('option');
+        o.value = v;
+        o.textContent = v;
+        if (v === current) o.selected = true;
+        osVerSelect.appendChild(o);
+      });
+    }
+
+    function populateOsVersions(selectedVersion) {
+      var family  = getOsFamily();
+      var current = selectedVersion !== undefined ? selectedVersion : osVerSelect.value;
+      osVerSelect.innerHTML = '<option value="">Aucune</option>';
+
+      if (family && versByFamily[family]) {
+        var specific    = versByFamily[family];
+        var generic     = versByFamily[''] || [];
+        var specificSet = new Set(specific);
+        addOptgroup(family, specific, current);
+        addFlat(generic.filter(function(v) { return !specificSet.has(v); }), current);
+      } else {
+        // Aucun OS sélectionné : afficher toutes les familles groupées
+        Object.keys(versByFamily).sort().forEach(function(fam) {
+          if (fam !== '') addOptgroup(fam, versByFamily[fam], current);
+        });
+        addFlat(versByFamily[''] || [], current);
+      }
+    }
+
+    osSelect.addEventListener('change', function() { populateOsVersions(''); });
+
+    // Au chargement de la page : filtrer selon l'OS déjà sélectionné (formulaire modif)
+    populateOsVersions();
+  }
+
   // ── Custom user toggle ─────────────────────────────────────────────────
   var utilisateurSelect = document.getElementById('utilisateur');
   var utilisateurCustom = document.getElementById('utilisateur_custom');

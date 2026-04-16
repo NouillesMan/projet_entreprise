@@ -56,7 +56,7 @@ require __DIR__ . "/partials/header.php";
     <div class="card-body p-4">
       <?php if ($error): ?>
         <div class="alert alert-danger alert-dismissible fade show py-2">
-          <i class="bi bi-exclamation-triangle"></i> <?= htmlspecialchars($error) ?>
+          <i class="bi bi-exclamation-triangle"></i> <?= e($error) ?>
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
       <?php endif; ?>
@@ -67,7 +67,7 @@ require __DIR__ . "/partials/header.php";
           <div class="input-group">
             <span class="input-group-text"><i class="bi bi-person"></i></span>
             <input id="username" class="form-control" type="text" name="username"
-                   value="<?= htmlspecialchars($_POST["username"] ?? "") ?>"
+                   value="<?= e($_POST["username"] ?? "") ?>"
                    autofocus autocomplete="username" required>
           </div>
         </div>

@@ -6,17 +6,19 @@ require __DIR__ . "/includes/helpers.php";
 
 csrf_check();
 
-$id = filter_input(INPUT_POST, "id", FILTER_VALIDATE_INT);
-if (!$id) { die("ID invalide"); }
+$ids = (array)($_POST['ids'] ?? []);
 
 try {
-    $deleted = delete_pcs($pdo, [$id]);
+    $deleted = delete_pcs($pdo, $ids);
 } catch (RuntimeException $e) {
     header("Location: /pcs.php?msg=delete_error");
     exit;
 }
 
-if ($deleted === 0) { die("PC introuvable"); }
+if ($deleted === 0) {
+    header("Location: /pcs.php");
+    exit;
+}
 
-header("Location: /pcs.php?msg=deleted");
+header("Location: /pcs.php?msg=deleted&n=" . $deleted);
 exit;

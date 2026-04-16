@@ -1,0 +1,795 @@
+  BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                SESSION 2026
+                        ANNEXE VII : Déroulement et évaluation de l'épreuve E6
+             Administration des systèmes et des réseaux (option SISR) - Coefficient 4
+             Conception et développement d’application (option SLAM) - Coefficient 4
+L’épreuve prend appui sur deux réalisations professionnelles présentées par la personne candidate, chaque
+réalisation ayant été élaborée dans un environnement technologique conforme à l’annexe II.E du référentiel.
+Le dossier numérique est constitué :
+ - des fiches descriptives des deux réalisations professionnelles intégrant les modalités d’accès aux
+     éléments techniques. Ces fiches sont décrites à l’aide du modèle de fiche présenté en Annexe VII-1 (A
+     ou B en fonction de l’option de la personne candidate) ;
+ - des éléments constitutifs de chaque réalisation professionnelle mise en œuvre par la personne candidate :
+     description des ressources matérielles et logicielles utilisées, schémas explicatifs ou encore
+     documentation utile.
+Avant le déroulement de l’épreuve, la commission d’interrogation arrête pour chaque personne candidate
+qu’elle va interroger :
+     -   la réalisation professionnelle qui fait l’objet de l’interrogation ;
+     -   l’expression des besoins qui sera remise à la personne candidate au moment de l’interrogation. Celle-
+         ci devra être suffisamment circonscrite pour permettre une réponse sur la durée de la préparation.
+         Pour ce faire, la commission peut utiliser le modèle de document proposé en Annexe VII-3.
+Au cours de l’épreuve, la personne candidate est autorisée à utiliser les ressources électroniques disponibles
+dans le centre d’examen, y compris les services accessibles en ligne, à l’exception de tout service de
+communication synchrone ou asynchrone avec un tiers. Elle est informée que l’ensemble des connexions
+réalisées peuvent faire l’objet d’un contrôle par la commission d’interrogation.
+Durant l’épreuve, en adoptant une attitude courtoise et facilitatrice, la commission conduit une interrogation
+qui lui permet d’évaluer les compétences de la personne candidate conformément à la définition de l’épreuve.
+La commission peut être amenée à étendre l'interrogation à la maîtrise de l'environnement technologique
+présenté si la personne candidate n'a pas été à même de répondre à la demande formulée par la commission.
+En forme ponctuelle comme en CCF, l’évaluation de la prestation de la personne candidate est réalisée en
+s’appuyant sur la grille d’aide à l’évaluation présentée en Annexe VII-5, (A ou B en fonction de l’option de la
+personne candidate) qui reprend les critères d’évaluation extraits du référentiel du BTS « Services
+informatiques aux organisations » (cf. définition de l’épreuve et les critères d’évaluation). La grille permet de
+dresser un profil de la prestation de la personne candidate et fonde également l’harmonisation entre les
+commissions d’interrogation. L’annexe VII (A ou B en fonction de l’option de la personne candidate) constitue
+une aide pour la commission afin d’évaluer la qualité de l’environnement technologique.
+Une fiche d’appréciation dont le modèle est fourni en Annexe VII-6 permet de justifier la note attribuée (note
+globale sur 20 arrondie au point supérieur). C’est cette appréciation synthétique qui sera portée à la
+connaissance de la personne candidate en cas de réclamation. Elle sera en conséquence obligatoirement
+remplie et explicite pour tous les candidats, quelle que soit la note attribuée.
+Les deux réalisations professionnelles sélectionnées comme support de l’épreuve par la personne candidate
+doivent être réalisées dans un environnement technologique conforme à l’annexe II-E du référentiel ; elles
+doivent en outre couvrir à elles deux l’ensemble des compétences du bloc 2 liées à l’option de la personne
+candidate. Lors de l’évaluation des candidats, des pénalités peuvent être appliquées en cas de non-respect
+de ces contraintes (cf. Annexe VII-5).
+Cas de l’évaluation par épreuve ponctuelle
+Chaque personne candidate doit avoir remis un dossier pour une date fixée par les autorités académiques.
+Avant l’épreuve, un contrôle de conformité du dossier est effectué par une commission spécifique désignée
+par les autorités académiques. Un modèle de fiche de contrôle de conformité est proposé en Annexe VII-2.
+Une réunion d’entente des commissions d’interrogation doit être, organisée au cours de laquelle les dossiers
+des candidats doivent être à disposition des examinateurs pour chaque centre d’interrogation.
+L’épreuve se déroule dans l’établissement de formation et sur l’équipement mis à disposition durant la
+formation sauf en cas de force majeure. Une personne ressource du centre d’examen doit être présente durant
+toute la durée de l’épreuve pour s’assurer de la disponibilité des équipements pour les candidats et la
+                                                                                                                1
+commission d’interrogation. Durant les moments de préparation des deux phases de l’épreuve, il revient aux
+autorités académiques de prévoir la surveillance des candidats.
+Les candidats passent l'épreuve sur le matériel du centre d'examen ou sur un équipement qu'ils ont apporté.
+Les candidats individuels ou les candidats ayant suivi leur formation à distance sont invités à prendre
+connaissance, avant l’épreuve, des caractéristiques des équipements disponibles dans le centre d’examen
+auprès des autorités académiques.
+Pour préparer le déroulement de l’épreuve, il est nécessaire que la commission d’interrogation prenne
+connaissance des réalisations professionnelles mises en œuvre par les candidats. Une réunion des
+commissions d’interrogation doit donc être organisée avant le déroulement de l’épreuve. Il est recommandé
+de placer cette réunion sur une demi-journée dans chaque centre d’examen concerné tous les deux jours
+d’interrogation (par lot de dix candidats concernés). En outre, lors de la première demi-journée, le centre
+d’examen met à disposition l’annexe 10 renseignée qui permet à la commission de vérifier l’environnement
+technologique et de compléter la colonne remarque.
+Compte tenu du temps nécessaire à la préparation des équipements et aux délibérations de la commission, il
+convient de prévoir l'interrogation d'au plus cinq candidats par jour et par commission. Une simulation du
+déroulement de l’épreuve est présentée en Annexe VII-4.
+La présidente ou le président de jury veillera à organiser l’harmonisation des évaluations des différentes
+commissions, en s’appuyant notamment sur une comparaison des profils obtenus à l’aide des grilles d’aide à
+l’évaluation et des notes attribuées.
+Cas de l’évaluation par contrôle en cours de formation
+Seuls les candidats ayant préparé le brevet de technicien supérieur par la voie scolaire dans un établissement
+public ou privé sous contrat, par la voie de la formation professionnelle continue dans un établissement public
+habilité ou bien par la voie de l'apprentissage dans un centre de formation d'apprentis habilité ou une section
+d'apprentissage habilitée, peuvent passer l’épreuve en contrôle en cours de formation.
+Période d’évaluation
+Le contrôle en cours de formation ne peut avoir lieu au-delà d’une date fixée par les autorités académiques.
+Évaluation
+Les évaluations des candidats sont étalées dans la période préalablement fixée.
+Modalités d’organisation
+La convocation des candidats et de la commission d’interrogation est effectuée par la cheffe ou le chef
+d’établissement. Le contrôle de conformité du dossier est effectué par l’équipe pédagogique. Un modèle de
+fiche de contrôle de conformité est proposé en Annexe VII-2.
+En cas d’absence justifiée d’une personne candidate, une autre date d’évaluation lui sera proposée. En cas
+d’absence injustifiée ou réitérée, il n’y a pas de date de remplacement. La personne candidate est déclarée
+absente et le diplôme ne peut lui être délivré.
+La note proposée par la commission d’interrogation et la grille d’aide à l’évaluation sont consignées sous la
+responsabilité de la cheffe ou du chef d’établissement. En AUCUN CAS, la note proposée n’est communiquée
+à la personne candidate.
+Les documents ayant servi à l’évaluation des candidats doivent être conservés dans l’établissement pendant
+un an après la fin de la formation des étudiants.
+La transmission au jury des propositions de notes (bordereau récapitulatif pour l'ensemble des candidats,
+grille d'évaluation et fiche d’appréciation pour chaque personne candidate) ainsi que l’annexe 10 sera
+effectuée sous la responsabilité de la cheffe ou du du chef d’établissement à une date fixée par la rectrice, le
+recteur de chaque académie ou le directeur du SIEC.
+Modalités de validation
+Conformément à la réglementation, le jury procède à un examen des documents fournis, formule toute
+remarque et observation qu’il juge utile et arrête la note de chaque personne candidate.
+À cet effet, une commission d’harmonisation, émanation du jury, se réunit pour effectuer ce travail d’évaluation
+préalablement à la délibération du jury. Pour faciliter l'harmonisation des notes proposées en CCF, il est
+recommandé que chaque établissement habilité soit représenté au sein de cette commission.
+La note de chaque personne candidate est définitivement arrêtée par le jury de délibération.
+                                                                                                               2
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                              SESSION 2026
+                  ANNEXE VII-1-A : Fiche descriptive de réalisation professionnelle (recto)
+                  Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+          DESCRIPTION D’UNE RÉALISATION PROFESSIONNELLE                                                                    N° réalisation :
+Nom, prénom :                                                                                                 N° candidat :
+Épreuve ponctuelle                            Contrôle en cours de formation                                  Date : ...... / ...... /............
+Organisation support de la réalisation professionnelle
+Intitulé de la réalisation professionnelle
+Période de réalisation : ........................................ Lieu : ...................................................................................
+Modalité :                Seul(e)                        En équipe
+Compétences travaillées
+                      Concevoir une solution d’infrastructure réseau
+                      Installer, tester et déployer une solution d’infrastructure réseau
+                      Exploiter, dépanner et superviser une solution d’infrastructure réseau
+Conditions de réalisation1 (ressources fournies, résultats attendus)
+Description des ressources documentaires, matérielles et logicielles utilisées2
+Modalités d’accès aux productions3 et à leur documentation4
+  1
+    En référence aux conditions de réalisation et ressources nécessaires du bloc « Administration des systèmes et des réseaux » prévues
+  dans le référentiel de certification du BTS SIO.
+  2
+    Les réalisations professionnelles sont élaborées dans un environnement technologique conforme à l’annexe II.E du référentiel du BTS
+  SIO.
+  3
+    Conformément au référentiel du BTS SIO « Dans tous les cas, les candidats doivent se munir des outils et ressources techniques
+  nécessaires au déroulement de l’épreuve. Ils sont seuls responsables de la disponibilité et de la mise en œuvre de ces outils et ressources.
+  La circulaire nationale d’organisation précise les conditions matérielles de déroulement des interrogations et les pénalités à appliquer aux
+  candidats qui ne se seraient pas munis des éléments nécessaires au déroulement de l’épreuve. ». Les éléments nécessaires peuvent
+  être un identifiant, un mot de passe, une adresse réticulaire (URL) d’un espace de stockage et de la présentation de l’organisation du
+  stockage.
+  4
+    Lien vers la documentation complète, précisant et décrivant, si cela n’a été fait au verso de la fiche, la réalisation, par exemples schéma
+  complet de réseau mis en place et configurations des services.
+                                                                                                                                                          3
+BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                         SESSION 2026
+                  ANNEXE VII-1-A : Fiche descriptive de réalisation professionnelle
+                                (verso, éventuellement pages suivantes)
+             Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+Descriptif de la réalisation professionnelle, y compris les productions réalisées et schémas explicatifs
+                                                                                                        4
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                              SESSION 2026
+                  ANNEXE VII-1-B : Fiche descriptive de réalisation professionnelle (recto)
+                  Épreuve E6 - Conception et développement d’applications (option SLAM)
+           DESCRIPTION D’UNE RÉALISATION PROFESSIONNELLE                                                                   N° réalisation :
+Nom, prénom :                                                                                                 N° candidat :
+Épreuve ponctuelle                            Contrôle en cours de formation                                  Date : ...... / ...... /............
+Organisation support de la réalisation professionnelle
+Intitulé de la réalisation professionnelle
+Période de réalisation : ........................................ Lieu : ...................................................................................
+Modalité :                Seul(e)                        En équipe
+Compétences travaillées
+                     Concevoir et développer une solution applicative
+                     Assurer la maintenance corrective ou évolutive d’une solution applicative
+                     Gérer les données
+Conditions de réalisation5 (ressources fournies, résultats attendus)
+Description des ressources documentaires, matérielles et logicielles utilisées6
+Modalités d’accès aux productions7 et à leur documentation8
+  5
+    En référence aux conditions de réalisation et ressources nécessaires du bloc « Conception et développement d'applications » prévues
+  dans le référentiel de certification du BTS SIO.
+  6
+    Les réalisations professionnelles sont élaborées dans un environnement technologique conforme à l’annexe II.E du référentiel du BTS
+  SIO.
+  7
+    Conformément au référentiel du BTS SIO « Dans tous les cas, les candidats doivent se munir des outils et ressources techniques
+  nécessaires au déroulement de l’épreuve. Ils sont seuls responsables de la disponibilité et de la mise en œuvre de ces outils et ressources.
+  La circulaire nationale d’organisation précise les conditions matérielles de déroulement des interrogations et les pénalités à appliquer aux
+  candidats qui ne se seraient pas munis des éléments nécessaires au déroulement de l’épreuve. ». Les éléments peuvent être un
+  identifiant, un mot de passe, une adresse réticulaire (URL) d’un espace de stockage et de la présentation de l’organisation du stockage.
+  8
+    Lien vers la documentation complète, précisant et décrivant, si cela n’a été fait au verso de la fiche, la réalisation professionnelle, par
+  exemples service fourni par la réalisation, interfaces utilisateurs, description des classes ou de la base de données.
+                                                                                                                                                          5
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                         SESSION 2026
+                  ANNEXE VII-1-B : Fiche descriptive de réalisation professionnelle
+                                (verso, éventuellement pages suivantes)
+            Épreuve E6 - Conception et développement d’applications (option SLAM)
+Descriptif de la réalisation professionnelle, y compris les productions réalisées et schémas explicatifs
+                                                                                                        6
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                               SESSION 2026
+         ANNEXE VII-2 : Modèle de fiche de contrôle de conformité pour l’épreuve
+             Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+             Épreuve E6 - Conception et développement d’applications (option SLAM)
+                                          CONTRÔLE DE CONFORMITÉ
+Nom et prénom : ............................................................................. N° candidat : .................................
+Conformément à l’arrêté du 22 juillet 2008 (B0 n° 32 du 28 août 2008) fixant définition et conditions
+de délivrance de certaines spécialités de brevet de technicien supérieur dont l’annexe I définissant le
+contrôle de conformité du dossier support d’épreuve, une commission de contrôle a été chargée
+d’apprécier la conformité des dossiers des candidats.
+   Après vérification, votre candidature ne peut être retenue pour le(s) motif(s) ci-dessous :
+                       absence de dossier ;
+                       dépôt du dossier au-delà de la date fixée par les autorités académiques.
+   Vous ne pourrez pas être interrogé(e), la note « non valide » (NV) vous sera attribuée pour
+   l’épreuve, et le diplôme ne pourra vous être délivré.
+Date du contrôle :                                                                                  Visa :
+                                                                                                                                           7
+  BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                SESSION 2026
+          ANNEXE VII-3 : Document de préparation au déroulement de l’épreuve (recto)
+               Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+               Épreuve E6 - Conception et développement d’applications (option SLAM)
+                      EXPRESSION DES BESOINS                                    N° commission :
+Épreuve ponctuelle                  Contrôle en cours de formation              Date : ...... / ...... /............
+NOM, prénom :                                                                   N° candidat :
+Réalisation professionnelle retenue :
+                                                                                              N° réalisation :
+Circonstances de l’expression des besoins
+Spécifications fonctionnelles de la production attendue
+Si besoin liste des documents fournis (notamment schémas, diagrammes, ou encore images écran)
+Production attendue
+Nature de la documentation professionnelle à présenter en appui de la solution
+          Rapport de test                                                           Autre
+          Documentation technique
+          Rapport d’incident
+          Documentation utilisateur
+Au cours de l’épreuve, la personne candidate est autorisée à utiliser les ressources électroniques mises à
+disposition par le centre d’examen, à l’exception de tout service d’échanges synchrones ou asynchrones avec un
+tiers.
+La personne candidate est informée que l’ensemble des connexions réalisées peuvent faire l’objet d’un contrôle
+par la commission d’interrogation.
+                                                                                                                     8
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                    SESSION 2026
+       ANNEXE VII-3 : Document de préparation au déroulement de l’épreuve (verso)
+          Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+          Épreuve E6 - Conception et développement d’applications (option SLAM)
+Ajustements éventuellement demandés après le premier entretien d’explicitation (pouvant être indiqués
+de façon manuscrite)
+                                                                                                   9
+BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                                                  SESSION 2026
+                                               ANNEXE VII-4 : Proposition d’organisation pour le déroulement de l’épreuve
+                            Épreuve E6 - Administration des systèmes et des réseaux / Conception et développement d’applications
+                                                       PROPOSITION D'ORGANISATION POUR UNE COMMISSION
+  P    Préparation de l'expression des besoins                                                                                               Commission
+                                                                                   Sur table, avec un ordinateur à des fins de
+       Préparation sur table (analyse de
+  T                                                                    30 min      consultation de ressources et éventuellement              Candidat(e)
+       l’expression des besoins)
+                                                                                   de production de documentation
+  E1   Phase d'entretien 1                                             20 min                                                                Commission et candidat(e)
+                                                                                   Environnement technologique de la personne
+       Réalisation des objectifs identifiés en E1                      60 min                                                                Candidat(e)
+                                                                                   candidate 9
+  E2   Phase d'entretien 2 (recette)                                   20 min                                                                Commission et candidat(e)
+  H    Harmonisation                                                                                                                         Commission
+Il est nécessaire que la commission dispose des dossiers candidat (et notamment de la description des environnements technologiques sur lesquels vont
+s'appuyer les candidats d'un établissement) avant la journée de passage des candidats afin de sélectionner une des deux réalisations professionnelles
+présentées par la personne candidate et concevoir une expression des besoins support de l’épreuve.
+La période de préparation prévue lors de la première demi-journée permet de préparer le travail demandé à la personne candidate à partir de l'observation
+de la réalité des contextes annoncés.
+Au cours des interrogations, les temps pendant lesquels deux candidat(e)s sont occupés par leur phase de préparation (sur table ou sur contexte) permettent
+à la commission de finaliser les documents d'expression des besoins pour les candidats suivants.
+Deux environnements technologiques doivent être exploitables en même temps pour une commission d'interrogation, permettant à deux personnes
+candidates de préparer leur intervention ou à l’une d’elles de préparer son intervention pendant qu'une autre est en interrogation.
+La commission doit pouvoir disposer d'un poste de travail autonome associé à une imprimante pour la préparation et l'impression des documents à destination
+des candidats.
+    Une personne ressource de l'établissement doit être disponible pendant toute la durée de l'épreuve pour régler les problèmes techniques.
+9
+  Une marge de 10 minutes est prévue pour chaque préparation sur environnement technologique pour tenir compte des impondérables techniques.
+                                                                                                                                                                           10
+BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                                                          SESSION 2026
+                                       ANNEXE VII-4 : Proposition d’organisation pour le déroulement de l’épreuve (suite)
+                           Épreuve E6 - Administration des systèmes et des réseaux / Conception et développement d’applications
+Proposition de fonctionnement par périodes de deux jours
+Premier jour dans un centre
+ 8h                 9h                 10h                 11h                 12h                  13h                    14h                  15h                    16h                17h
+      Préparation de l'expression des besoins - 3 h                                T        E1    réalisation en env. 1      E2      H
+                                                               Pause - 1h          H          T        E1       réalisation en env. 2   E2   H
+ Contrôle de conformité de l’environnement technologique                                                                                   T       E1      réalisation en env. 1   E2 H
+                                                    Second jour (passage de 5 à 6 personnes candidates maximum par jour)
+ 8h              9h               10h                 11h             12h               13h                    14h                    15h                  16h                   17h
+      T     E1   réalisation en env. 1 E2    H          Pause - 1h        T      E1    réalisation en env. 1      E2      H
+               T       E1 réalisation en env. 2  E2                       H        T      E1        réalisation en env. 2     E2 H
+                                                                                                                                 T      E1    réalisation en env. 1     E2    H
+                                                                                                                                         T      E1      réalisation en env. 2      E2   H
+                                                                                                                                                                                        11
+  BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                                                SESSION 2026
+                                              ANNEXE VII-5-A : Grille d’aide à l’évaluation (recto)
+                        Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+                                                                                                     Date : ...... / ......
+  Nom, prénom :                                                                                                                                   N° candidat :
+                                                                                                     /............
+  Épreuve ponctuelle                                            Contrôle en cours de formation                                                    N° commission :
+  Noms des membres de la commission d’interrogation
+  - .............................................................................................. - .............................................................................................
+                         Proposition de note suite à l’évaluation du profil de la personne candidate
+Le tableau d’aide à l’appréciation des niveaux de maîtrise des compétences doit être complété de façon à évaluer
+le profil de la personne candidate (voir au verso). Une grille proposant des éléments d’appréciation des niveaux
+de maîtrise des compétences est proposée en bas de page.
+La commission sera vigilante, lors de l’établissement de la note, sur la couverture des compétences du bloc
+exigée dans la définition de l’épreuve. Le cas échéant, l’appréciation littérale fera apparaitre ce défaut de
+couverture dans la fiche communicable à la personne candidate.
+                                                                                                                                 NOTE                                            / 20
+                                                                       Liste des pénalités retenues
+Les pénalités ci-dessous doivent être appliquées de façon à ce que la note finale de la personne candidate
+(annexe 7-6) en tienne compte.
+L’outil d’aide à l’appréciation de l’environnement technologique (annexe 8) permettra de préciser les éléments
+fondant la pénalité attribuée.
+        Absence d’une réalisation professionnelle (10 points de pénalité)
+        Absence des deux réalisations professionnelles (20 points de pénalité)
+        Environnement technologique mis en œuvre non conforme à l’annexe II.E (jusqu’à 15 points de pénalité)
+                                                                                                                NOTE FINALE                                                      / 20
+                                                                              Note à reporter sur la fiche d’appréciation destinée à la personne candidate
+        Tableau d’aide à l’appréciation des niveaux de maîtrise des compétences du bloc au verso
+  Non évalué                        Non maitrisé                            Maitrise partielle                       Bonne maitrise                           Excellente maitrise
+                                    N’identifie pas,                                                                                                          Analyse de façon
+                                                                            Identifie, exploite ou                   Identifie, exploite ou
+                                    n’exploite pas ou                                                                                                         pertinente les
+                                                                            intègre partiellement                    intègre les
+                                    n’intègre pas les                                                                                                         informations,
+                                                                            les informations,                        informations,
+                                    informations,                                                                                                             indicateurs, besoins ou
+                                                                            indicateurs, besoins ou                  indicateurs, besoins
+                                    indicateurs, besoins                                                                                                      contraintes, en
+                                                                            contraintes                              ou contraintes
+                                    ou contraintes                                                                                                            mobilisant des outils
+                                                                                                                     Atteint les objectifs                    Propose des solutions
+                                                                            Répond de façon peu
+                                    Ne répond pas ou                                                                 demandés, répond                         pertinentes, permettant
+                                                                            adaptée au besoin
+                                    n’apporte pas de                                                                 globalement aux                          des améliorations/gains
+                                                                            exprimé, propose des
+                                    solution aux besoins                                                             besoins exprimés ou                      notables et en
+                                                                            solutions peu
+                                    exprimés                                                                         donne des éléments                       anticipant les
+                                                                            pertinentes
+                                                                                                                     de solution                              contraintes
+  Sous-compétence
+                                    Ne s’implique pas ou
+  non évaluée au                                                            Ne structure pas sa                      Réalisation rigoureuse                   Mobilise une démarche
+                                    ne mobilise pas les
+  travers de la                                                             démarche ou mobilise                     mobilisant les                           agile et réactive,
+                                    technologies et
+  situation retenue                                                         de façon parcellaire les                 technologies et                          envisageant diverses
+                                    démarches adéquates
+                                                                            technologies et                          démarches                                technologies et
+                                    dans la production du
+                                                                            démarches                                appropriées                              solutions possibles
+                                    résultat attendu
+                                                                                                                                                              Identifie et résout les
+                                    Ne traite pas les                       Identifie les erreurs                    Identifie et résout les
+                                                                                                                                                              erreurs et les
+                                    erreurs                                 sans les résoudre                        erreurs
+                                                                                                                                                              documente
+                                                                                                                                                              Communique à l’écrit
+                                                                            Communique à l’écrit                                                              et/ou l’oral de façon
+                                    Ne communique pas                                                                Communique à l’écrit
+                                                                            et/ou l’oral sans                                                                 adaptée aux
+                                    de façon appropriée,                                                             et/ou l’oral de façon
+                                                                            apporter                                                                          interlocuteurs,
+                                    ni à l’écrit, ni à l’oral                                                        claire et explicite
+                                                                            d’argumentation                                                                   argumente de façon
+                                                                                                                                                              étayée
+                                                                                                                                                                                               12
+                                                                                                                                    ANNEXE VII-5-A : E6 - (option SISR) - Grille d’aide à l’évaluation (verso)
+                                                                                           Excellente
+                                      Niveaux de maîtrise            Non   MaitriseBonne
+                                                               Non
+                                                                    maitrisé       maitrise
+                                                                           partielle        maitrise
+Compétences                                                   évalué
+                                                                                                        Indicateurs de performance
+                                                                                                        Les fonctionnalités et les exigences liées à la qualité attendue de la solution d’infrastructure sont identifiées.
+     Concevoir une solution d’infrastructure réseau                                                 Les contextes d’utilisation, les processus et les acteurs sur lesquels la solution d’infrastructure à produire aura un impact sont
+                                                                                                        décrits.
+Analyser un besoin exprimé et son contexte juridique                                               Les composants de l’architecture technique sur lesquels la solution d’infrastructure à produire aura un impact sont recensés.
+                                                                                                        Les risques liés à une mauvaise utilisation ou à un dysfonctionnement de la solution d’infrastructure sont identifiés.
+                                                                                                        Les choix de solutions répondant au besoin exprimé (adaptation d’une solution existante ou réalisation d’une nouvelle) sont
+Étudier l’impact d’une évolution d’un élément
+d’infrastructure sur le système informatique
+                                                                                                   décrits et justifiés en termes de coût, de délai et de qualité.
+                                                                                                        La solution proposée tient compte des limites de responsabilité du prestataire informatique vis-à-vis de son métier et de son
+                                                                                                        environnement.
+Élaborer un dossier de choix d’une solution
+d’infrastructure et rédiger les spécifications techniques
+                                                                                                   Le dossier de choix et l’argumentaire technique sont rédigés et prennent en compte des préoccupations éthiques et
+                                                                                                        environnementales.
+Choisir les éléments nécessaires pour assurer la                                                        Les éléments permettant d’assurer la qualité et la continuité des services sont justifiés et caractérisés :
+qualité et la disponibilité d’un service
+                                                                                                   - les éléments à sauvegarder et à journaliser pour assurer la continuité du service et la traçabilité des transactions sont
+                                                                                                        identifiés ;
+Maquetter et prototyper une solution d’infrastructure                                                   - les procédures d’alerte associées au service sont spécifiées ;
+permettant d’atteindre la qualité de service attendue
+                                                                                                   - les solutions de fonctionnement en mode dégradé et les procédures de reprise du service sont décrites.
+                                                                                                        La maquette et le prototype sont conformes au besoin exprimé.
+Déterminer et préparer les tests nécessaires à la
+validation de la solution d’infrastructure retenue
+                                                                                                   Les tests d’acceptation nécessaires à la validation de la solution d’infrastructure sont recensés.
+                                                                                                        Les jeux d’essai pertinents et les procédures pour la réalisation des tests sont préparés.
+Installer, tester et déployer une solution d’infrastructure                                             Des éléments d’infrastructure (élément d’interconnexion, service, serveur, équipement utilisateur) sont installés et configurés.
+                             réseau                                                                 Les éléments d’infrastructure permettant d’assurer la continuité de service sont installés et configurés.
+                                                                                                        Le service fonctionne avec la disponibilité attendue.
+Installer et configurer des éléments d’infrastructure                                              Une procédure de remplacement ou de migration d’un élément d’infrastructure est élaborée et mise en œuvre en respectant la
+                                                                                                        continuité d’un service.
+Installer et configurer des éléments nécessaires pour
+assurer la continuité des services
+                                                                                                   Les éléments d’infrastructure permettant d’assurer la qualité de service sont installés et configurés.
+                                                                                                        Le service fonctionne avec la qualité attendue.
+Installer et configurer des éléments nécessaires pour                                                   La solution d’infrastructure est installée et configurée dans les règles de l’art :
+assurer la qualité de service
+                                                                                                   - l’environnement de test est mis en place ;
+                                                                                                        - les tests pertinents d’intégration et d’acceptation sont effectués ;
+Rédiger ou mettre à jour la documentation technique et
+utilisateur d’une solution d’infrastructure
+                                                                                                   - le rapport de tests est rédigé ;
+                                                                                                        - la documentation est à jour et disponible ;
+Tester l’intégration et l’acceptation d’une solution
+d’infrastructure
+                                                                                                   - la solution d’infrastructure tient compte des préoccupations de développement durable.
+                                                                                                        L’intégration de la solution ne génère pas de dysfonctionnement du réseau ou dans le réseau.
+                                                                                                        Une procédure claire de déploiement de la solution est rédigée.
+Déployer une solution d’infrastructure                                                             La solution d’infrastructure est déployée selon la procédure et la planification définies.
+      Exploiter, dépanner et superviser une solution                                                    Un dispositif d’administration sur site et à distance est configuré et exploité.
+                  d’infrastructure réseau                                                           Les conditions d’administration des éléments d’infrastructure sont maîtrisées.
+                                                                                                        L’automatisation des tâches d’administration répond au besoin exprimé.
+Administrer sur site et à distance des éléments d’une                                                   Les outils nécessaires à la production d’indicateurs d’activité et à l’exploitation de fichiers d’activité sont installés et configurés.
+infrastructure
+                                                                                                   Les dysfonctionnements récurrents dans une solution d’infrastructure sont repérés et leurs causes identifiées.
+                                                                                                        Le degré d'urgence et le niveau d’intervention sont définis.
+                                                                                                        Les conséquences techniques du problème sont évaluées.
+Automatiser des tâches d’administration                                                            L’incident est résolu ou escaladé de manière efficiente, en tenant compte des délais et procédures en vigueur.
+                                                                                                        Le problème est résolu ou escaladé de manière efficiente, en tenant compte des délais et procédures en vigueur.
+                                                                                                        Les rapports d’incidents et les comptes rendus de problèmes sont rédigés et adaptés à chaque destinataire tant par leur
+Gérer des indicateurs et des fichiers d’activité des
+éléments d’une infrastructure
+                                                                                                   contenu que par leur présentation.
+                                                                                                        Des mesures correctives sont proposées ou mises en œuvre pour maintenir ou améliorer la qualité d’un service.
+                                                                                                        Les éléments d’une solution d’infrastructure et leur utilisation sont supervisés.
+Identifier, qualifier, évaluer et réagir face à un incident
+ou à un problème
+                                                                                                   Les indicateurs et les fichiers d’audit sont analysés et exploités.
+                                                                                                        Des alertes adaptées à la criticité du service sont générées.
+                                                                                                        Les procédures d’alerte destinées à rétablir la qualité du service sont appliquées.
+                                                                                                        Le fonctionnement du service en mode dégradé et la disponibilité des éléments d’infrastructure permettant une reprise du
+Évaluer, maintenir et améliorer la qualité d’un service                                            service sont périodiquement vérifiés.
+                                                                                                        Le rétablissement de la qualité du service est assuré dans les délais prévus.
+                                                                                                                                                                                                                                              13
+  BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                                                SESSION 2026
+                                              ANNEXE VII-5-B : Grille d’aide à l’évaluation (recto)
+                      Épreuve E6 - Conception et développement d’applications (option SLAM)
+                                                                                                     Date : ...... / ......
+  Nom, prénom :                                                                                                                                   N° candidat :
+                                                                                                     /............
+  Épreuve ponctuelle                                            Contrôle en cours de formation                                                    N° commission :
+  Noms des membres de la commission d’interrogation
+  - .............................................................................................. - .............................................................................................
+                         Proposition de note suite à l’évaluation du profil de la personne candidate
+Le tableau d’aide à l’appréciation des niveaux de maîtrise des compétences doit être complété de façon à évaluer
+le profil de la personne candidate (voir au verso). Une grille proposant des éléments d’appréciation des niveaux
+de maîtrise des compétences est proposée en bas de page.
+La commission sera vigilante, lors de l’établissement de la note, sur la couverture des compétences du bloc
+exigée dans la définition de l’épreuve. Le cas échéant, l’appréciation littérale fera apparaitre ce défaut de
+couverture dans la fiche communicable à la personne candidate.
+                                                                                                                                 NOTE                                            / 20
+                                                                       Liste des pénalités retenues
+Les pénalités ci-dessous doivent être appliquées de façon à ce que la note finale de la personne candidate
+(annexe 7-6) en tienne compte.
+L’outil d’aide à l’appréciation de l’environnement technologique (annexe 8) permettra de préciser les éléments
+fondant la pénalité attribuée.
+        Absence d’une réalisation professionnelle (10 points de pénalité)
+        Absence des deux réalisations professionnelles (20 points de pénalité)
+        Environnement technologique mis en œuvre non conforme à l’annexe II.E (jusqu’à 15 points de pénalité)
+                                                                                                                NOTE FINALE                                                      / 20
+                                                                              Note à reporter sur la fiche d’appréciation destinée à la personne candidate
+        Tableau d’aide à l’appréciation des niveaux de maîtrise des compétences du bloc au verso
+  Non évalué                        Non maitrisé                            Maitrise partielle                       Bonne maitrise                           Excellente maitrise
+                                    N’identifie pas,                                                                                                          Analyse de façon
+                                                                            Identifie, exploite ou                   Identifie, exploite ou
+                                    n’exploite pas ou                                                                                                         pertinente les
+                                                                            intègre partiellement                    intègre les
+                                    n’intègre pas les                                                                                                         informations,
+                                                                            les informations,                        informations,
+                                    informations,                                                                                                             indicateurs, besoins ou
+                                                                            indicateurs, besoins ou                  indicateurs, besoins
+                                    indicateurs, besoins                                                                                                      contraintes, en
+                                                                            contraintes                              ou contraintes
+                                    ou contraintes                                                                                                            mobilisant des outils
+                                                                                                                     Atteint les objectifs                    Propose des solutions
+                                                                            Répond de façon peu
+                                    Ne répond pas ou                                                                 demandés, répond                         pertinentes, permettant
+                                                                            adaptée au besoin
+                                    n’apporte pas de                                                                 globalement aux                          des améliorations/gains
+                                                                            exprimé, propose des
+                                    solution aux besoins                                                             besoins exprimés ou                      notables et en
+                                                                            solutions peu
+                                    exprimés                                                                         donne des éléments                       anticipant les
+                                                                            pertinentes
+                                                                                                                     de solution                              contraintes
+  Sous-compétence
+                                    Ne s’implique pas ou
+  non évaluée au                                                            Ne structure pas sa                      Réalisation rigoureuse                   Mobilise une démarche
+                                    ne mobilise pas les
+  travers de la                                                             démarche ou mobilise                     mobilisant les                           agile et réactive,
+                                    technologies et
+  situation retenue                                                         de façon parcellaire les                 technologies et                          envisageant diverses
+                                    démarches adéquates
+                                                                            technologies et                          démarches                                technologies et
+                                    dans la production du
+                                                                            démarches                                appropriées                              solutions possibles
+                                    résultat attendu
+                                                                                                                                                              Identifie et résout les
+                                    Ne traite pas les                       Identifie les erreurs                    Identifie et résout les
+                                                                                                                                                              erreurs et les
+                                    erreurs                                 sans les résoudre                        erreurs
+                                                                                                                                                              documente
+                                                                                                                                                              Communique à l’écrit
+                                                                            Communique à l’écrit                                                              et/ou l’oral de façon
+                                    Ne communique pas                                                                Communique à l’écrit
+                                                                            et/ou l’oral sans                                                                 adaptée aux
+                                    de façon appropriée,                                                             et/ou l’oral de façon
+                                                                            apporter                                                                          interlocuteurs,
+                                    ni à l’écrit, ni à l’oral                                                        claire et explicite
+                                                                            d’argumentation                                                                   argumente de façon
+                                                                                                                                                              étayée
+                                                                                                                                                                                               14
+                                     Niveaux de maîtrise                           Bonne                               ANNEXE VII-5-B : E6 – (option SLAM) - Grille d’aide à l’évaluation (verso)
+                                                              Non   Non   Maitrise maitrise
+Compétences                                                  évaluémaitrisé
+                                                                          partielle
+                                                                                  Excellente
+                                                                                               Indicateurs de performance
+                                                                                   maitrise
+    Concevoir et développer une solution applicative                                   
+                                                                                               La proposition de la solution applicative répond au besoin exprimé dans le cahier des charges y compris dans sa dimension
+Analyser un besoin exprimé et son contexte juridique                                      contractuelle :
+                                                                                               - la modélisation de l’application est conforme aux besoins ;
+Participer à la conception de l’architecture d’une
+solution applicative
+                                                                                          - la maquette des éléments applicatifs de la solution respecte les fonctionnalités exprimées ;
+                                                                                               - les spécifications de l’interface utilisateur répondent aux contraintes ergonomiques.
+Modéliser une solution applicative                                                        Le choix des composants logiciels à utiliser et/ou à développer est pertinent.
+                                                                                               Les composants logiciels sont validés par les procédures de tests unitaires et fonctionnels.
+                                                                                               Un service Web est exploité pour échanger des données entre applications.
+Exploiter les ressources du cadre applicatif (framework)                                  Les données persistantes liées à la solution applicative sont exploitées à travers un langage de requête lié à la base de
+Identifier, développer, utiliser ou adapter des                                                données qui peut être le langage de requête proposé par les échanges applicatifs des technologies Web, un langage de
+composants logiciels
+                                                                                          requête présent dans l’outil de correspondance objet-relationnel ou toute autre solution de persistance.
+                                                                                               La solution est développée dans les règles de l’art :
+Exploiter les technologies Web pour mettre en œuvre
+les échanges entre applications, y compris de mobilité
+                                                                                          - le développement répond à l’expression des besoins fonctionnels et respecte les contraintes techniques figurant dans le
+                                                                                               cahier des charges ;
+Utiliser des composants d’accès aux données                                               - les tests d’intégration sont réalisés ;
+                                                                                               - un outil collaboratif de gestion des itérations de développement et de versions est utilisé ;
+Intégrer en continu les versions d’une solution                                                - une documentation des versions vient appuyer l’intégration continue ;
+applicative
+                                                                                          - les composants logiciels sont documentés de manière à être réutilisés ;
+Réaliser les tests nécessaires à la validation ou à la                                         - un document est rédigé pour chaque contexte d’utilisation de l’application et est adapté à chaque destinataire tant par son
+mise en production d’éléments adaptés ou développés
+                                                                                          contenu que par sa présentation ;
+                                                                                               - le développement tient compte des préoccupations de développement durable.
+Rédiger des documentations technique et d’utilisation
+d’une solution applicative
+                                                                                          L’application développée est opérationnelle conformément au cahier des charges et stable dans l’environnement de
+                                                                                               production.
+Exploiter les fonctionnalités d’un environnement de
+développement et de tests
+                                                                                      
+  Assurer la maintenance corrective ou évolutive d’une
+                                                                                       
+                                                                                               L’évolution de la solution applicative répond aux besoins exprimés dans le cahier des charges.
+                     solution applicative                                                      La modélisation de l’application existante est mise à jour par les nouvelles fonctionnalités et/ou les nouveaux correctifs
+                                                                                               apportés.
+Recueillir, analyser et mettre à jour les informations sur
+une version d’une solution applicative
+                                                                                          L’interface utilisateur est mise à jour en respectant les contraintes ergonomiques.
+                                                                                               Un outil collaboratif de gestion des versions est utilisé.
+                                                                                               Des composants logiciels sont adaptés pour améliorer la qualité de la solution applicative.
+Évaluer la qualité d’une solution applicative                                             Les composants logiciels adaptés et/ou corrigés sont validés par les procédures de tests unitaires et fonctionnels.
+                                                                                               Le dysfonctionnement de la solution existante est corrigé selon les procédures en vigueur et dans les délais.
+Analyser et corriger un dysfonctionnement                                                 Les accès aux données persistantes à travers le langage de requête du système de gestion de base de données relationnel,
+                                                                                               le langage de requête proposé par les échanges applicatifs des technologies Web, le langage de requête de l’outil de
+Mettre à jour des documentations technique et                                                  correspondance objet-relationnel ou toute autre solution de persistance sont mis à jour.
+d’utilisation d’une solution applicative
+                                                                                          Les tests de non régression sont réalisés.
+                                                                                               Les composants logiciels sont documentés de manière à être réutilisés.
+Élaborer et réaliser les tests des éléments mis à jour                                    La documentation technique et d’utilisateurs de la solution applicative sont mises à jour.
+                                                                                               L’application améliorée et/ou corrigée est opérationnelle et stable dans l’environnement de production.
+                     Gérer les données                                                     L’exploitation des données permet de construire l’information attendue.
+                                                                                               Les accès aux données sont contrôlés conformément aux habilitations définies par le cahier des charges.
+Exploiter des données à l’aide d’un langage de                                                 Les traitements pris en charge par les composants développés dans la base de données sont conformes aux demandes du
+requêtes
+                                                                                          cahier des charges.
+Développer des fonctionnalités applicatives au sein d’un                                       Les données sont modélisées conformément au besoin de la solution applicative.
+système de gestion de base de données (relationnel ou non)
+                                                                                          Le choix du type de base de données est pertinent.
+                                                                                               L’accessibilité des données est conforme à la qualité de service attendue.
+Concevoir ou adapter une base de données                                                  La base de données est sauvegardée selon la planification retenue.
+                                                                                               Des tests de restauration sont effectués.
+Administrer et déployer une base de données                                               La base de données est opérationnelle et stable dans l’environnement de production.
+                                                                                                                                                                                                                               15
+ BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                SESSION 2026
+                ANNEXE VII-6 : Fiche d’appréciation destinée à la personne candidate
+               Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+              Épreuve E6 - Conception et développement d’applications (option SLAM)
+Nom, prénom :                                                                        N° candidat :
+Épreuve ponctuelle                     Contrôle en cours de formation                N° commission :
+OPTION SISR                            OPTION SLAM                                   Date : ...... / ...... /............
+Phase 1 : Entretien d’explicitation (20 minutes maximum)
+Observations
+Phase 2 : Recette de la solution (20 minutes maximum)
+Observations
+Appréciation sur les niveaux de maîtrise des compétences, sur la mobilisation de toutes les compétences du bloc
+et sur la conformité de l’environnement technologique des réalisations professionnelles présentées
+         Une réalisation professionnelle absente                Aucune réalisation professionnelle présentée
+                                                                           NOTE                               / 20
+Visa des membres de la commission d’interrogation
+                                                                                                                          16
+   BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                     SESSION 2026
+                    ANNEXE VII-7 : Outil d’aide à l’appréciation de l’environnement technologique mobilisé par la personne candidate
+                                            Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+                                                  CONTRÔLE DE L’ENVIRONNEMENT TECHNOLOGIQUE
+                   En référence à l’annexe II.E « Environnement technologique pour la certification » du référentiel du BTS SIO
+      Identification10                                                                                                                   SISR
+1. Environnement commun aux deux options
+1.1 L'environnement technologique supportant le système d'information de l'organisation cliente comporte au moins :
+                                                Description de l’implantation dans le centre d’examen              Remarques de la commission
+  Éléments
+                                                (nom du service ou de l’outil et caractéristiques techniques)      d’interrogation
+  Un service d’authentification
+  Un SGBD
+  Un accès sécurisé à internet
+  Un environnement de travail collaboratif
+  Deux serveurs, éventuellement
+  virtualisés, basés sur des systèmes
+  d'exploitation différents, dont l'un est un
+  logiciel libre (open source)
+10
+   Nom et adresse du centre d’examen ou identification de la personne candidate individuelle (numéro, nom, prénom)
+                                                                                                                                                 17
+    ANNEXE VII-7 (suite) : Modèle d’attestation de respect de l’annexe II.E – « Environnement technologique pour la certification » du référentiel
+                                        Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+                                           Description de l’implantation dans le centre d’examen           Remarques de la commission
+ Éléments
+                                           (nom du service ou de l’outil et caractéristiques techniques)   d’interrogation
+ Une solution de sauvegarde
+ Des ressources dont l'accès est sécurisé
+ et soumis à habilitation
+ Deux types de terminaux dont un mobile
+ (type smartphone ou encore tablette)
+1.2 Des outils sont mobilisés pour la gestion de la sécurité :
+                                           Description de l’implantation dans le centre d’examen           Remarques de la commission
+ Éléments
+                                           (nom du service ou de l’outil et caractéristiques techniques)   d’interrogation
+ Gestion des incidents
+ Détection et prévention des intrusions
+ Chiffrement
+ Analyse de trafic
+Rappel : les logiciels de simulation ou d'émulation sont utilisés en réponse à des besoins de l'organisation. Ils ne peuvent se
+substituer complètement à des équipements réels dans l'environnement technologique d'apprentissage.
+                                                                                                                                                   18
+      ANNEXE VII-7 (suite) : Modèle d’attestation de respect de l’annexe II.E « Environnement technologique pour la certification » du référentiel
+                                           Épreuve E6 - Administration des systèmes et des réseaux (option SISR)
+2. Éléments spécifiques à l’option « Solutions d'infrastructure, systèmes et réseaux » (SISR)
+Rappel de l’annexe II.E du référentiel : « Une solution d'infrastructure réduite à une simulation par un logiciel ne peut être acceptée. »
+2.1 L'environnement technologique supportant le système d‘information de l'organisation cliente comporte au moins :
+                                              Description de l’implantation dans le centre d’examen                   Remarques de la commission
+ Éléments
+                                              (nom du service ou de l’outil et caractéristiques techniques)           d’interrogation
+ Un réseau comportant plusieurs
+ périmètres de sécurité
+ Un service rendu à l'utilisateur final
+ respectant un contrat de service
+ comportant des contraintes en termes de
+ sécurité et de haute disponibilité
+ Un logiciel d'analyse de trames
+ Un logiciel de gestion des configurations
+ Une solution permettant l'administration
+ à distance sécurisée de serveurs et de
+ solutions techniques d'accès
+ Une solution permettant la supervision
+ de la qualité, de la sécurité et de la
+ disponibilité des équipements
+ d'interconnexion, serveurs, systèmes et
+ services avec remontées d'alertes
+ Une solution garantissant des accès
+ sécurisés à un service, internes au
+ périmètre de sécurité de l'organisation
+ (type intranet) ou externes (type internet
+ ou extranet)
+                                                                                                                                                   19
+                                             Description de l’implantation dans le centre d’examen                Remarques de la commission
+ Éléments
+                                             (nom du service ou de l’outil et caractéristiques techniques)        d’interrogation
+ Une solution garantissant la continuité
+ d'un service
+ Une solution garantissant la tolérance de
+ panne de systèmes serveurs ou
+ d'éléments d'interconnexion
+ Une solution permettant la répartition de
+ charges entre services, serveurs ou
+ éléments d'interconnexion
+2.2 La structure et les activités de l'organisation s'appuient sur au moins une solution d'infrastructure opérationnelle parmi les suivantes :
+                                             Description de l’implantation dans le centre d’examen                Remarques de la commission
+ Éléments
+                                             (nom du service ou de l’outil et caractéristiques techniques)        d’interrogation
+ Une solution permettant la connexion
+ sécurisée entre deux sites distants
+ Une solution permettant le déploiement
+ des solutions techniques d'accès
+ Une solution gérée à l'aide de
+ procédures automatisées écrites avec un
+ langage de scripting
+ Une solution permettant la détection
+ d'intrusions ou de comportements
+ anormaux sur le réseau
+                                                                                                                                               20
+BTS SERVICES INFORMATIQUES AUX ORGANISATIONS                                                                                       SESSION 2026
+           ANNEXE VII-7 : Modèle d’attestation de respect de l’annexe II.E – Environnement technologique pour la certification du référentiel
+                                           Épreuve E6 - Conception et développement d’applications (option SLAM)
+                                                  CONTRÔLE DE L’ENVIRONNEMENT TECHNOLOGIQUE
+                   En référence à l’annexe II.E –« Environnement technologique pour la certification » du référentiel du BTS SIO
+      Identification11                                                                                                                   SLAM
+1. Environnement commun aux deux options
+1.1 L'environnement technologique supportant le système d'information de l'organisation cliente comporte au moins :
+                                                Description de l’implantation dans le centre d’examen              Remarques de la commission
+  Éléments
+                                                (nom du service ou de l’outil et caractéristiques techniques)      d’interrogation
+  Un service d’authentification
+  Un SGBD
+  Un accès sécurisé à internet
+  Un environnement de travail collaboratif
+  Deux serveurs, éventuellement
+  virtualisés, basés sur des systèmes
+  d'exploitation différents, dont l'un est un
+  logiciel libre (open source)
+11
+   Nom et adresse du centre d’examen ou identification de la personne candidate individuelle (numéro, nom, prénom)
+                                                                                                                                                21
+      ANNEXE VII-7 (suite) : Modèle d’attestation de respect de l’annexe II.E – Environnement technologique pour la certification du référentiel
+                                        Épreuve E6 - Conception et développement d’applications (option SLAM)
+                                            Description de l’implantation dans le centre d’examen             Remarques de la commission
+ Éléments
+                                            (nom du service ou de l’outil et caractéristiques techniques)     d’interrogation
+ Une solution de sauvegarde
+ Des ressources dont l'accès est sécurisé
+ et soumis à habilitation
+ Deux types de terminaux dont un mobile
+ (type smartphone ou encore tablette)
+1.2 Des outils sont mobilisés pour la gestion de la sécurité :
+                                            Description de l’implantation dans le centre d’examen             Remarques de la commission
+ Éléments
+                                            (nom du service ou de l’outil et caractéristiques techniques)     d’interrogation
+ Gestion des incidents
+ Détection et prévention des intrusions
+ Chiffrement
+ Analyse de trafic
+Remarque : les logiciels de simulation ou d'émulation sont utilisés en réponse à des besoins de l'organisation. Ils ne peuvent se
+substituer complètement à des équipements réels dans l'environnement technologique d'apprentissage.
+                                                                                                                                                 22
+      ANNEXE VII-7 (suite) : Modèle d’attestation de respect de l’annexe II.E – Environnement technologique pour la certification du référentiel
+                                         Épreuve E6 - Conception et développement d’applications (option SLAM)
+2. Savoirs spécifiques à l’option « solutions logicielles et applications métiers » (SLAM)
+2.1 L'environnement technologique supportant le système d‘information de l'organisation cliente comporte au moins :
+                                             Description de l’implantation dans le centre d’examen             Remarques de la commission
+ Éléments
+                                             (nom du service ou de l’outil et caractéristiques techniques)     d’interrogation
+ Un ou deux environnements de
+ développement disposant d'outils de
+ gestion de tests et supportant un cadre
+ applicatif (framework) et au moins deux
+ langages
+ Une bibliothèque de composants
+ logiciels
+ Un SGBD avec langage de
+ programmation associé
+ Un logiciel de gestion de versions et de
+ suivi de problèmes d’ordre logiciel
+ Une solution permettant de tester les
+ comportements anormaux d'une
+ application
+                                                                                                                                                 23
+2.2 Les activités de l'organisation cliente s'appuient sur aux moins deux solutions applicatives opérationnelles permettant d'offrir un accès
+sécurisé à des données hébergées sur un site distant. Au sein des architectures de ces solutions applicatives doivent figurer l'exploitation de
+mécanismes d'appel à des services applicatifs distants et au moins trois des situations ci-dessous :
+                                            Description de l’implantation dans le centre d’examen               Remarques de la commission
+ Éléments
+                                            (nom du service ou de l’outil et caractéristiques techniques)       d’interrogation
+ Du code exécuté sur le système
+ d'exploitation d'une solution technique
+ d'accès fixe (type client lourd)
+ Du code exécuté dans un navigateur
+ Web (type client léger ou riche)
+ Du code exécuté sur le système
+ d'exploitation d'une solution technique
+ d'accès mobile
+ Du code exécuté sur le système
+ d'exploitation d'un serveur
+2.3 Une solution applicative peut être issue d'un développement spécifique ou de la modification du code d'un logiciel notamment open source.
+2.4 Les solutions applicatives présentes dans le contexte sont opérationnelles et leur code source est accessible dans un environnement de
+développement opérationnel au moment de l'épreuve.
+                                                                                                                                                24

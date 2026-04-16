@@ -2,6 +2,7 @@
 require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
 require __DIR__ . "/../includes/db.php";
+require __DIR__ . "/../includes/helpers.php";
 
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
@@ -68,22 +69,26 @@ $tab = $_GET["tab"] ?? "marque";
 $allowed_tabs = ["marque", "modele", "os", "os_version"];
 if (!in_array($tab, $allowed_tabs, true)) $tab = "marque";
 
+$orderBy = $tab === 'os_version'
+    ? "ISNULL(option_group), option_group, option_value"
+    : "ISNULL(option_group), option_group, display_order, option_value";
+
 $rows = $pdo->prepare(
     "SELECT id, option_group, option_value, display_order
      FROM field_options
      WHERE field_name = ?
-     ORDER BY option_group, display_order, option_value"
+     ORDER BY $orderBy"
 );
 $rows->execute([$tab]);
 $options = $rows->fetchAll();
 
-$marqueRows = $pdo->query(
+$marqueRows = $tab === 'modele' ? $pdo->query(
     "SELECT DISTINCT option_value FROM field_options WHERE field_name = 'marque' ORDER BY option_value"
-)->fetchAll(PDO::FETCH_COLUMN);
+)->fetchAll(PDO::FETCH_COLUMN) : [];
 
-$osGroups = $pdo->query(
+$osGroups = $tab === 'os' ? $pdo->query(
     "SELECT DISTINCT option_group FROM field_options WHERE field_name = 'os' AND option_group IS NOT NULL ORDER BY option_group"
-)->fetchAll(PDO::FETCH_COLUMN);
+)->fetchAll(PDO::FETCH_COLUMN) : [];
 
 $pageTitle = "Admin - Options des listes";
 $activePage = "admin_options";
@@ -234,6 +239,16 @@ require __DIR__ . "/../partials/header.php";
                        placeholder="Nom de la nouvelle famille" style="display:none;">
               </div>
 
+            <?php elseif ($tab === "os_version"): ?>
+              <div class="mb-3">
+                <label class="form-label">Famille OS (groupe)</label>
+                <select class="form-select" name="option_group">
+                  <option value="">Aucune (générique)</option>
+                  <?php foreach (OS_FAMILIES as $f): ?>
+                    <option value="<?= e($f) ?>"><?= e($f) ?></option>
+                  <?php endforeach; ?>
+                </select>
+              </div>
             <?php endif; ?>
 
             <div class="mb-3">
