@@ -23,6 +23,24 @@
   --bs-body-font-family: 'Space Grotesk', sans-serif;
 }
 
+/* ── Light Theme Overrides ─────────────────────────────────── */
+[data-bs-theme="light"] {
+  --gh-canvas:         #ffffff;
+  --gh-canvas-subtle:  #f6f8fa;
+  --gh-canvas-inset:   #eff2f5;
+  --gh-border-default: #d0d7de;
+  --gh-border-muted:   #d8dee4;
+  --gh-fg-default:     #1f2328;
+  --gh-fg-muted:       #656d76;
+  --gh-fg-subtle:      #6e7781;
+  --gh-accent-blue:    #0969da;
+  --gh-accent-blue-bg: #0969da;
+  --gh-accent-green:   #1a7f37;
+  --gh-accent-red:     #cf222e;
+  --gh-accent-yellow:  #9a6700;
+  --gh-accent-purple:  #8250df;
+}
+
 body {
   font-family: 'Space Grotesk', sans-serif;
   background: var(--gh-canvas);
@@ -432,4 +450,32 @@ body {
     margin-bottom: 8px;
     font-weight: 500;
   }
+}
+
+/* ── Flash panel ──────────────────────────────────────────── */
+.flash-panel {
+  background: var(--gh-canvas-subtle);
+  border: 1px solid var(--gh-border-default);
+  border-radius: .5rem;
+  padding: .75rem 1rem;
+}
+.flash-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+.flash-toggle[aria-expanded="false"] .flash-chevron {
+  transform: rotate(-90deg);
+}
+.flash-chevron {
+  transition: transform .2s ease;
+}
+.flash-list .list-group-item {
+  font-size: .875rem;
+}
+.flash-dismiss {
+  font-size: .65rem;
+  opacity: .6;
+}
+.flash-dismiss:hover {
+  opacity: 1;
 }

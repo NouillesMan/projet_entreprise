@@ -101,17 +101,19 @@ require __DIR__ . "/../partials/header.php";
     <h3 class="mb-0">Options des listes déroulantes</h3>
   </div>
 
-  <?php if (isset($_GET['msg'])): ?>
-    <div class="alert alert-success alert-dismissible fade show">
-      <?= match($_GET['msg']) {
-        'added'   => 'Option ajoutée.',
-        'deleted' => 'Option supprimée.',
-        'deduped' => 'Doublons supprimés.',
-        default   => '',
-      } ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
+  <?php
+  $flash = [];
+  if (isset($_GET['msg'])) {
+    $text = match($_GET['msg']) {
+      'added'   => 'Option ajoutée.',
+      'deleted' => 'Option supprimée.',
+      'deduped' => 'Doublons supprimés.',
+      default   => 'Opération effectuée.',
+    };
+    $flash[] = ['type' => 'success', 'msg' => e($text)];
+  }
+  require __DIR__ . "/../partials/flash.php";
+  ?>
 
   <!-- Tabs -->
   <ul class="nav nav-tabs mb-4">

@@ -26,6 +26,23 @@ $allBrands = array_unique(array_merge($options['marque'], $existingBrands));
 // Ce sont des colonnes supplémentaires à afficher et sauvegarder en plus des champs fixes.
 $customFields = get_custom_fields($pdo);
 
+// Duplication support
+$dup = null;
+$dupCustom = [];
+$duplicateId = filter_input(INPUT_GET, 'duplicate', FILTER_VALIDATE_INT);
+if ($duplicateId && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+    $stmtDup = $pdo->prepare("SELECT * FROM pcs WHERE id = ?");
+    $stmtDup->execute([$duplicateId]);
+    $dup = $stmtDup->fetch();
+    if ($dup && !empty($customFields)) {
+        $stmtDupCf = $pdo->prepare("SELECT field_name, field_value FROM pc_custom_data WHERE pc_id = ?");
+        $stmtDupCf->execute([$duplicateId]);
+        foreach ($stmtDupCf->fetchAll() as $row) {
+            $dupCustom[$row['field_name']] = $row['field_value'];
+        }
+    }
+}
+
 $errors = [];
 // Si formulaire envoyé
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -81,12 +98,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":remarques" => $remarques,
       ]);
 
+      $lastId = (int)$pdo->lastInsertId();
+      log_activity($pdo, 'add', 'pc', $lastId, $hostname);
+      log_pc_history($pdo, $lastId, 'created');
+
       // Sauvegarde des champs personnalisés dans la table pc_custom_data.
-      // On ne fait ce bloc que s'il y a effectivement des champs custom (optimisation).
       if (!empty($customFields)) {
-        // lastInsertId() retourne l'id AUTO_INCREMENT du PC qu'on vient d'insérer.
-        // (int) : on force en entier pour la sécurité (évite une injection si jamais).
-        $lastId = (int)$pdo->lastInsertId();
 
         // On prépare la requête UNE SEULE FOIS en dehors de la boucle.
         // PDO réutilise la requête compilée à chaque execute() → plus performant que N prepare().
@@ -113,29 +130,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 
-$pageTitle = "Ajouter un PC";
+$pageTitle = $dup ? "Dupliquer un PC" : "Ajouter un PC";
 $activePage = "pc_add";
 require __DIR__ . "/partials/header.php";
 ?>
 <div class="container-fluid py-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="mb-0">Ajouter un PC</h3>
+    <h3 class="mb-0"><?= $dup ? 'Dupliquer un PC' : 'Ajouter un PC' ?></h3>
     <a class="btn btn-outline-secondary" href="/pcs.php">
       <i class="bi bi-arrow-left"></i> Retour
     </a>
   </div>
 
-  <?php if ($errors): ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <h5 class="alert-heading">Erreurs de validation</h5>
-      <ul class="mb-0">
-        <?php foreach ($errors as $err): ?>
-          <li><?= e($err) ?></li>
-        <?php endforeach; ?>
-      </ul>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
+  <?php
+  $flash = [];
+  if ($errors) {
+    foreach ($errors as $err) {
+      $flash[] = ['type' => 'danger', 'msg' => e($err)];
+    }
+  }
+  require __DIR__ . "/partials/flash.php";
+  ?>
 
   <div class="card shadow-sm">
     <div class="card-header">
@@ -146,7 +161,7 @@ require __DIR__ . "/partials/header.php";
         <?= csrf_field() ?>
         <div class="col-md-6">
           <label class="form-label">Hostname <span class="text-danger">*</span></label>
-          <input class="form-control" name="hostname" value="<?= e($_POST["hostname"] ?? "") ?>" required>
+          <input class="form-control" name="hostname" value="<?= e($_POST["hostname"] ?? ($dup['hostname'] ?? "")) ?>" required>
         </div>
         <div class="col-md-6">
           <label class="form-label">Numéro de série <span class="text-danger">*</span></label>
@@ -158,7 +173,7 @@ require __DIR__ . "/partials/header.php";
           <select class="form-select" name="marque" id="marque" required>
             <option value="">Sélectionner...</option>
             <?php foreach ($allBrands as $brand): ?>
-              <option value="<?= e($brand) ?>" <?= ($_POST["marque"] ?? "") === $brand ? "selected" : "" ?>>
+              <option value="<?= e($brand) ?>" <?= ($_POST["marque"] ?? ($dup['marque'] ?? "")) === $brand ? "selected" : "" ?>>
                 <?= e($brand) ?>
               </option>
             <?php endforeach; ?>
@@ -171,14 +186,14 @@ require __DIR__ . "/partials/header.php";
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
           <input class="form-control form-control-sm mt-1" name="modele_custom" id="modele_custom"
-                 value="<?= e($_POST["modele"] ?? "") ?>" placeholder="Modèle personnalisé">
+                 value="<?= e($_POST["modele"] ?? ($dup['modele'] ?? "")) ?>" placeholder="Modele personnalise">
         </div>
         <div class="col-md-4">
           <label class="form-label">Utilisateur <span class="text-danger">*</span></label>
           <select class="form-select" name="utilisateur" id="utilisateur" required>
             <option value="">Sélectionner...</option>
             <?php foreach ($existingUsers as $user): ?>
-              <option value="<?= e($user) ?>" <?= ($_POST["utilisateur"] ?? "") === $user ? "selected" : "" ?>>
+              <option value="<?= e($user) ?>" <?= ($_POST["utilisateur"] ?? ($dup['utilisateur'] ?? "")) === $user ? "selected" : "" ?>>
                 <?= e($user) ?>
               </option>
             <?php endforeach; ?>
@@ -195,7 +210,7 @@ require __DIR__ . "/partials/header.php";
             <?php foreach ($options['os'] as $osFamily => $osList): ?>
               <optgroup label="<?= e($osFamily) ?>">
                 <?php foreach ($osList as $osName): ?>
-                  <option value="<?= e($osName) ?>" <?= ($_POST["os"] ?? "") === $osName ? "selected" : "" ?>>
+                  <option value="<?= e($osName) ?>" <?= ($_POST["os"] ?? ($dup['os'] ?? "")) === $osName ? "selected" : "" ?>>
                     <?= e($osName) ?>
                   </option>
                 <?php endforeach; ?>
@@ -207,10 +222,10 @@ require __DIR__ . "/partials/header.php";
           <label class="form-label">Version OS</label>
           <select class="form-select" name="os_version" id="os_version">
             <option value="">Aucune</option>
-            <?= render_os_version_options($options['os_version'], $_POST["os_version"] ?? "") ?>
+            <?= render_os_version_options($options['os_version'], $_POST["os_version"] ?? ($dup['os_version'] ?? "")) ?>
           </select>
           <small class="text-muted">Ou saisir manuellement:</small>
-          <?php $currentVersion = $_POST["os_version"] ?? ""; ?>
+          <?php $currentVersion = $_POST["os_version"] ?? ($dup['os_version'] ?? ""); ?>
           <input class="form-control form-control-sm mt-1" name="os_version_custom"
                  value="<?= os_version_in_list($options['os_version'], $currentVersion) ? '' : e($currentVersion) ?>" placeholder="Version personnalisée">
         </div>
@@ -218,7 +233,7 @@ require __DIR__ . "/partials/header.php";
           <label class="form-label">Architecture <span class="text-danger">*</span></label>
           <select class="form-select" name="architecture" required>
             <option value="">Sélectionner...</option>
-            <?php $curArch = $_POST["architecture"] ?? ""; ?>
+            <?php $curArch = $_POST["architecture"] ?? ($dup['architecture'] ?? ""); ?>
             <?php foreach ($allowedArch as $a): ?>
               <option value="<?= e($a) ?>" <?= $curArch === $a ? "selected" : "" ?>><?= e($a) ?></option>
             <?php endforeach; ?>
@@ -227,14 +242,14 @@ require __DIR__ . "/partials/header.php";
 
         <div class="col-md-6">
           <label class="form-label">Domaine</label>
-          <input class="form-control" name="domaine" value="<?= e($_POST["domaine"] ?? "") ?>"
+          <input class="form-control" name="domaine" value="<?= e($_POST["domaine"] ?? ($dup['domaine'] ?? "")) ?>"
                  placeholder="Ex: corp.example.com">
         </div>
         <div class="col-md-6">
           <label class="form-label">Statut <span class="text-danger">*</span></label>
           <select class="form-select" name="statut" required>
             <option value="">Sélectionner...</option>
-            <?php $curStatut = $_POST["statut"] ?? ""; ?>
+            <?php $curStatut = $_POST["statut"] ?? ($dup['statut'] ?? ""); ?>
             <?php foreach ($allowedStatut as $s): ?>
               <option value="<?= e($s) ?>" <?= $curStatut === $s ? "selected" : "" ?>><?= e($s) ?></option>
             <?php endforeach; ?>
@@ -244,7 +259,7 @@ require __DIR__ . "/partials/header.php";
         <div class="col-12">
           <label class="form-label">Remarques</label>
           <textarea class="form-control" name="remarques" rows="3"
-                    placeholder="Notes supplémentaires..."><?= e($_POST["remarques"] ?? "") ?></textarea>
+                    placeholder="Notes supplementaires..."><?= e($_POST["remarques"] ?? ($dup['remarques'] ?? "")) ?></textarea>
         </div>
 
         <?php if (!empty($customFields)): // N'affiche ce bloc que si des champs custom existent ?>
@@ -258,16 +273,17 @@ require __DIR__ . "/partials/header.php";
             <?php endif; ?>
           </label>
 
+          <?php $cfVal = $_POST["cf_" . $cf['field_name']] ?? ($dupCustom[$cf['field_name']] ?? ""); ?>
           <?php if ($cf['field_type'] === 'textarea'): ?>
             <textarea class="form-control"
                       name="cf_<?= e($cf['field_name']) ?>"
                       rows="3"<?= $cf['is_required'] ? ' required' : '' ?>
-            ><?= e($_POST["cf_" . $cf['field_name']] ?? "") ?></textarea>
+            ><?= e($cfVal) ?></textarea>
           <?php else: ?>
             <input class="form-control"
                    type="<?= in_array($cf['field_type'], ['text','number','date']) ? $cf['field_type'] : 'text' ?>"
                    name="cf_<?= e($cf['field_name']) ?>"
-                   value="<?= e($_POST["cf_" . $cf['field_name']] ?? "") ?>"
+                   value="<?= e($cfVal) ?>"
                    <?= $cf['is_required'] ? 'required' : '' ?>>
           <?php endif; ?>
 

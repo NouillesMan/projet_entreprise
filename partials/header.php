@@ -14,8 +14,12 @@ if (!function_exists('e')) {
     }
 }
 ?>
+<?php
+$theme = $_COOKIE['theme'] ?? 'dark';
+if (!in_array($theme, ['dark', 'light'])) $theme = 'dark';
+?>
 <!doctype html>
-<html lang="fr" data-bs-theme="dark">
+<html lang="fr" data-bs-theme="<?= $theme ?>">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -94,6 +98,9 @@ if (!function_exists('e')) {
     <a href="/admin/stats_utilisateurs.php" class="nav-link <?= $activePage === 'admin_stats_utilisateurs' ? 'active' : '' ?>">
       <i class="bi bi-bar-chart-line"></i> Stats utilisateurs
     </a>
+    <a href="/admin/logs.php" class="nav-link <?= $activePage === 'admin_logs' ? 'active' : '' ?>">
+      <i class="bi bi-journal-text"></i> Logs
+    </a>
     <?php endif; ?>
   </div>
 
@@ -103,6 +110,10 @@ if (!function_exists('e')) {
       <i class="bi bi-person-circle"></i>
       <?= e($_SESSION["username"] ?? "") ?>
     </div>
+    <button class="btn btn-sm btn-outline-secondary w-100 mb-2" id="themeToggle" title="Changer le theme">
+      <i class="bi bi-<?= $theme === 'dark' ? 'sun' : 'moon-stars' ?>"></i>
+      <?= $theme === 'dark' ? 'Mode clair' : 'Mode sombre' ?>
+    </button>
     <a href="/logout.php" class="btn btn-sm btn-outline-secondary w-100">
       <i class="bi bi-box-arrow-right"></i> Deconnexion
     </a>

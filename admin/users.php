@@ -2,6 +2,7 @@
 require __DIR__ . "/../includes/auth.php";
 require_perm("is_admin");
 require __DIR__ . "/../includes/db.php";
+require __DIR__ . "/../includes/helpers.php";
 
 
 // ── Handle POST actions ───────────────────────────────────────────────────────
@@ -16,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $errors   = [];
 
         if ($username === "")    $errors[] = "Nom d'utilisateur obligatoire.";
-        if (strlen($password) < 4) $errors[] = "Mot de passe trop court (min. 4 caractères).";
+        $errors = array_merge($errors, validate_password($password));
 
         if (!$errors) {
             try {
@@ -34,6 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     isset($_POST["can_edit"])   ? 1 : 0,
                     isset($_POST["can_delete"]) ? 1 : 0,
                 ]);
+                log_activity($pdo, 'create_user', 'user', (int)$pdo->lastInsertId(), $username);
                 header("Location: /admin/users.php?msg=created");
                 exit;
             } catch (PDOException $e) {
@@ -72,6 +74,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $uid,
             ]);
         }
+        $uStmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+        $uStmt->execute([$uid]);
+        $uName = $uStmt->fetchColumn() ?: "User #$uid";
+        log_activity($pdo, 'update_perms', 'user', $uid, $uName);
         header("Location: /admin/users.php?msg=updated");
         exit;
     }
@@ -83,8 +89,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: /admin/users.php?msg=self_delete_error");
             exit;
         }
+
+        $adminPassword = $_POST["admin_password"] ?? "";
+        $adminStmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = ?");
+        $adminStmt->execute([$_SESSION["user_id"]]);
+        $adminUser = $adminStmt->fetch();
+
+        if (!$adminUser || !password_verify($adminPassword, $adminUser["password_hash"])) {
+            header("Location: /admin/users.php?msg=admin_auth_error");
+            exit;
+        }
+
         if ($uid > 0) {
+            $delStmt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+            $delStmt->execute([$uid]);
+            $delName = $delStmt->fetchColumn() ?: "User #$uid";
             $pdo->prepare("DELETE FROM users WHERE id = ?")->execute([$uid]);
+            log_activity($pdo, 'delete_user', 'user', $uid, $delName);
         }
         header("Location: /admin/users.php?msg=deleted");
         exit;
@@ -92,9 +113,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // Reset password
     if ($action === "reset_password") {
-        $uid      = (int)($_POST["user_id"] ?? 0);
-        $password = $_POST["new_password"] ?? "";
-        if ($uid > 0 && strlen($password) >= 4) {
+        $uid          = (int)($_POST["user_id"] ?? 0);
+        $password     = $_POST["new_password"] ?? "";
+        $confirmPassword = $_POST["confirm_password"] ?? "";
+        $adminPassword   = $_POST["admin_password"] ?? "";
+
+        // Verify admin's own password
+        $adminStmt = $pdo->prepare("SELECT password_hash FROM users WHERE id = ?");
+        $adminStmt->execute([$_SESSION["user_id"]]);
+        $adminUser = $adminStmt->fetch();
+
+        if (!$adminUser || !password_verify($adminPassword, $adminUser["password_hash"])) {
+            header("Location: /admin/users.php?msg=admin_auth_error");
+            exit;
+        }
+
+        if ($password !== $confirmPassword) {
+            header("Location: /admin/users.php?msg=password_mismatch");
+            exit;
+        }
+
+        $pwdErrors = validate_password($password);
+        if ($uid > 0 && empty($pwdErrors)) {
             $hash = password_hash($password, PASSWORD_BCRYPT);
             $pdo->prepare("UPDATE users SET password_hash = ? WHERE id = ?")
                 ->execute([$hash, $uid]);
@@ -109,15 +149,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 // ── Load users ────────────────────────────────────────────────────────────────
 $users = $pdo->query("SELECT * FROM users ORDER BY is_admin DESC, username ASC")->fetchAll();
 
-$messages = [
-    "created"           => "Utilisateur créé avec succès.",
-    "updated"           => "Permissions mises à jour.",
-    "deleted"           => "Utilisateur supprimé.",
-    "password_reset"    => "Mot de passe réinitialisé.",
-    "password_error"    => "Mot de passe invalide (min. 4 caractères).",
-    "self_delete_error" => "Vous ne pouvez pas supprimer votre propre compte.",
-    "self_admin_error"  => "Vous ne pouvez pas retirer vos propres droits admin.",
+$msgMap = [
+    "created"           => ['success', "Utilisateur créé avec succès."],
+    "updated"           => ['success', "Permissions mises à jour."],
+    "deleted"           => ['success', "Utilisateur supprimé."],
+    "password_reset"    => ['success', "Mot de passe réinitialisé."],
+    "password_error"    => ['danger',  "Mot de passe invalide (min. 8 caractères, 1 majuscule, 1 chiffre)."],
+    "password_mismatch" => ['danger',  "Les deux mots de passe ne correspondent pas."],
+    "admin_auth_error"  => ['danger',  "Votre mot de passe administrateur est incorrect."],
+    "self_delete_error" => ['danger',  "Vous ne pouvez pas supprimer votre propre compte."],
+    "self_admin_error"  => ['danger',  "Vous ne pouvez pas retirer vos propres droits admin."],
 ];
+
+$flash = [];
+if (isset($_GET["msg"]) && isset($msgMap[$_GET["msg"]])) {
+    [$type, $text] = $msgMap[$_GET["msg"]];
+    $flash[] = ['type' => $type, 'msg' => e($text)];
+}
+if (!empty($errors)) {
+    foreach ($errors as $err) {
+        $flash[] = ['type' => 'danger', 'msg' => e($err)];
+    }
+}
 
 $pageTitle = "Admin - Utilisateurs";
 $activePage = "admin_users";
@@ -130,19 +183,7 @@ require __DIR__ . "/../partials/header.php";
     <h3 class="mb-0">Gestion des Utilisateurs</h3>
   </div>
 
-  <?php if (isset($_GET["msg"]) && isset($messages[$_GET["msg"]])): ?>
-    <div class="alert alert-<?= str_contains($_GET["msg"], "error") ? "danger" : "success" ?> alert-dismissible fade show">
-      <?= e($messages[$_GET["msg"]]) ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
-
-  <?php if (!empty($errors)): ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <ul class="mb-0"><?php foreach ($errors as $err): ?><li><?= e($err) ?></li><?php endforeach; ?></ul>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
+  <?php require __DIR__ . "/../partials/flash.php"; ?>
 
   <!-- ── User list ──────────────────────────────────────────────────────── -->
   <div class="card shadow-sm mb-4">
@@ -208,15 +249,13 @@ require __DIR__ . "/../partials/header.php";
                     </button>
 
                     <?php if ($u["id"] != $_SESSION["user_id"]): ?>
-                      <form method="post" class="d-inline"
-                            onsubmit="return confirm('Supprimer <?= e($u["username"]) ?> ?');">
-                        <?= csrf_field() ?>
-                        <input type="hidden" name="action"  value="delete">
-                        <input type="hidden" name="user_id" value="<?= (int)$u["id"] ?>">
-                        <button class="btn btn-sm btn-outline-danger" type="submit">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </form>
+                      <button class="btn btn-sm btn-outline-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target="#modalDelete"
+                              data-uid="<?= (int)$u["id"] ?>"
+                              data-uname="<?= e($u["username"]) ?>">
+                        <i class="bi bi-trash"></i>
+                      </button>
                     <?php endif; ?>
                   </div>
                 </td>
@@ -247,7 +286,7 @@ require __DIR__ . "/../partials/header.php";
         <div class="col-md-4">
           <label class="form-label">Mot de passe <span class="text-danger">*</span></label>
           <input class="form-control" name="password" type="password" required
-                 placeholder="Minimum 4 caractères">
+                 minlength="8" placeholder="Min. 8 car., 1 majuscule, 1 chiffre">
         </div>
 
         <div class="col-md-4">
@@ -287,9 +326,9 @@ require __DIR__ . "/../partials/header.php";
 
 <!-- ── Reset password modal ───────────────────────────────────────────────── -->
 <div class="modal fade" id="modalPwd" tabindex="-1">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog">
     <div class="modal-content">
-      <form method="post">
+      <form method="post" id="resetPwdForm">
         <?= csrf_field() ?>
         <input type="hidden" name="action"   value="reset_password">
         <input type="hidden" name="user_id"  id="modalPwdUid">
@@ -298,14 +337,67 @@ require __DIR__ . "/../partials/header.php";
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <p class="text-muted mb-2">Utilisateur : <strong id="modalPwdName"></strong></p>
-          <input class="form-control" type="password" name="new_password"
-                 placeholder="Nouveau mot de passe" required minlength="4">
+          <p class="text-muted mb-3">Utilisateur : <strong id="modalPwdName"></strong></p>
+
+          <div class="mb-3">
+            <label class="form-label">Nouveau mot de passe <span class="text-danger">*</span></label>
+            <input class="form-control" type="password" name="new_password" id="newPwd"
+                   placeholder="Min. 8 car., 1 majuscule, 1 chiffre" required minlength="8">
+            <div id="pwdStrength" class="form-text"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Confirmer le mot de passe <span class="text-danger">*</span></label>
+            <input class="form-control" type="password" name="confirm_password" id="confirmPwd"
+                   placeholder="Retapez le mot de passe" required minlength="8">
+            <div id="pwdMatch" class="form-text"></div>
+          </div>
+
+          <hr>
+
+          <div class="mb-0">
+            <label class="form-label"><i class="bi bi-shield-lock"></i> Votre mot de passe admin <span class="text-danger">*</span></label>
+            <input class="form-control" type="password" name="admin_password"
+                   placeholder="Confirmez votre identité" required>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="submit" class="btn btn-warning">
+          <button type="submit" class="btn btn-warning" id="resetSubmitBtn">
             <i class="bi bi-key"></i> Réinitialiser
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete user modal ─────────────────────────────────────────────────── -->
+<div class="modal fade" id="modalDelete" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form method="post" id="deleteUserForm">
+        <?= csrf_field() ?>
+        <input type="hidden" name="action"  value="delete">
+        <input type="hidden" name="user_id" id="modalDeleteUid">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle"></i> Supprimer un utilisateur</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p>Supprimer l'utilisateur <strong id="modalDeleteName"></strong> ?</p>
+          <p class="text-muted small">Cette action est irréversible.</p>
+          <hr>
+          <div class="mb-0">
+            <label class="form-label"><i class="bi bi-shield-lock"></i> Votre mot de passe admin <span class="text-danger">*</span></label>
+            <input class="form-control" type="password" name="admin_password"
+                   placeholder="Confirmez votre identité" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i> Supprimer
           </button>
         </div>
       </form>
@@ -316,12 +408,64 @@ require __DIR__ . "/../partials/header.php";
 <?php
 $pageScripts = <<<'JS'
 <script>
-// Populate password reset modal
-document.getElementById('modalPwd').addEventListener('show.bs.modal', function (e) {
-  const btn = e.relatedTarget;
-  document.getElementById('modalPwdUid').value  = btn.dataset.uid;
-  document.getElementById('modalPwdName').textContent = btn.dataset.uname;
-});
+(function() {
+  var modal      = document.getElementById('modalPwd');
+  var newPwd     = document.getElementById('newPwd');
+  var confirmPwd = document.getElementById('confirmPwd');
+  var strength   = document.getElementById('pwdStrength');
+  var matchMsg   = document.getElementById('pwdMatch');
+
+  // Populate modal
+  modal.addEventListener('show.bs.modal', function (e) {
+    var btn = e.relatedTarget;
+    document.getElementById('modalPwdUid').value = btn.dataset.uid;
+    document.getElementById('modalPwdName').textContent = btn.dataset.uname;
+    // Reset fields
+    document.getElementById('resetPwdForm').reset();
+    strength.textContent = '';
+    matchMsg.textContent = '';
+  });
+
+  // Live password strength check
+  newPwd.addEventListener('input', function() {
+    var v = newPwd.value;
+    var issues = [];
+    if (v.length < 8) issues.push('8 caractères min.');
+    if (!/[A-Z]/.test(v)) issues.push('1 majuscule');
+    if (!/[0-9]/.test(v)) issues.push('1 chiffre');
+    if (issues.length > 0) {
+      strength.textContent = 'Manque : ' + issues.join(', ');
+      strength.className = 'form-text text-danger';
+    } else {
+      strength.textContent = 'Mot de passe valide';
+      strength.className = 'form-text text-success';
+    }
+    checkMatch();
+  });
+
+  // Live match check
+  confirmPwd.addEventListener('input', checkMatch);
+
+  function checkMatch() {
+    if (confirmPwd.value === '') { matchMsg.textContent = ''; return; }
+    if (newPwd.value === confirmPwd.value) {
+      matchMsg.textContent = 'Les mots de passe correspondent.';
+      matchMsg.className = 'form-text text-success';
+    } else {
+      matchMsg.textContent = 'Les mots de passe ne correspondent pas.';
+      matchMsg.className = 'form-text text-danger';
+    }
+  }
+
+  // Populate delete modal
+  var delModal = document.getElementById('modalDelete');
+  delModal.addEventListener('show.bs.modal', function (e) {
+    var btn = e.relatedTarget;
+    document.getElementById('modalDeleteUid').value = btn.dataset.uid;
+    document.getElementById('modalDeleteName').textContent = btn.dataset.uname;
+    document.getElementById('deleteUserForm').reset();
+  });
+})();
 </script>
 JS;
 require __DIR__ . "/../partials/footer.php";

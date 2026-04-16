@@ -31,6 +31,32 @@
     link.addEventListener('click', closeSidebar);
   });
 })();
+
+// Flash panel dismiss
+document.querySelectorAll('.flash-dismiss').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    btn.closest('.flash-panel').remove();
+  });
+});
+
+// Theme toggle
+(function() {
+  var themeBtn = document.getElementById('themeToggle');
+  if (!themeBtn) return;
+  themeBtn.addEventListener('click', function() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-bs-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-bs-theme', next);
+    document.cookie = 'theme=' + next + ';path=/;max-age=31536000;SameSite=Lax';
+    var icon = themeBtn.querySelector('i');
+    icon.className = 'bi bi-' + (next === 'dark' ? 'sun' : 'moon-stars');
+    // Update button text
+    var textNode = themeBtn.childNodes[themeBtn.childNodes.length - 1];
+    textNode.textContent = next === 'dark' ? ' Mode clair' : ' Mode sombre';
+  });
+})();
 </script>
 <?php endif; ?>
 

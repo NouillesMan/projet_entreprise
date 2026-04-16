@@ -10,6 +10,7 @@ if (isset($_SESSION['user_id'])) {
 }
 
 require __DIR__ . "/includes/db.php";
+require __DIR__ . "/includes/helpers.php";
 
 $error = "";
 
@@ -17,12 +18,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = trim($_POST["username"] ?? "");
     $password = $_POST["password"] ?? "";
 
-    if ($username !== "" && $password !== "") {
+    // Rate limiting
+    $attempts = $_SESSION['login_attempts'] ?? 0;
+    $lockUntil = $_SESSION['login_lock_until'] ?? 0;
+
+    if ($attempts >= LOGIN_MAX_ATTEMPTS && time() < $lockUntil) {
+        $remaining = (int)ceil(($lockUntil - time()) / 60);
+        $error = "Trop de tentatives. Réessayez dans $remaining minute" . ($remaining > 1 ? 's' : '') . ".";
+    } elseif ($username !== "" && $password !== "") {
+        if (time() >= $lockUntil) {
+            $_SESSION['login_attempts'] = 0;
+            $attempts = 0;
+        }
+
         $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user["password_hash"])) {
+            $_SESSION['login_attempts'] = 0;
+            unset($_SESSION['login_lock_until']);
             session_regenerate_id(true);
             $_SESSION["user_id"]    = $user["id"];
             $_SESSION["username"]   = $user["username"];
@@ -35,9 +50,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             header("Location: /dashboard.php");
             exit;
         }
-    }
 
-    $error = "Identifiants incorrects.";
+        $attempts++;
+        $_SESSION['login_attempts'] = $attempts;
+        if ($attempts >= LOGIN_MAX_ATTEMPTS) {
+            $_SESSION['login_lock_until'] = time() + LOGIN_LOCKOUT_SECONDS;
+            $error = "Trop de tentatives. Compte verrouillé pendant 5 minutes.";
+        } else {
+            $remaining = LOGIN_MAX_ATTEMPTS - $attempts;
+            $error = "Identifiants incorrects. $remaining tentative" . ($remaining > 1 ? 's' : '') . " restante" . ($remaining > 1 ? 's' : '') . ".";
+        }
+    } else {
+        $error = "Identifiants incorrects.";
+    }
 }
 
 $pageTitle = "Connexion — Inventaire PC";

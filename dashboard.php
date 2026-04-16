@@ -108,12 +108,51 @@ require __DIR__ . "/partials/header.php";
     </div>
   </div>
 
-  <!-- Charts row: Architecture + Brands + OS -->
+  <!-- Charts row: Status + Brands + OS -->
   <div class="row g-3 mb-4">
 
-    <!-- Architecture breakdown -->
+    <!-- Status doughnut -->
     <div class="col-md-4">
       <div class="card shadow-sm h-100">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Statut</h6>
+        </div>
+        <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 250px;">
+          <canvas id="chartStatus"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top brands bar chart -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bi bi-building"></i> Top marques</h6>
+        </div>
+        <div class="card-body" style="min-height: 250px;">
+          <canvas id="chartBrands"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top OS bar chart -->
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="bi bi-windows"></i> Top OS</h6>
+        </div>
+        <div class="card-body" style="min-height: 250px;">
+          <canvas id="chartOs"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Architecture breakdown (keep as progress bars) -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm">
         <div class="card-header">
           <h6 class="mb-0"><i class="bi bi-cpu"></i> Architecture</h6>
         </div>
@@ -131,64 +170,11 @@ require __DIR__ . "/partials/header.php";
           </div>
           <?php endforeach; ?>
           <?php if (empty($archCounts)): ?>
-          <p class="text-muted text-center mb-0">Aucune donnée</p>
+          <p class="text-muted text-center mb-0">Aucune donnee</p>
           <?php endif; ?>
         </div>
       </div>
     </div>
-
-    <!-- Top brands -->
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header">
-          <h6 class="mb-0"><i class="bi bi-building"></i> Top marques</h6>
-        </div>
-        <div class="card-body">
-          <?php foreach ($topBrands as $brand): ?>
-          <?php $pct = $total > 0 ? round($brand["cnt"] / $total * 100) : 0; ?>
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span><?= e($brand["marque"]) ?></span>
-              <small class="text-muted"><?= $brand["cnt"] ?> (<?= $pct ?>%)</small>
-            </div>
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar bg-info" style="width: <?= $pct ?>%"></div>
-            </div>
-          </div>
-          <?php endforeach; ?>
-          <?php if (empty($topBrands)): ?>
-          <p class="text-muted text-center mb-0">Aucune donnée</p>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top OS -->
-    <div class="col-md-4">
-      <div class="card shadow-sm h-100">
-        <div class="card-header">
-          <h6 class="mb-0"><i class="bi bi-windows"></i> Top OS</h6>
-        </div>
-        <div class="card-body">
-          <?php foreach ($topOs as $os): ?>
-          <?php $pct = $total > 0 ? round($os["cnt"] / $total * 100) : 0; ?>
-          <div class="mb-3">
-            <div class="d-flex justify-content-between mb-1">
-              <span><?= e($os["os"]) ?></span>
-              <small class="text-muted"><?= $os["cnt"] ?> (<?= $pct ?>%)</small>
-            </div>
-            <div class="progress" style="height: 6px;">
-              <div class="progress-bar bg-success" style="width: <?= $pct ?>%"></div>
-            </div>
-          </div>
-          <?php endforeach; ?>
-          <?php if (empty($topOs)): ?>
-          <p class="text-muted text-center mb-0">Aucune donnée</p>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <!-- Bottom row: Recent activity + Recently added -->
@@ -278,4 +264,11 @@ require __DIR__ . "/partials/header.php";
 </div>
 
 <?php
+$pageScripts = '<script src="/assets/js/chart.min.js"></script>'
+             . '<script>window.dashboardData = ' . json_encode([
+                 'statut'  => $statusCounts,
+                 'brands'  => array_column($topBrands, 'cnt', 'marque'),
+                 'os'      => array_column($topOs, 'cnt', 'os'),
+               ], JSON_UNESCAPED_UNICODE) . ';</script>'
+             . '<script src="/assets/js/dashboard_charts.js"></script>';
 require __DIR__ . "/partials/footer.php";

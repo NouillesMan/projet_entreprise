@@ -202,6 +202,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
           }
 
+          if ($imported > 0 || $updated > 0) {
+            $details = "$imported importe(s)";
+            if ($updated > 0) $details .= ", $updated mis a jour";
+            log_activity($pdo, 'import', 'pc', null, '', $details);
+          }
           $pdo->commit();
           } catch (PDOException $e) {
             if ($pdo->inTransaction()) $pdo->rollBack();
@@ -229,37 +234,25 @@ require __DIR__ . "/../partials/header.php";
     <h3 class="mb-0">Import CSV</h3>
   </div>
 
-  <?php if ($_SERVER["REQUEST_METHOD"] === "POST"): ?>
-    <?php if ($imported > 0 || $updated > 0): ?>
-      <div class="alert alert-success alert-dismissible fade show">
-        <i class="bi bi-check-circle"></i>
-        <?php if ($imported > 0): ?>
-          <strong><?= $imported ?></strong> PC importé<?= $imported > 1 ? "s" : "" ?>
-        <?php endif; ?>
-        <?php if ($imported > 0 && $updated > 0): ?> — <?php endif; ?>
-        <?php if ($updated > 0): ?>
-          <strong><?= $updated ?></strong> PC mis à jour
-        <?php endif; ?>
-        avec succès.
-        <?php if ($optionsAdded > 0): ?>
-          <br><small><i class="bi bi-list-check"></i> <?= $optionsAdded ?> nouvelle<?= $optionsAdded > 1 ? "s" : "" ?> option<?= $optionsAdded > 1 ? "s" : "" ?> ajoutée<?= $optionsAdded > 1 ? "s" : "" ?> aux listes déroulantes.</small>
-        <?php endif; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-
-    <?php if ($errors): ?>
-      <div class="alert alert-danger alert-dismissible fade show">
-        <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> <?= count($errors) ?> erreur<?= count($errors) > 1 ? "s" : "" ?></h6>
-        <ul class="mb-0">
-          <?php foreach ($errors as $err): ?>
-            <li><?= e($err) ?></li>
-          <?php endforeach; ?>
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    <?php endif; ?>
-  <?php endif; ?>
+  <?php
+  $flash = [];
+  if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if ($imported > 0 || $updated > 0) {
+      $parts = [];
+      if ($imported > 0) $parts[] = "<strong>$imported</strong> PC importé" . ($imported > 1 ? "s" : "");
+      if ($updated > 0)  $parts[] = "<strong>$updated</strong> PC mis à jour";
+      $msg = implode(' — ', $parts) . ' avec succès.';
+      if ($optionsAdded > 0) {
+        $msg .= '<br><small>' . $optionsAdded . ' nouvelle' . ($optionsAdded > 1 ? 's' : '') . ' option' . ($optionsAdded > 1 ? 's' : '') . ' ajoutée' . ($optionsAdded > 1 ? 's' : '') . ' aux listes déroulantes.</small>';
+      }
+      $flash[] = ['type' => 'success', 'msg' => $msg];
+    }
+    foreach ($errors as $err) {
+      $flash[] = ['type' => 'danger', 'msg' => e($err)];
+    }
+  }
+  require __DIR__ . "/../partials/flash.php";
+  ?>
 
   <!-- Scripts de collecte -->
   <div class="card shadow-sm mb-4">

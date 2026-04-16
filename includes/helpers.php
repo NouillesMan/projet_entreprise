@@ -18,6 +18,30 @@ if (!defined('FIELD_TYPES')) {
     ]);
 }
 
+if (!defined('PASSWORD_MIN_LENGTH')) {
+    define('PASSWORD_MIN_LENGTH', 8);
+}
+if (!defined('LOGIN_MAX_ATTEMPTS')) {
+    define('LOGIN_MAX_ATTEMPTS', 5);
+}
+if (!defined('LOGIN_LOCKOUT_SECONDS')) {
+    define('LOGIN_LOCKOUT_SECONDS', 300);
+}
+
+function validate_password(string $password): array {
+    $errors = [];
+    if (strlen($password) < PASSWORD_MIN_LENGTH) {
+        $errors[] = "Le mot de passe doit contenir au moins " . PASSWORD_MIN_LENGTH . " caractères.";
+    }
+    if (!preg_match('/[A-Z]/', $password)) {
+        $errors[] = "Le mot de passe doit contenir au moins une majuscule.";
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+        $errors[] = "Le mot de passe doit contenir au moins un chiffre.";
+    }
+    return $errors;
+}
+
 function statut_badge_class(string $statut): string
 {
     return match($statut) {
@@ -99,4 +123,36 @@ function os_version_in_list(array $versionsByFamily, string $current): bool {
         if (in_array($current, $versions, true)) return true;
     }
     return false;
+}
+
+function log_activity(PDO $pdo, string $action, string $target_type, ?int $target_id, string $target_label, string $details = ''): void
+{
+    $stmt = $pdo->prepare(
+        "INSERT INTO activity_log (user_id, username, action, target_type, target_id, target_label, details)
+         VALUES (?, ?, ?, ?, ?, ?, ?)"
+    );
+    $stmt->execute([
+        $_SESSION['user_id'] ?? null,
+        $_SESSION['username'] ?? 'system',
+        $action,
+        $target_type,
+        $target_id,
+        $target_label,
+        $details,
+    ]);
+}
+
+function log_pc_history(PDO $pdo, int $pc_id, string $action, ?array $changes = null): void
+{
+    $stmt = $pdo->prepare(
+        "INSERT INTO pc_history (pc_id, user_id, username, action, changes)
+         VALUES (?, ?, ?, ?, ?)"
+    );
+    $stmt->execute([
+        $pc_id,
+        $_SESSION['user_id'] ?? null,
+        $_SESSION['username'] ?? 'system',
+        $action,
+        $changes !== null ? json_encode($changes, JSON_UNESCAPED_UNICODE) : null,
+    ]);
 }

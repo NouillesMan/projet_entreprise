@@ -135,28 +135,23 @@ require __DIR__ . "/../partials/header.php";
     <h3 class="mb-0">Gestion des Champs</h3>
   </div>
 
-  <?php if (isset($_GET['msg'])): ?>
-    <?php
+  <?php
+  $flash = [];
+  if (isset($_GET['msg'])) {
     $msgMap = [
       'updated'   => ['success', 'Champ mis à jour avec succès.'],
       'added'     => ['success', 'Nouveau champ ajouté avec succès.'],
       'deleted'   => ['success', 'Champ supprimé avec succès.'],
       'protected' => ['warning', 'Ce champ est protégé et ne peut pas être supprimé.'],
     ];
-    [$msgType, $msgText] = $msgMap[$_GET['msg']] ?? ['success', 'Opération effectuée.'];
-    ?>
-    <div class="alert alert-<?= $msgType ?> alert-dismissible fade show" role="alert">
-      <?= e($msgText) ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
-
-  <?php if (isset($error)): ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <?= e($error) ?>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
+    [$t, $m] = $msgMap[$_GET['msg']] ?? ['success', 'Opération effectuée.'];
+    $flash[] = ['type' => $t, 'msg' => e($m)];
+  }
+  if (isset($error)) {
+    $flash[] = ['type' => 'danger', 'msg' => e($error)];
+  }
+  require __DIR__ . "/../partials/flash.php";
+  ?>
 
   <!-- Liste des champs existants -->
   <div class="card shadow-sm mb-4">

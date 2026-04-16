@@ -105,6 +105,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ":id" => $id,
       ]);
 
+      // Log history diff
+      $newData = compact('hostname', 'serial', 'marque', 'modele', 'utilisateur', 'os', 'os_version', 'architecture', 'domaine', 'statut', 'remarques');
+      $changes = [];
+      foreach ($newData as $k => $v) {
+          if (($pc[$k] ?? '') !== $v) {
+              $changes[$k] = ['old' => $pc[$k] ?? '', 'new' => $v];
+          }
+      }
+      // Diff custom fields
+      foreach ($customFields as $cf) {
+          $oldVal = $customValues[$cf['field_name']] ?? '';
+          $newVal = trim($_POST["cf_" . $cf['field_name']] ?? '');
+          if ($oldVal !== $newVal) {
+              $changes[$cf['field_label']] = ['old' => $oldVal, 'new' => $newVal];
+          }
+      }
+      if (!empty($changes)) {
+          log_pc_history($pdo, $id, 'updated', $changes);
+      }
+      log_activity($pdo, 'edit', 'pc', $id, $hostname);
+
       // Sauvegarde des champs personnalisés via un UPSERT (INSERT ou UPDATE selon existence).
       if (!empty($customFields)) {
         $stmtCf = $pdo->prepare(
@@ -147,17 +168,15 @@ require __DIR__ . "/partials/header.php";
     </a>
   </div>
 
-  <?php if ($errors): ?>
-    <div class="alert alert-danger alert-dismissible fade show">
-      <h5 class="alert-heading">Erreurs de validation</h5>
-      <ul class="mb-0">
-        <?php foreach ($errors as $err): ?>
-          <li><?= e($err) ?></li>
-        <?php endforeach; ?>
-      </ul>
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-  <?php endif; ?>
+  <?php
+  $flash = [];
+  if ($errors) {
+    foreach ($errors as $err) {
+      $flash[] = ['type' => 'danger', 'msg' => e($err)];
+    }
+  }
+  require __DIR__ . "/partials/flash.php";
+  ?>
 
   <div class="card shadow-sm">
     <div class="card-header">
