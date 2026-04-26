@@ -264,11 +264,12 @@ require __DIR__ . "/partials/header.php";
 </div>
 
 <?php
+$chartsVer = @filemtime(__DIR__ . '/assets/js/dashboard_charts.js') ?: time();
 $pageScripts = '<script src="/assets/js/chart.min.js"></script>'
              . '<script>window.dashboardData = ' . json_encode([
                  'statut'  => $statusCounts,
                  'brands'  => array_column($topBrands, 'cnt', 'marque'),
                  'os'      => array_column($topOs, 'cnt', 'os'),
                ], JSON_UNESCAPED_UNICODE) . ';</script>'
-             . '<script src="/assets/js/dashboard_charts.js"></script>';
+             . '<script src="/assets/js/dashboard_charts.js?v=' . $chartsVer . '"></script>';
 require __DIR__ . "/partials/footer.php";

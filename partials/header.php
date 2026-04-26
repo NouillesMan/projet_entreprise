@@ -35,7 +35,8 @@ if (!in_array($theme, ['dark', 'light'])) $theme = 'dark';
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Custom CSS -->
-  <link href="/assets/css/style.css" rel="stylesheet">
+  <?php $cssVer = @filemtime(__DIR__ . '/../assets/css/style.css') ?: time(); ?>
+  <link href="/assets/css/style.css?v=<?= $cssVer ?>" rel="stylesheet">
 
   <?php if ($pageStyles !== ""): ?>
   <style><?= $pageStyles ?></style>
